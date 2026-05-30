@@ -1,5 +1,16 @@
 export const sourceRegistry = [
   {
+    name: 'Data Commons API',
+    url: 'https://docs.datacommons.org/api/rest/v2/',
+    dataType: 'Normalized public demographic, housing, income, labor, and place-identifier observations',
+    geography: 'Waynesboro city, Burke County, Georgia',
+    accessMethod: 'Server-side API connector using .env.local credentials; never expose keys in browser code.',
+    cadence: 'Depends on upstream source/facet; snapshot records observation dates and provenance.',
+    difficulty: 'Low',
+    status: 'Live connector active',
+    notes: 'Resolved Waynesboro, Georgia to Data Commons DCID geoId/1380984. Current connector writes public observations to src/data/dataCommonsSnapshot.js.'
+  },
+  {
     name: 'U.S. Census Bureau ACS Profile API',
     url: 'https://api.census.gov/data/2023/acs/acs5/profile',
     dataType: 'Population, household income, employment, housing profile metrics',
@@ -211,7 +222,7 @@ export const sourceRegistry = [
 ];
 
 export const readinessStrip = [
-  { lane: 'Demographics', status: 'API key needed', source: 'Census ACS Profile API', tone: 'watch' },
+  { lane: 'Demographics', status: 'Live snapshot', source: 'Data Commons API', tone: 'good' },
   { lane: 'City documents', status: 'Index-ready', source: 'Agenda Center / Archive Center', tone: 'good' },
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
   { lane: 'Map base', status: 'Seed ready', source: 'OpenStreetMap', tone: 'good' },
@@ -229,12 +240,12 @@ export const sourcePriorities = [
     difficulty: 'Low'
   },
   {
-    lane: 'Census baseline',
-    target: 'Resolve ACS profile connector with API key',
-    source: 'U.S. Census ACS Profile API',
-    value: 'Replaces population, income, housing, and employment mock KPI cards with timestamped public estimates.',
-    nextStep: 'Add API-key-backed scheduled fetch and confirm Waynesboro place code before binding to KPI values.',
-    difficulty: 'Medium'
+    lane: 'Census / Data Commons baseline',
+    target: 'Promote Data Commons snapshot into KPI source labels',
+    source: 'Data Commons API + upstream Census/BLS facets',
+    value: 'Replaces the first demographic, income, housing, and labor mock labels with timestamped public observations.',
+    nextStep: 'Bind Data Commons highlights into KPI cards with source/status/date chips while keeping unrelated metrics synthetic.',
+    difficulty: 'Low'
   },
   {
     lane: 'Parcels / blight',

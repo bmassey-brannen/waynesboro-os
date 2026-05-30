@@ -13,6 +13,7 @@ import {
   safety
 } from '../data/cityData.js';
 import { osmWaynesboroSeed, readinessStrip, sourcePriorities, sourceRegistry } from '../data/sourceRegistry.js';
+import { dataCommonsSnapshot } from '../data/dataCommonsSnapshot.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -135,13 +136,54 @@ function SourceStatusStrip() {
   );
 }
 
+function DataCommonsLivePanel() {
+  const highlights = dataCommonsSnapshot.executiveHighlights || [];
+  const countyUnemployment = dataCommonsSnapshot.metrics.find(
+    (metric) => metric.entityDcid === 'geoId/13033' && metric.variableDcid === 'UnemploymentRate_Person'
+  );
+
+  return (
+    <section className="panel data-commons-panel">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">LIVE PUBLIC CONNECTOR</span>
+          <h2>Data Commons baseline snapshot</h2>
+        </div>
+        <span className="terminal-badge live">CONNECTED</span>
+      </div>
+      <div className="dc-meta-grid">
+        <div><span>Provider</span><b>{dataCommonsSnapshot.provider}</b></div>
+        <div><span>Waynesboro DCID</span><b>geoId/1380984</b></div>
+        <div><span>Fetched</span><b>{new Date(dataCommonsSnapshot.fetchedAt).toLocaleString()}</b></div>
+      </div>
+      <div className="dc-metric-grid">
+        {highlights.map((metric) => (
+          <article key={metric.id} className="dc-metric-card">
+            <span>{metric.variable}</span>
+            <b>{metric.displayValue}</b>
+            <small>{metric.date || 'No date'} · {metric.sourceName}</small>
+          </article>
+        ))}
+        {countyUnemployment && (
+          <article className="dc-metric-card county-context">
+            <span>County unemployment context</span>
+            <b>{countyUnemployment.displayValue}</b>
+            <small>{countyUnemployment.date} · Burke County · {countyUnemployment.sourceName}</small>
+          </article>
+        )}
+      </div>
+      <p className="source-note">This panel is generated from a server-side Data Commons API fetch. It stores only public observations and provenance metadata in the app; keys remain in `.env.local` and are not exposed to the browser.</p>
+    </section>
+  );
+}
+
 function SourceReadiness() {
   const statusCounts = sourceRegistry.reduce((counts, source) => {
     counts[source.status] = (counts[source.status] || 0) + 1;
     return counts;
   }, {});
   const featuredSources = sourceRegistry
-    .filter((source) => ['Ready for document index', 'Seed connector ready', 'Reference ready', 'Source hub identified'].includes(source.status))
+    .filter((source) => ['Live connector active', 'Ready for document index', 'Seed connector ready', 'Reference ready', 'Source hub identified'].includes(source.status))
     .slice(0, 7);
 
   return (
@@ -160,8 +202,9 @@ function SourceReadiness() {
           <article><b>{statusCounts['Ready for document index'] || 0}</b><span>doc-index ready</span></article>
           <article><b>{statusCounts['Seed connector ready'] || 0}</b><span>seed connector</span></article>
         </div>
-        <p className="source-note">Every dashboard number remains synthetic until it carries a source, timestamp, geography, and connector status. Newly confirmed city-level paths: Waynesboro Agenda Center, Archive Center, and WIPP tax portal. Near-term ingestion should index public document links before replacing numeric KPIs.</p>
+        <p className="source-note">Every dashboard number remains synthetic until it carries a source, timestamp, geography, and connector status. Data Commons is now connected server-side for baseline demographics; city documents remain the next official local evidence lane.</p>
       </section>
+      <DataCommonsLivePanel />
       <section className="panel source-queue-card">
         <div className="panel-head"><div><span className="eyebrow">CONNECTOR ACTION QUEUE</span><h2>Highest-trust next moves</h2></div></div>
         <div className="priority-list">

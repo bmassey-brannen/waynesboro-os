@@ -13,6 +13,7 @@ Purpose: replace synthetic demo data with legitimate public or semi-public sourc
 
 | Source | URL | Data type | Access method | Cadence | Difficulty | Notes / questions |
 | --- | --- | --- | --- | --- | --- | --- |
+| Data Commons API | https://docs.datacommons.org/api/rest/v2/ | Public demographic, housing, income, labor, and place-identifier observations with upstream provenance facets | Server-side API connector using `.env.local`; keys never exposed to browser/client code | Depends on upstream dataset/facet | Low | Live connector active. Resolved Waynesboro, Georgia as `geoId/1380984`; normalized snapshot is generated at `src/data/dataCommonsSnapshot.js`. |
 | U.S. Census Bureau ACS Profile API | https://api.census.gov/data/2023/acs/acs5/profile | Population, income, employment, housing profile metrics | Public API; this environment returned a Census "Missing Key" page, so scheduled ingestion should use a Census API key | Annual ACS 5-year release | Medium | Candidate query shape: `get=NAME,DP05_0001E,DP03_0062E,DP03_0005PE&for=place:*&in=state:13`. Confirm Waynesboro place code before production. |
 | Census QuickFacts | https://www.census.gov/quickfacts/fact/table/waynesborocitygeorgia,burkecountygeorgia/PST045223 | Public demographic/economic facts for city and county context | Public web page; cite directly, avoid aggressive scraping | Periodic Census updates | Low | Good public-facing citation while the structured ACS connector is built. |
 | City of Waynesboro official website | https://www.waynesboroga.com/ | City departments, official notices, local links | Public web pages | As posted by city | Medium | City page links to Georgia DOR, Burke County Tax Assessors/qPublic, Agenda Center, Archive Center, Calendar, City Council page, and WIPP payment portal. |
@@ -35,13 +36,14 @@ Purpose: replace synthetic demo data with legitimate public or semi-public sourc
 
 ## Immediate connector candidates
 
-1. **City document index**: cache Waynesboro Agenda Center + Archive Center links first; fields should include title, category/board, date, URL, retrieval timestamp, and source page.
-2. **OSM seed connector**: use normalized Waynesboro lat/lon and attribution now for map credibility.
-3. **County meetings document index**: crawl/index public agenda/minutes pages conservatively and cache document links with dates.
-4. **Census ACS profile connector**: use API key in environment or a cached manual export; map fields to KPI cards with timestamps.
-5. **DOR digest report index**: collect state report links first, then parse only stable CSV/XLS/PDF downloads if available.
-6. **Ordinance reference layer**: curate a citation-only index from Municode for zoning, code-enforcement, signs, nuisances, and downtown policy contexts; manually verify sections before using them in Council text.
-7. **Downtown/DDA source hub**: review the official Downtown Development Authority page for board/program links that can anchor the downtown command center before parcel exports are available.
+1. **Data Commons baseline snapshot**: run `npm run fetch:datacommons` to refresh public demographic/housing/income/labor observations for Waynesboro (`geoId/1380984`), Burke County, and Georgia; bind only source-labeled metrics into the UI.
+2. **City document index**: cache Waynesboro Agenda Center + Archive Center links first; fields should include title, category/board, date, URL, retrieval timestamp, and source page.
+3. **OSM seed connector**: use normalized Waynesboro lat/lon and attribution now for map credibility.
+4. **County meetings document index**: crawl/index public agenda/minutes pages conservatively and cache document links with dates.
+5. **Census ACS profile connector**: use API key in environment or a cached manual export; map fields to KPI cards with timestamps.
+6. **DOR digest report index**: collect state report links first, then parse only stable CSV/XLS/PDF downloads if available.
+7. **Ordinance reference layer**: curate a citation-only index from Municode for zoning, code-enforcement, signs, nuisances, and downtown policy contexts; manually verify sections before using them in Council text.
+8. **Downtown/DDA source hub**: review the official Downtown Development Authority page for board/program links that can anchor the downtown command center before parcel exports are available.
 
 ## Open questions
 
