@@ -285,7 +285,11 @@ export default function WaynesboroTerminal() {
       </aside>
       <section className="workspace">
         <header className="topbar">
-          <div><span className="eyebrow">WAYNESBORO, GEORGIA · CITY OPERATING PICTURE</span><h1>Bloomberg Terminal for a small city.</h1></div>
+          <div>
+            <span className="eyebrow">WAYNESBORO, GEORGIA · CITY OPERATING PICTURE</span>
+            <h1>Municipal Operating Picture for Waynesboro.</h1>
+            <p className="public-disclaimer">Public-presentable demo interface using synthetic mock data. Built to show what a city intelligence terminal could become as official sources are connected.</p>
+          </div>
           <div className="market-clock"><b>MOCK DATA MODE</b><span>Census · DCA · GIS · Tax · Utility ready</span></div>
         </header>
         <ExecutiveDashboard />
