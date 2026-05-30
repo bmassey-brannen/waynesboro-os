@@ -12,6 +12,7 @@ import {
   projects,
   safety
 } from '../data/cityData.js';
+import { osmWaynesboroSeed, sourceRegistry } from '../data/sourceRegistry.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -115,6 +116,57 @@ function ExecutiveDashboard() {
         <p>If you became Mayor tomorrow morning, these are the gauges you would check before sitting down with staff.</p>
       </div>
       <div className="kpi-grid">{kpis.map((item) => <KpiCard key={item.label} item={item} />)}</div>
+    </section>
+  );
+}
+
+function SourceReadiness() {
+  const statusCounts = sourceRegistry.reduce((counts, source) => {
+    counts[source.status] = (counts[source.status] || 0) + 1;
+    return counts;
+  }, {});
+  const featuredSources = sourceRegistry.slice(0, 6);
+
+  return (
+    <section id="sources" className="module source-readiness">
+      <section className="panel source-summary">
+        <div className="panel-head">
+          <div>
+            <span className="eyebrow">SOURCE CONFIDENCE LEDGER</span>
+            <h2>Mock data is labeled; real connectors are being staged</h2>
+          </div>
+          <span className="terminal-badge gold">PUBLIC DATA TRACKER</span>
+        </div>
+        <div className="source-stats">
+          <article><b>{sourceRegistry.length}</b><span>sources identified</span></article>
+          <article><b>{statusCounts['Reference ready'] || 0}</b><span>reference ready</span></article>
+          <article><b>{statusCounts['Ready for document index'] || 0}</b><span>doc-index ready</span></article>
+          <article><b>{statusCounts['Seed connector ready'] || 0}</b><span>seed connector</span></article>
+        </div>
+        <p className="source-note">Every dashboard number remains synthetic until it carries a source, timestamp, geography, and connector status. The near-term ingestion lane is Census profile data, Burke County agendas/budgets, DOR tax digest reports, qPublic parcel paths, and OSM basemap grounding.</p>
+      </section>
+      <section className="panel source-map-card">
+        <span className="eyebrow">MAP CREDIBILITY SEED</span>
+        <h2>OpenStreetMap center point</h2>
+        <div className="coordinate-grid">
+          <div><span>Latitude</span><b>{osmWaynesboroSeed.lat}</b></div>
+          <div><span>Longitude</span><b>{osmWaynesboroSeed.lon}</b></div>
+          <div><span>OSM ID</span><b>{osmWaynesboroSeed.osmType} {osmWaynesboroSeed.osmId}</b></div>
+        </div>
+        <small>{osmWaynesboroSeed.license}</small>
+      </section>
+      <section className="panel source-table-panel">
+        <div className="panel-head"><div><span className="eyebrow">REAL DATA ACCESS PATHS</span><h2>Next connector targets</h2></div></div>
+        <div className="source-list">
+          {featuredSources.map((source) => (
+            <article key={source.name}>
+              <div><b>{source.name}</b><span>{source.dataType}</span></div>
+              <span className="source-difficulty">{source.difficulty}</span>
+              <span className="source-status">{source.status}</span>
+            </article>
+          ))}
+        </div>
+      </section>
     </section>
   );
 }
@@ -273,7 +325,7 @@ function Council() {
 export default function WaynesboroTerminal() {
   const [active, setActive] = useState('executive');
   const nav = [
-    ['executive', 'Executive'], ['economic', 'Economic'], ['downtown', 'Downtown'], ['beautification', 'Beautification'],
+    ['executive', 'Executive'], ['sources', 'Sources'], ['economic', 'Economic'], ['downtown', 'Downtown'], ['beautification', 'Beautification'],
     ['projects', 'Projects'], ['operations', 'Operations'], ['council', 'Council']
   ];
   return (
@@ -293,6 +345,7 @@ export default function WaynesboroTerminal() {
           <div className="market-clock"><b>MOCK DATA MODE</b><span>Census · DCA · GIS · Tax · Utility ready</span></div>
         </header>
         <ExecutiveDashboard />
+        <SourceReadiness />
         <EconomicDevelopment />
         <DowntownCommandCenter />
         <BeautificationIndex />
