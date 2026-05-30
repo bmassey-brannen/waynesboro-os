@@ -118,7 +118,100 @@ export const sourceRegistry = [
     cadence: 'As posted by city',
     difficulty: 'Medium',
     status: 'Source hub identified',
-    notes: 'City page links to Georgia DOR and Burke County Tax Assessors/qPublic; still need direct city agendas/budgets endpoints.'
+    notes: 'City page links to Georgia DOR and Burke County Tax Assessors/qPublic; city Agenda Center and Archive Center paths are now separately tracked.'
+  },
+  {
+    name: 'City of Waynesboro Agenda Center',
+    url: 'https://www.waynesboroga.com/AgendaCenter',
+    dataType: 'City council agendas, agenda packets, meeting notices, RSS/list views',
+    geography: 'City of Waynesboro',
+    accessMethod: 'Public CivicPlus Agenda Center page with RSS/list links; low-volume document index only.',
+    cadence: 'Meeting-cycle updates',
+    difficulty: 'Low',
+    status: 'Ready for document index',
+    notes: 'Official city page exposes /rss.aspx#agendaCenter and /list.aspx#agendaCenter links. Good first city-level document connector.'
+  },
+  {
+    name: 'City of Waynesboro Archive Center',
+    url: 'https://www.waynesboroga.com/Archive.aspx',
+    dataType: 'Archived city documents and public records published through CivicPlus',
+    geography: 'City of Waynesboro',
+    accessMethod: 'Public CivicPlus archive page; index document links and dates conservatively.',
+    cadence: 'As documents are posted',
+    difficulty: 'Medium',
+    status: 'Ready for document index',
+    notes: 'Use as the discovery surface for budgets, minutes, ordinances, or plans if exposed; do not infer completeness without manual review.'
+  },
+  {
+    name: 'Waynesboro WIPP / Edmunds Associates tax portal',
+    url: 'https://wipp.edmundsassoc.com/Wipp?wippid=WYNS',
+    dataType: 'Online municipal tax/payment portal and account lookup workflow',
+    geography: 'City of Waynesboro',
+    accessMethod: 'Public payment portal; link/reference only unless the city/vendor publishes permitted exports.',
+    cadence: 'Operational live portal',
+    difficulty: 'High',
+    status: 'Reference only',
+    notes: 'The official city homepage links to WIPP. Treat as a citizen service/payment system, not a scrape target.'
+  },
+  {
+    name: 'Burke County Check Registers',
+    url: 'https://www.burkecounty-ga.gov/departments/administration/check_registers.php',
+    dataType: 'County expenditure check registers and public finance documents',
+    geography: 'Burke County',
+    accessMethod: 'Public Revize document-center page / downloads where posted.',
+    cadence: 'Periodic as published',
+    difficulty: 'Medium',
+    status: 'Ready for document index',
+    notes: 'Useful for spending context and vendor/project trail; normalize only posted document metadata first.'
+  },
+  {
+    name: 'Burke County Code Enforcement page',
+    url: 'https://www.burkecounty-ga.gov/departments/planning_department/code_enforcement.php',
+    dataType: 'Code enforcement program information, contacts, potential records request path',
+    geography: 'Burke County / Waynesboro area',
+    accessMethod: 'Public county information page; records-level data likely requires request or official export.',
+    cadence: 'As posted by county',
+    difficulty: 'High',
+    status: 'Records path identified',
+    notes: 'Could support Beautification Index once violation records are obtained legally and source-labeled.'
+  },
+  {
+    name: 'Burke County E-911 department page',
+    url: 'https://www.burkecounty-ga.gov/departments/e911.php',
+    dataType: 'Emergency communications department context and public contacts',
+    geography: 'Burke County',
+    accessMethod: 'Public information page; do not attempt access to dispatch systems.',
+    cadence: 'As posted by county',
+    difficulty: 'High',
+    status: 'Reference only',
+    notes: 'Public safety dashboard needs aggregated, officially released incident/response data or records request results.'
+  }
+];
+
+export const sourcePriorities = [
+  {
+    lane: 'City documents',
+    target: 'Index Agenda Center + Archive Center links',
+    source: 'City of Waynesboro Agenda Center / Archive Center',
+    value: 'Creates the first official city-level evidence trail for Council briefs and project tracker updates.',
+    nextStep: 'Build a cached document-link snapshot with title, date, URL, board/category, and retrieval timestamp.',
+    difficulty: 'Low'
+  },
+  {
+    lane: 'Census baseline',
+    target: 'Resolve ACS profile connector with API key',
+    source: 'U.S. Census ACS Profile API',
+    value: 'Replaces population, income, housing, and employment mock KPI cards with timestamped public estimates.',
+    nextStep: 'Add API-key-backed scheduled fetch and confirm Waynesboro place code before binding to KPI values.',
+    difficulty: 'Medium'
+  },
+  {
+    lane: 'Parcels / blight',
+    target: 'Confirm qPublic export rules before parcel ingestion',
+    source: 'Burke County qPublic / Schneider GIS',
+    value: 'Enables parcel-linked downtown occupancy, ownership, vacancy, and beautification drilldowns.',
+    nextStep: 'Manual terms review or official export request; no automated scraping until permitted.',
+    difficulty: 'High'
   }
 ];
 

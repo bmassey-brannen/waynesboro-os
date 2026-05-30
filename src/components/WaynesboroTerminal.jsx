@@ -12,7 +12,7 @@ import {
   projects,
   safety
 } from '../data/cityData.js';
-import { osmWaynesboroSeed, sourceRegistry } from '../data/sourceRegistry.js';
+import { osmWaynesboroSeed, sourcePriorities, sourceRegistry } from '../data/sourceRegistry.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -125,7 +125,9 @@ function SourceReadiness() {
     counts[source.status] = (counts[source.status] || 0) + 1;
     return counts;
   }, {});
-  const featuredSources = sourceRegistry.slice(0, 6);
+  const featuredSources = sourceRegistry
+    .filter((source) => ['Ready for document index', 'Seed connector ready', 'Reference ready', 'Source hub identified'].includes(source.status))
+    .slice(0, 7);
 
   return (
     <section id="sources" className="module source-readiness">
@@ -143,7 +145,20 @@ function SourceReadiness() {
           <article><b>{statusCounts['Ready for document index'] || 0}</b><span>doc-index ready</span></article>
           <article><b>{statusCounts['Seed connector ready'] || 0}</b><span>seed connector</span></article>
         </div>
-        <p className="source-note">Every dashboard number remains synthetic until it carries a source, timestamp, geography, and connector status. The near-term ingestion lane is Census profile data, Burke County agendas/budgets, DOR tax digest reports, qPublic parcel paths, and OSM basemap grounding.</p>
+        <p className="source-note">Every dashboard number remains synthetic until it carries a source, timestamp, geography, and connector status. Newly confirmed city-level paths: Waynesboro Agenda Center, Archive Center, and WIPP tax portal. Near-term ingestion should index public document links before replacing numeric KPIs.</p>
+      </section>
+      <section className="panel source-queue-card">
+        <div className="panel-head"><div><span className="eyebrow">CONNECTOR ACTION QUEUE</span><h2>Highest-trust next moves</h2></div></div>
+        <div className="priority-list">
+          {sourcePriorities.map((item) => (
+            <article key={item.lane}>
+              <div className="priority-top"><span>{item.lane}</span><b>{item.difficulty}</b></div>
+              <h3>{item.target}</h3>
+              <p>{item.value}</p>
+              <small>{item.nextStep}</small>
+            </article>
+          ))}
+        </div>
       </section>
       <section className="panel source-map-card">
         <span className="eyebrow">MAP CREDIBILITY SEED</span>
@@ -156,11 +171,11 @@ function SourceReadiness() {
         <small>{osmWaynesboroSeed.license}</small>
       </section>
       <section className="panel source-table-panel">
-        <div className="panel-head"><div><span className="eyebrow">REAL DATA ACCESS PATHS</span><h2>Next connector targets</h2></div></div>
+        <div className="panel-head"><div><span className="eyebrow">REAL DATA ACCESS PATHS</span><h2>Ready references</h2></div></div>
         <div className="source-list">
           {featuredSources.map((source) => (
             <article key={source.name}>
-              <div><b>{source.name}</b><span>{source.dataType}</span></div>
+              <div><a href={source.url} target="_blank" rel="noreferrer"><b>{source.name}</b></a><span>{source.dataType}</span></div>
               <span className="source-difficulty">{source.difficulty}</span>
               <span className="source-status">{source.status}</span>
             </article>
