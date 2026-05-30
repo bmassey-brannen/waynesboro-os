@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "fetch:datacommons": "node scripts/fetch-data-commons.js"
+    "fetch:datacommons": "node scripts/fetch-data-commons.js",
+    "fetch:docs": "node scripts/fetch-official-documents.js"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.6",

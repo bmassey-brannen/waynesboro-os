@@ -22,6 +22,17 @@ export const sourceRegistry = [
     notes: 'Candidate query shape: get=NAME,DP05_0001E,DP03_0062E,DP03_0005PE&for=place:*&in=state:13. Confirm Waynesboro place code during integration.'
   },
   {
+    name: 'U.S. Census Building Permits Survey API',
+    url: 'https://api.census.gov/data/timeseries/eits/bps',
+    dataType: 'Monthly building permit counts and valuation by state/county/place where published',
+    geography: 'Burke County / Georgia; confirm whether Waynesboro place-level series are available',
+    accessMethod: 'Public Census API endpoint; this environment returned a valid-key requirement, so use an environment API key for scheduled pulls.',
+    cadence: 'Monthly Census Building Permits Survey releases',
+    difficulty: 'Medium',
+    status: 'Connector planned',
+    notes: 'Good candidate to replace synthetic housing/development permit cards. Start with county-level permit trend, then test place-level coverage for Waynesboro.'
+  },
+  {
     name: 'Census QuickFacts',
     url: 'https://www.census.gov/quickfacts/fact/table/waynesborocitygeorgia,burkecountygeorgia/PST045223',
     dataType: 'Public demographic and economic quick facts for city/county context',
@@ -233,10 +244,10 @@ export const readinessStrip = [
 export const sourcePriorities = [
   {
     lane: 'City documents',
-    target: 'Index Agenda Center + Archive Center links',
+    target: 'Review top city/county document links and tag policy topics',
     source: 'City of Waynesboro Agenda Center / Archive Center',
-    value: 'Creates the first official city-level evidence trail for Council briefs and project tracker updates.',
-    nextStep: 'Build a cached document-link snapshot with title, date, URL, board/category, and retrieval timestamp.',
+    value: 'Turns the active public-link index into source-labeled Council brief ingredients without over-claiming document contents.',
+    nextStep: 'Manually parse a small selected set of agendas/minutes/check registers into topic tags and citation cards.',
     difficulty: 'Low'
   },
   {
@@ -246,6 +257,14 @@ export const sourcePriorities = [
     value: 'Replaces the first demographic, income, housing, and labor mock labels with timestamped public observations.',
     nextStep: 'Bind Data Commons highlights into KPI cards with source/status/date chips while keeping unrelated metrics synthetic.',
     difficulty: 'Low'
+  },
+  {
+    lane: 'Permits / development',
+    target: 'Scope Census Building Permits Survey connector',
+    source: 'U.S. Census Building Permits Survey API',
+    value: 'Creates a defensible public permit trend while city/county permit exports are still manual or permissioned.',
+    nextStep: 'Add Census API key support, confirm Burke County query fields, and test whether Waynesboro place-level data exists.',
+    difficulty: 'Medium'
   },
   {
     lane: 'Parcels / blight',

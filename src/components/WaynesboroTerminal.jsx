@@ -14,6 +14,7 @@ import {
 } from '../data/cityData.js';
 import { osmWaynesboroSeed, readinessStrip, sourcePriorities, sourceRegistry } from '../data/sourceRegistry.js';
 import { dataCommonsSnapshot } from '../data/dataCommonsSnapshot.js';
+import { officialDocumentsSnapshot } from '../data/officialDocumentsSnapshot.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -177,6 +178,45 @@ function DataCommonsLivePanel() {
   );
 }
 
+function OfficialDocumentsPanel() {
+  const summary = officialDocumentsSnapshot.summary;
+  const typeLabels = Object.entries(summary.byType)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 6);
+
+  return (
+    <section className="panel official-docs-panel">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">OFFICIAL DOCUMENT INDEX</span>
+          <h2>City + county evidence trail</h2>
+        </div>
+        <span className="terminal-badge live">{summary.documentCount} LINKS</span>
+      </div>
+      <div className="doc-source-grid">
+        {officialDocumentsSnapshot.sources.map((source) => (
+          <article key={source.id}>
+            <b>{source.documentCount}</b>
+            <span>{source.name}</span>
+          </article>
+        ))}
+      </div>
+      <div className="doc-type-strip">
+        {typeLabels.map(([type, count]) => <span key={type}>{type.replaceAll('_', ' ')} · {count}</span>)}
+      </div>
+      <div className="doc-link-list">
+        {officialDocumentsSnapshot.recentDocuments.slice(0, 8).map((doc) => (
+          <a key={doc.id} href={doc.url} target="_blank" rel="noreferrer">
+            <b>{doc.title}</b>
+            <span>{doc.geography} · {doc.documentType.replaceAll('_', ' ')} · {doc.year || 'date in document'}</span>
+          </a>
+        ))}
+      </div>
+      <p className="source-note">Document index is metadata only: official public links are cached so the terminal can build Council briefs, spending trails, and project evidence without scraping private systems or over-claiming document contents.</p>
+    </section>
+  );
+}
+
 function SourceReadiness() {
   const statusCounts = sourceRegistry.reduce((counts, source) => {
     counts[source.status] = (counts[source.status] || 0) + 1;
@@ -205,6 +245,7 @@ function SourceReadiness() {
         <p className="source-note">Every dashboard number remains synthetic until it carries a source, timestamp, geography, and connector status. Data Commons is now connected server-side for baseline demographics; city documents remain the next official local evidence lane.</p>
       </section>
       <DataCommonsLivePanel />
+      <OfficialDocumentsPanel />
       <section className="panel source-queue-card">
         <div className="panel-head"><div><span className="eyebrow">CONNECTOR ACTION QUEUE</span><h2>Highest-trust next moves</h2></div></div>
         <div className="priority-list">
@@ -396,6 +437,31 @@ function Council() {
   );
 }
 
+function PublicTrustRibbon() {
+  const officialLinks = officialDocumentsSnapshot.summary.documentCount;
+  const liveConnectors = sourceRegistry.filter((source) => source.status === 'Live connector active').length;
+
+  return (
+    <section className="trust-ribbon" aria-label="public demo data status">
+      <article>
+        <span>Demo posture</span>
+        <b>Synthetic operating KPIs remain labeled</b>
+        <small>No municipal claim is promoted until it has source, geography, and timestamp.</small>
+      </article>
+      <article>
+        <span>Live baseline</span>
+        <b>{liveConnectors} public connector active</b>
+        <small>Data Commons snapshot is server-side and source-labeled.</small>
+      </article>
+      <article>
+        <span>Evidence trail</span>
+        <b>{officialLinks} official document links indexed</b>
+        <small>Metadata only; documents still require manual verification before quotation.</small>
+      </article>
+    </section>
+  );
+}
+
 export default function WaynesboroTerminal() {
   const [active, setActive] = useState('executive');
   const nav = [
@@ -418,6 +484,7 @@ export default function WaynesboroTerminal() {
           </div>
           <div className="market-clock"><b>MOCK DATA MODE</b><span>Census · DCA · GIS · Tax · Utility ready</span></div>
         </header>
+        <PublicTrustRibbon />
         <ExecutiveDashboard />
         <SourceReadiness />
         <EconomicDevelopment />
