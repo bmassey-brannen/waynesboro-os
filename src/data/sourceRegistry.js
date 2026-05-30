@@ -121,6 +121,17 @@ export const sourceRegistry = [
     notes: 'Legacy DOL pages timed out from this environment; keep as a research target before coding ingestion.'
   },
   {
+    name: 'U.S. Census TIGERweb Incorporated Places',
+    url: 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/4',
+    dataType: 'Official Census incorporated-place boundary metadata, GEOID, place code, center/interior points, land and water area',
+    geography: 'Waynesboro city, Georgia (GEOID 1380984 / place 80984)',
+    accessMethod: 'Public ArcGIS REST service; low-volume query can be cached into a normalized seed file.',
+    cadence: 'Census TIGER/Line geography updates annually/periodically by vintage',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Test query returned Waynesboro city attributes. Added src/data/geographySeed.js as a lightweight map credibility stub; geometry can be added later if needed.'
+  },
+  {
     name: 'OpenStreetMap / Nominatim',
     url: 'https://nominatim.openstreetmap.org/search?format=json&q=Waynesboro%2C%20Georgia&limit=1',
     dataType: 'Boundary lookup, place coordinates, basemap context',
@@ -236,7 +247,7 @@ export const readinessStrip = [
   { lane: 'Demographics', status: 'Live snapshot', source: 'Data Commons API', tone: 'good' },
   { lane: 'City documents', status: 'Index-ready', source: 'Agenda Center / Archive Center', tone: 'good' },
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
-  { lane: 'Map base', status: 'Seed ready', source: 'OpenStreetMap', tone: 'good' },
+  { lane: 'Map base', status: 'Seed ready', source: 'OSM + Census TIGERweb', tone: 'good' },
   { lane: 'Ordinances', status: 'Reference-ready', source: 'Municode Library', tone: 'good' },
   { lane: 'Public safety', status: 'Official aggregate needed', source: 'E-911 / records request path', tone: 'neutral' }
 ];

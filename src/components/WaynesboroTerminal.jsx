@@ -15,6 +15,7 @@ import {
 import { osmWaynesboroSeed, readinessStrip, sourcePriorities, sourceRegistry } from '../data/sourceRegistry.js';
 import { dataCommonsSnapshot } from '../data/dataCommonsSnapshot.js';
 import { officialDocumentsSnapshot } from '../data/officialDocumentsSnapshot.js';
+import { waynesboroGeographySeed } from '../data/geographySeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -322,6 +323,23 @@ function DowntownCommandCenter() {
     <section id="downtown" className="module three-col">
       <section className="panel map-panel">
         <div className="panel-head"><div><span className="eyebrow">DOWNTOWN COMMAND CENTER</span><h2>Core map / parcel operating picture</h2></div></div>
+        <div className="map-source-bar" aria-label="map source status">
+          <article>
+            <span>Place seed</span>
+            <b>{waynesboroGeographySeed.attributes.name}</b>
+            <small>Census GEOID {waynesboroGeographySeed.geoid} · place {waynesboroGeographySeed.placeCode}</small>
+          </article>
+          <article>
+            <span>Boundary source</span>
+            <b>{waynesboroGeographySeed.sourceName}</b>
+            <small>{waynesboroGeographySeed.accessMethod}</small>
+          </article>
+          <article>
+            <span>Map status</span>
+            <b>Schematic overlay</b>
+            <small>Real parcel geometry still requires qPublic/export permission.</small>
+          </article>
+        </div>
         <div className="city-map">
           <div className="gridlines" />
           {downtownProperties.map((p, index) => <button key={p.name} className={`map-node node-${index}`}>{p.name}</button>)}

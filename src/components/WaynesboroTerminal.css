@@ -214,6 +214,12 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .priority-list small { margin-top: 6px; color: #4d5e54; border-left: 2px solid var(--gold-soft); padding-left: 7px; }
 
 .city-map { position: relative; min-height: 384px; margin-top: 12px; border: 1px solid var(--line-strong); overflow: hidden; background: radial-gradient(circle at 40% 40%, rgba(31,93,66,.12), transparent 14rem), linear-gradient(135deg, #eef2ed, #d9e0d9); }
+.map-source-bar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.map-source-bar article { min-width: 0; padding: 9px 10px; border: 1px solid rgba(31,44,37,.14); border-left: 3px solid var(--gold-soft); background: rgba(255,255,255,.74); }
+.map-source-bar span, .map-source-bar b, .map-source-bar small { display: block; overflow-wrap: anywhere; }
+.map-source-bar span { color: var(--gold); font-size: 10px; text-transform: uppercase; letter-spacing: .11em; font-weight: 900; }
+.map-source-bar b { margin-top: 3px; color: #13251b; font-size: 12px; }
+.map-source-bar small { margin-top: 3px; color: var(--muted); font-size: 10px; line-height: 1.35; }
 .gridlines { position: absolute; inset: 0; background-image: linear-gradient(rgba(31,44,37,.09) 1px, transparent 1px), linear-gradient(90deg, rgba(31,44,37,.09) 1px, transparent 1px); background-size: 40px 40px; opacity: .95; }
 .map-node { position: absolute; z-index: 2; max-width: 150px; padding: 8px 10px; color: #fffdf4; background: rgba(18,61,43,.94); border: 1px solid rgba(196,166,88,.8); font-size: 11px; text-align: left; cursor: pointer; box-shadow: 0 8px 18px rgba(18,61,43,.18); }
 .node-0 { left: 18%; top: 24%; } .node-1 { left: 56%; top: 30%; } .node-2 { left: 38%; top: 56%; } .node-3 { left: 68%; top: 68%; }
@@ -279,6 +285,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .trust-ribbon { grid-template-columns: 1fr; }
   .kpi-grid, .source-status-strip, .source-stats, .doc-source-grid, .doc-link-list { grid-template-columns: 1fr; }
   .dc-meta-grid, .dc-metric-grid { grid-template-columns: 1fr; }
+  .map-source-bar { grid-template-columns: 1fr; }
   .factor, .ops-row, .heat-row { grid-template-columns: 1fr; }
   .source-list article { grid-template-columns: 1fr; }
   .source-list { grid-template-columns: 1fr; }
