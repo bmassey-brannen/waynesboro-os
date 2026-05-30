@@ -240,6 +240,17 @@ export const sourceRegistry = [
     difficulty: 'Low',
     status: 'Source hub identified',
     notes: 'Good candidate to connect the downtown command center to official redevelopment and board context before parcel-level data is available.'
+  },
+  {
+    name: 'Georgia DCA Developments of Regional Impact Submissions',
+    url: 'https://apps.dca.ga.gov/DRI/Submissions.aspx',
+    dataType: 'Major development review submissions, project names, development type, county, jurisdiction, regional commission, status, and determination text',
+    geography: 'Georgia statewide; filterable by Burke County / Waynesboro where records exist',
+    accessMethod: 'Public DCA submissions table and application-summary pages; use low-volume cached records and cite detail URLs.',
+    cadence: 'As DRI submissions are filed and reviewed',
+    difficulty: 'Medium',
+    status: 'Seed connector ready',
+    notes: 'Test lookup found public DRI record 4155 for St. George Crossing in Waynesboro/Burke County. Added src/data/regionalDevelopmentSeed.js as a one-record data-shape stub; do not treat it as a complete development pipeline.'
   }
 ];
 
@@ -262,12 +273,12 @@ export const sourcePriorities = [
     difficulty: 'Low'
   },
   {
-    lane: 'Census / Data Commons baseline',
-    target: 'Promote Data Commons snapshot into KPI source labels',
-    source: 'Data Commons API + upstream Census/BLS facets',
-    value: 'Replaces the first demographic, income, housing, and labor mock labels with timestamped public observations.',
-    nextStep: 'Bind Data Commons highlights into KPI cards with source/status/date chips while keeping unrelated metrics synthetic.',
-    difficulty: 'Low'
+    lane: 'Regional development',
+    target: 'Expand DCA DRI seed into a Burke / Waynesboro review watchlist',
+    source: 'Georgia DCA Developments of Regional Impact Submissions',
+    value: 'Adds real public development-review records to the economic-development pipeline without relying on rumors or private deal chatter.',
+    nextStep: 'Build a cached low-volume parser for public DRI submissions and link only source pages / summaries; keep the project pipeline distinct from official status.',
+    difficulty: 'Medium'
   },
   {
     lane: 'Permits / development',

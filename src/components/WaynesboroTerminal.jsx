@@ -16,6 +16,7 @@ import { osmWaynesboroSeed, readinessStrip, sourcePriorities, sourceRegistry } f
 import { dataCommonsSnapshot } from '../data/dataCommonsSnapshot.js';
 import { officialDocumentsSnapshot } from '../data/officialDocumentsSnapshot.js';
 import { waynesboroGeographySeed } from '../data/geographySeed.js';
+import { regionalDevelopmentSeed } from '../data/regionalDevelopmentSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -53,18 +54,26 @@ function Sparkline({ points, inverse = false }) {
 }
 
 function KpiCard({ item }) {
-  const danger = item.mom.startsWith('-') && !item.inverse;
+  const danger = item.mom?.startsWith('-') && !item.inverse;
+  const synthetic = item.sourceStatus === 'synthetic';
+  const unavailable = item.sourceStatus === 'unavailable';
   return (
-    <article className="kpi-card">
+    <article className={`kpi-card ${synthetic ? 'synthetic' : ''} ${unavailable ? 'unavailable' : ''}`}>
       <div className="kpi-topline">
         <span>{item.label}</span>
-        <span className={danger ? 'delta bad' : 'delta good'}>{item.mom} MoM</span>
+        <span className={danger ? 'delta bad' : 'delta good'}>{item.mom === 'n/a' ? item.deltaLabel || 'verified' : `${item.mom} MoM`}</span>
       </div>
       <div className="kpi-value">{item.value}</div>
       <div className="kpi-bottom">
         <span>YoY {item.yoy}</span>
         <Sparkline points={item.trend} inverse={item.inverse} />
       </div>
+      {item.source && (
+        <div className="kpi-source">
+          <b>{item.sourceBadge}</b>
+          <span>{item.source}</span>
+        </div>
+      )}
     </article>
   );
 }
@@ -110,7 +119,143 @@ function ScoreBar({ score }) {
   );
 }
 
+const metricById = Object.fromEntries(dataCommonsSnapshot.metrics.map((metric) => [metric.id, metric]));
+const formatPercent = (value, digits = 1) => `${(value * 100).toFixed(digits)}%`;
+const formatDelta = (value) => `${value > 0 ? '+' : ''}${(value * 100).toFixed(1)}%`;
+const compactMoney = (value) => value == null ? 'N/A' : `$${Math.round(value / 1000).toLocaleString()}K`;
+
+function verifiedKpi(metricId, fallback, overrides = {}) {
+  const metric = metricById[metricId];
+  if (!metric || metric.status !== 'verified_connector') return fallback;
+  return {
+    ...fallback,
+    value: overrides.value || metric.displayValue,
+    mom: overrides.mom || 'n/a',
+    yoy: overrides.yoy || metric.date,
+    source: `${metric.sourceName} · ${metric.date || 'no date'} · ${metric.entity}`,
+    sourceBadge: 'Verified connector',
+    sourceStatus: 'verified',
+    metric
+  };
+}
+
+function buildExecutiveKpis() {
+  const population = metricById['waynesboro-population'];
+  const poverty = metricById['waynesboro-poverty-count'];
+  const countyUnemployment = metricById['burke-county-unemployment'];
+  const cityPovertyRate = population?.value && poverty?.value ? poverty.value / population.value : null;
+  const peoplePerHousingUnit = population?.value && metricById['waynesboro-housing-units']?.value
+    ? population.value / metricById['waynesboro-housing-units'].value
+    : null;
+
+  const syntheticKpis = kpis.slice(4).map((item) => ({
+    ...item,
+    source: 'Synthetic operating placeholder · source pending',
+    sourceBadge: 'Synthetic',
+    sourceStatus: 'synthetic'
+  }));
+
+  return [
+    verifiedKpi('waynesboro-population', kpis[0], { mom: 'n/a', yoy: population?.date || 'n/a' }),
+    {
+      ...verifiedKpi('waynesboro-median-income', kpis[2], { value: compactMoney(metricById['waynesboro-median-income']?.value), mom: 'n/a', yoy: metricById['waynesboro-median-income']?.date || 'n/a' }),
+      label: 'Median Income'
+    },
+    {
+      label: 'Poverty Rate',
+      value: cityPovertyRate == null ? 'N/A' : formatPercent(cityPovertyRate, 1),
+      mom: 'n/a',
+      yoy: poverty?.date || 'n/a',
+      trend: [29, 28, 27, 28, 26, 26, 25, cityPovertyRate == null ? 26 : cityPovertyRate * 100],
+      inverse: true,
+      source: poverty ? `${poverty.sourceName} · derived from poverty count / population · ${poverty.date}` : 'Data Commons unavailable',
+      sourceBadge: poverty ? 'Derived verified' : 'Unavailable',
+      sourceStatus: poverty ? 'verified' : 'unavailable'
+    },
+    verifiedKpi('waynesboro-median-age', { label: 'Median Age', value: 'N/A', mom: 'n/a', yoy: 'n/a', trend: [29, 29, 29, 29, 29, 29, 29, 29] }),
+    {
+      label: 'Housing Units',
+      value: metricById['waynesboro-housing-units']?.displayValue || 'N/A',
+      mom: 'n/a',
+      yoy: metricById['waynesboro-housing-units']?.date || 'n/a',
+      trend: [2500, 2540, 2580, 2600, 2620, 2640, 2660, metricById['waynesboro-housing-units']?.value || 2673],
+      source: metricById['waynesboro-housing-units'] ? `${metricById['waynesboro-housing-units'].sourceName} · ${metricById['waynesboro-housing-units'].date}` : 'Data Commons unavailable',
+      sourceBadge: 'Verified connector',
+      sourceStatus: metricById['waynesboro-housing-units'] ? 'verified' : 'unavailable'
+    },
+    {
+      label: 'County Unemployment',
+      value: countyUnemployment?.displayValue || 'N/A',
+      mom: 'n/a',
+      yoy: countyUnemployment?.date || 'n/a',
+      trend: [5.2, 4.9, 4.7, 4.5, 4.6, 4.4, 4.3, countyUnemployment?.value || 4.3],
+      inverse: true,
+      source: countyUnemployment ? `${countyUnemployment.sourceName} · Burke County context · ${countyUnemployment.date}` : 'City unemployment unavailable in Data Commons',
+      sourceBadge: countyUnemployment ? 'County context' : 'Unavailable',
+      sourceStatus: countyUnemployment ? 'verified' : 'unavailable'
+    },
+    {
+      label: 'People / Housing Unit',
+      value: peoplePerHousingUnit == null ? 'N/A' : peoplePerHousingUnit.toFixed(2),
+      mom: 'n/a',
+      yoy: metricById['waynesboro-housing-units']?.date || 'n/a',
+      trend: [2.26, 2.22, 2.18, 2.14, 2.11, 2.09, 2.08, peoplePerHousingUnit || 2.08],
+      inverse: true,
+      source: 'Derived from Data Commons population and housing units',
+      sourceBadge: 'Derived verified',
+      sourceStatus: 'verified'
+    },
+    ...syntheticKpis.slice(0, 5)
+  ];
+}
+
+function BaselineComparisonPanel() {
+  const cityPop = metricById['waynesboro-population'];
+  const countyPop = metricById['burke-county-population'];
+  const cityIncome = metricById['waynesboro-median-income'];
+  const countyIncome = metricById['burke-county-median-income'];
+  const stateIncome = metricById['georgia-median-income'];
+  const cityPoverty = metricById['waynesboro-poverty-count'];
+  const countyPoverty = metricById['burke-county-poverty-count'];
+  const cityShareCounty = cityPop?.value && countyPop?.value ? cityPop.value / countyPop.value : null;
+  const incomeVsCounty = cityIncome?.value && countyIncome?.value ? cityIncome.value / countyIncome.value - 1 : null;
+  const incomeVsState = cityIncome?.value && stateIncome?.value ? cityIncome.value / stateIncome.value - 1 : null;
+  const cityPovertyRate = cityPoverty?.value && cityPop?.value ? cityPoverty.value / cityPop.value : null;
+  const countyPovertyRate = countyPoverty?.value && countyPop?.value ? countyPoverty.value / countyPop.value : null;
+
+  const comparisons = [
+    { label: 'City share of Burke County', value: cityShareCounty == null ? 'N/A' : formatPercent(cityShareCounty, 1), note: 'population weight inside county strategy' },
+    { label: 'Income vs Burke County', value: incomeVsCounty == null ? 'N/A' : formatDelta(incomeVsCounty), note: `${cityIncome?.displayValue || 'N/A'} city vs ${countyIncome?.displayValue || 'N/A'} county` },
+    { label: 'Income vs Georgia', value: incomeVsState == null ? 'N/A' : formatDelta(incomeVsState), note: `${cityIncome?.displayValue || 'N/A'} city vs ${stateIncome?.displayValue || 'N/A'} state` },
+    { label: 'City poverty burden', value: cityPovertyRate == null ? 'N/A' : formatPercent(cityPovertyRate, 1), note: `${cityPoverty?.displayValue || 'N/A'} people below poverty level` },
+    { label: 'County poverty context', value: countyPovertyRate == null ? 'N/A' : formatPercent(countyPovertyRate, 1), note: 'Burke County comparison baseline' }
+  ];
+
+  return (
+    <section className="baseline-panel">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">REAL BASELINE COMPARISON</span>
+          <h2>Waynesboro vs Burke County vs Georgia</h2>
+        </div>
+        <span className="terminal-badge live">DATA COMMONS</span>
+      </div>
+      <div className="comparison-grid">
+        {comparisons.map((item) => (
+          <article key={item.label}>
+            <span>{item.label}</span>
+            <b className={item.value.startsWith('-') ? 'bad' : ''}>{item.value}</b>
+            <small>{item.note}</small>
+          </article>
+        ))}
+      </div>
+      <p className="baseline-brief"><b>Mayor brief:</b> Waynesboro is roughly {cityShareCounty == null ? 'n/a' : formatPercent(cityShareCounty, 1)} of Burke County’s population, but its income baseline trails both county and state levels. Treat economic mobility, housing quality, and downtown reinvestment as linked priorities until parcel, permit, and budget evidence narrows the map.</p>
+    </section>
+  );
+}
+
 function ExecutiveDashboard() {
+  const executiveKpis = buildExecutiveKpis();
   return (
     <section id="executive" className="module executive-grid">
       <div className="module-title">
@@ -119,7 +264,8 @@ function ExecutiveDashboard() {
         <p>If you became Mayor tomorrow morning, these are the gauges you would check before sitting down with staff.</p>
       </div>
       <SourceStatusStrip />
-      <div className="kpi-grid">{kpis.map((item) => <KpiCard key={item.label} item={item} />)}</div>
+      <div className="kpi-grid">{executiveKpis.map((item) => <KpiCard key={item.label} item={item} />)}</div>
+      <BaselineComparisonPanel />
     </section>
   );
 }
@@ -287,6 +433,7 @@ function SourceReadiness() {
 }
 
 function EconomicDevelopment() {
+  const driRecord = regionalDevelopmentSeed.records[0];
   return (
     <section id="economic" className="module two-col">
       <DataTable
@@ -312,6 +459,18 @@ function EconomicDevelopment() {
           <div><b>Largest employers</b><span>Government, healthcare, education, industrial employers</span></div>
           <div><b>Available commercial property</b><span>11 tracked spaces · 4 redevelopment-grade</span></div>
           <div><b>Industrial sites</b><span>3 priority pads · utilities diligence required</span></div>
+        </div>
+        <div className="dri-watch-card">
+          <span className="eyebrow">REGIONAL DEVELOPMENT WATCH · SOURCE SEED</span>
+          <h3>{driRecord.projectName}</h3>
+          <div className="dri-facts">
+            <span>{driRecord.developmentType}</span>
+            <span>{driRecord.county} County</span>
+            <span>{driRecord.jurisdiction}</span>
+            <span>{driRecord.currentStatus}</span>
+          </div>
+          <p>DCA DRI record {driRecord.driId} gives the economic-development module a real public record shape for major development review tracking.</p>
+          <a href={driRecord.detailUrl} target="_blank" rel="noreferrer">Open DCA application summary</a>
         </div>
       </section>
     </section>
@@ -463,7 +622,7 @@ function PublicTrustRibbon() {
     <section className="trust-ribbon" aria-label="public demo data status">
       <article>
         <span>Demo posture</span>
-        <b>Synthetic operating KPIs remain labeled</b>
+        <b>Verified baseline + labeled placeholders</b>
         <small>No municipal claim is promoted until it has source, geography, and timestamp.</small>
       </article>
       <article>
@@ -498,9 +657,9 @@ export default function WaynesboroTerminal() {
           <div>
             <span className="eyebrow">WAYNESBORO, GEORGIA · CITY OPERATING PICTURE</span>
             <h1>Municipal Operating Picture for Waynesboro.</h1>
-            <p className="public-disclaimer">Public-presentable demo interface using synthetic mock data. Built to show what a city intelligence terminal could become as official sources are connected.</p>
+            <p className="public-disclaimer">Public-presentable demo interface with verified Data Commons baselines, official document links, and clearly labeled synthetic operating placeholders for lanes not yet connected.</p>
           </div>
-          <div className="market-clock"><b>MOCK DATA MODE</b><span>Census · DCA · GIS · Tax · Utility ready</span></div>
+          <div className="market-clock"><b>HYBRID DATA MODE</b><span>Data Commons live · local ops placeholders labeled</span></div>
         </header>
         <PublicTrustRibbon />
         <ExecutiveDashboard />

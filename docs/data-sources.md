@@ -35,6 +35,7 @@ Purpose: replace synthetic demo data with legitimate public or semi-public sourc
 | Georgia Department of Labor Workforce Statistics & Economic Research | https://dol.georgia.gov/workforce-statistics-economic-research | Labor force, unemployment, workforce and industry statistics | Public state workforce pages; exact downloadable endpoint still to confirm | Monthly for labor force series where published | Medium | Legacy DOL endpoint timed out from this environment. Keep as research target before coding ingestion. |
 | U.S. Census TIGERweb Incorporated Places | https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/4 | Official Census incorporated-place boundary metadata, GEOID, place code, center/interior points, land/water area | Public ArcGIS REST query; low-volume cached seed, no credentials required | Census TIGER/Line geography updates annually/periodically by vintage | Low | Test query for `GEOID = '1380984'` returned Waynesboro city metadata including place code `80984`, center `+33.0908907, -082.0145919`, land area `14,173,192` sq m, and water area `136,228` sq m. Added `src/data/geographySeed.js` as a map credibility stub; no parcel geometry stored yet. |
 | OpenStreetMap / Nominatim | https://nominatim.openstreetmap.org/search?format=json&q=Waynesboro%2C%20Georgia&limit=1 | Boundary lookup, place coordinates, basemap context | Public endpoint with usage-policy-compliant low-volume queries and OSM attribution | Community updated | Low | Test call returned Waynesboro relation data; a normalized seed shape is in `src/data/sourceRegistry.js`. |
+| Georgia DCA Developments of Regional Impact Submissions | https://apps.dca.ga.gov/DRI/Submissions.aspx | Major development review submissions, project names, development type, county, jurisdiction, regional commission, status, determinations | Public DCA submissions table and application-summary pages; cite detail URLs and cache low-volume seeds | As DRI submissions are filed/reviewed | Medium | Test lookup found public DRI record `4155` for St. George Crossing in Waynesboro/Burke County; added `src/data/regionalDevelopmentSeed.js` as a one-record economic-development data-shape stub, not a complete development pipeline. |
 
 ## Immediate connector candidates
 
@@ -43,11 +44,12 @@ Purpose: replace synthetic demo data with legitimate public or semi-public sourc
 3. **Census Building Permits Survey connector**: use a Census API key from environment, start with Burke County permit counts/valuation, then confirm whether Waynesboro place-level BPS coverage exists.
 4. **City document index deepening**: parse selected city agenda packets/minutes after manual review; fields should include title, category/board, date, URL, retrieval timestamp, and source page.
 5. **Map credibility seed connector**: use normalized OSM center plus Census TIGERweb incorporated-place metadata (`GEOID 1380984`, `PLACE 80984`) for the downtown map status bar; add geometry only after deciding whether the product needs full municipal boundary rendering.
-6. **County finance extraction**: after link indexing, selectively extract totals/vendor lines from published budgets/check registers with PDF/XLS parsers and source-page receipts.
-7. **Census ACS profile connector**: use API key in environment or a cached manual export; map fields to KPI cards with timestamps.
-8. **DOR digest report index**: collect state report links first, then parse only stable CSV/XLS/PDF downloads if available.
-9. **Ordinance reference layer**: curate a citation-only index from Municode for zoning, code-enforcement, signs, nuisances, and downtown policy contexts; manually verify sections before using them in Council text.
-10. **Downtown/DDA source hub**: review the official Downtown Development Authority page for board/program links that can anchor the downtown command center before parcel exports are available.
+6. **DCA DRI development-review seed**: expand the one-record DRI seed into a safe cached connector that filters public submissions for Burke County / Waynesboro and links detail pages without over-claiming project status.
+7. **County finance extraction**: after link indexing, selectively extract totals/vendor lines from published budgets/check registers with PDF/XLS parsers and source-page receipts.
+8. **Census ACS profile connector**: use API key in environment or a cached manual export; map fields to KPI cards with timestamps.
+9. **DOR digest report index**: collect state report links first, then parse only stable CSV/XLS/PDF downloads if available.
+10. **Ordinance reference layer**: curate a citation-only index from Municode for zoning, code-enforcement, signs, nuisances, and downtown policy contexts; manually verify sections before using them in Council text.
+11. **Downtown/DDA source hub**: review the official Downtown Development Authority page for board/program links that can anchor the downtown command center before parcel exports are available.
 
 ## Open questions
 
