@@ -185,7 +185,38 @@ export const sourceRegistry = [
     difficulty: 'High',
     status: 'Reference only',
     notes: 'Public safety dashboard needs aggregated, officially released incident/response data or records request results.'
+  },
+  {
+    name: 'City of Waynesboro Code of Ordinances / Municode Library',
+    url: 'https://library.municode.com/ga/waynesboro/codes/code_of_ordinances',
+    dataType: 'Municipal code, ordinances, zoning/code context and local regulatory baseline',
+    geography: 'City of Waynesboro',
+    accessMethod: 'Public Municode library page; cite/link for ordinance references and manually verify before extracting legal text.',
+    cadence: 'Updated as ordinances are codified; exact lag varies by Municode/city publication cycle',
+    difficulty: 'Medium',
+    status: 'Reference ready',
+    notes: 'Useful for Council/legal context, zoning/code-enforcement definitions, and source-labeled policy drilldowns. Do not present as legal advice.'
+  },
+  {
+    name: 'City of Waynesboro Downtown Development Authority page',
+    url: 'https://www.waynesboroga.com/152/Downtown-Development-Authority',
+    dataType: 'Official downtown/economic-development board context, contacts, program surface',
+    geography: 'City of Waynesboro downtown / DDA district context',
+    accessMethod: 'Public city web page; use as a source hub and manually verify linked agendas/program materials.',
+    cadence: 'As posted by city',
+    difficulty: 'Low',
+    status: 'Source hub identified',
+    notes: 'Good candidate to connect the downtown command center to official redevelopment and board context before parcel-level data is available.'
   }
+];
+
+export const readinessStrip = [
+  { lane: 'Demographics', status: 'API key needed', source: 'Census ACS Profile API', tone: 'watch' },
+  { lane: 'City documents', status: 'Index-ready', source: 'Agenda Center / Archive Center', tone: 'good' },
+  { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
+  { lane: 'Map base', status: 'Seed ready', source: 'OpenStreetMap', tone: 'good' },
+  { lane: 'Ordinances', status: 'Reference-ready', source: 'Municode Library', tone: 'good' },
+  { lane: 'Public safety', status: 'Official aggregate needed', source: 'E-911 / records request path', tone: 'neutral' }
 ];
 
 export const sourcePriorities = [
@@ -212,6 +243,14 @@ export const sourcePriorities = [
     value: 'Enables parcel-linked downtown occupancy, ownership, vacancy, and beautification drilldowns.',
     nextStep: 'Manual terms review or official export request; no automated scraping until permitted.',
     difficulty: 'High'
+  },
+  {
+    lane: 'Ordinances / policy',
+    target: 'Build a citation-only ordinance reference panel',
+    source: 'City of Waynesboro Code of Ordinances / Municode Library',
+    value: 'Gives The Council and code/blight modules an official regulatory baseline without inventing policy claims.',
+    nextStep: 'Create a curated index of relevant ordinance sections after manual verification; cite Municode URLs and retrieval dates.',
+    difficulty: 'Medium'
   }
 ];
 

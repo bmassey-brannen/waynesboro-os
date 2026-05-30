@@ -12,7 +12,7 @@ import {
   projects,
   safety
 } from '../data/cityData.js';
-import { osmWaynesboroSeed, sourcePriorities, sourceRegistry } from '../data/sourceRegistry.js';
+import { osmWaynesboroSeed, readinessStrip, sourcePriorities, sourceRegistry } from '../data/sourceRegistry.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -115,7 +115,22 @@ function ExecutiveDashboard() {
         <h1>First-meeting city intelligence board</h1>
         <p>If you became Mayor tomorrow morning, these are the gauges you would check before sitting down with staff.</p>
       </div>
+      <SourceStatusStrip />
       <div className="kpi-grid">{kpis.map((item) => <KpiCard key={item.label} item={item} />)}</div>
+    </section>
+  );
+}
+
+function SourceStatusStrip() {
+  return (
+    <section className="source-status-strip" aria-label="dashboard source readiness by data lane">
+      {readinessStrip.map((item) => (
+        <article key={item.lane} className={`source-chip ${item.tone}`}>
+          <b>{item.lane}</b>
+          <span>{item.status}</span>
+          <small>{item.source}</small>
+        </article>
+      ))}
     </section>
   );
 }
@@ -229,6 +244,7 @@ function DowntownCommandCenter() {
           <span className="map-label label-a">Liberty St</span>
           <span className="map-label label-b">Sixth St</span>
           <span className="map-label label-c">Redevelopment seam</span>
+          <div className="map-disclaimer">Schematic mock parcel layer · centered from OSM seed, not a live GIS boundary</div>
         </div>
         <div className="layer-strip">{mapLayers.map((layer) => <span key={layer}>{layer}</span>)}</div>
       </section>
