@@ -596,6 +596,33 @@ function InfrastructureSafetyHousing() {
 }
 
 function Council() {
+  const councilEvidence = [
+    {
+      label: 'Baseline facts',
+      confidence: 'Verified connector',
+      title: 'Demographics, income, housing, and county labor context',
+      note: `${dataCommonsSnapshot.metrics.length} Data Commons observations cached with dates and upstream source names.`
+    },
+    {
+      label: 'Official record trail',
+      confidence: 'Public links indexed',
+      title: 'City/county agenda, budget, check-register, and financial-report links',
+      note: `${officialDocumentsSnapshot.summary.documentCount} links are metadata-indexed; quote contents only after manual document review.`
+    },
+    {
+      label: 'Development watch',
+      confidence: 'Seed record',
+      title: regionalDevelopmentSeed.records[0].projectName,
+      note: `DCA DRI ${regionalDevelopmentSeed.records[0].driId} is a public review seed, not a complete project pipeline.`
+    },
+    {
+      label: 'Still placeholder',
+      confidence: 'Needs source',
+      title: 'Crime, permits, downtown occupancy, beautification, and parcel-level claims',
+      note: 'Council recommendations must stay framed as hypotheses until these lanes have official exports or public aggregates.'
+    }
+  ];
+
   return (
     <section id="council" className="module council-panel">
       <section className="panel council-main">
@@ -609,6 +636,25 @@ function Council() {
         <span className="eyebrow">FUTURE DATA CONNECTORS</span>
         <h2>Integration spine</h2>
         <div className="connector-grid">{integrationRoadmap.map((source) => <span key={source}>{source}</span>)}</div>
+      </section>
+      <section className="panel council-evidence-card">
+        <div className="panel-head">
+          <div>
+            <span className="eyebrow">COUNCIL SOURCE DISCIPLINE</span>
+            <h2>What the AI advisor is allowed to know today</h2>
+          </div>
+          <span className="terminal-badge">PUBLIC DEMO GUARDRAIL</span>
+        </div>
+        <div className="evidence-grid">
+          {councilEvidence.map((item) => (
+            <article key={item.label}>
+              <div><span>{item.label}</span><b>{item.confidence}</b></div>
+              <h3>{item.title}</h3>
+              <p>{item.note}</p>
+            </article>
+          ))}
+        </div>
+        <p className="source-note">The Council should brief decisions like a civic analyst: verified baseline first, official records second, labeled hypotheses last. No synthetic operating metric should be presented as municipal fact.</p>
       </section>
     </section>
   );

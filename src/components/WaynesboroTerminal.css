@@ -288,11 +288,22 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .brief-list p { margin: 0; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; color: #27352e; line-height: 1.45; padding: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.72); }
 .brief-list b { color: var(--forest-2); }
 .connector-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.council-evidence-card { grid-column: 1 / -1; background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,238,.98)); }
+.evidence-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; margin-top: 12px; }
+.evidence-grid article { min-width: 0; padding: 11px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
+.evidence-grid article:last-child { border-left-color: var(--gold-soft); background: rgba(165,128,49,.07); }
+.evidence-grid div { display: flex; justify-content: space-between; gap: 8px; align-items: start; }
+.evidence-grid span, .evidence-grid b { font-size: 10px; text-transform: uppercase; letter-spacing: .09em; font-weight: 900; }
+.evidence-grid span { color: var(--gold); }
+.evidence-grid b { color: var(--forest-2); text-align: right; }
+.evidence-grid h3 { margin: 8px 0 4px; color: #13251b; font-size: 14px; line-height: 1.22; }
+.evidence-grid p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
 
 @media (max-width: 1280px) {
   .kpi-grid, .source-status-strip { grid-template-columns: repeat(3, minmax(150px, 1fr)); }
   .two-col, .three-col, .three-stack, .council-panel, .source-readiness { grid-template-columns: 1fr; }
   .comparison-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .evidence-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .official-docs-panel { grid-column: auto; }
   .compact { grid-template-columns: 1fr; }
 }
@@ -308,6 +319,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .kpi-grid, .source-status-strip, .source-stats, .doc-source-grid, .doc-link-list { grid-template-columns: 1fr; }
   .dc-meta-grid, .dc-metric-grid, .comparison-grid { grid-template-columns: 1fr; }
   .map-source-bar { grid-template-columns: 1fr; }
+  .evidence-grid { grid-template-columns: 1fr; }
   .factor, .ops-row, .heat-row { grid-template-columns: 1fr; }
   .source-list article { grid-template-columns: 1fr; }
   .source-list { grid-template-columns: 1fr; }

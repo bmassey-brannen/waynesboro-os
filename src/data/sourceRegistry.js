@@ -251,6 +251,17 @@ export const sourceRegistry = [
     difficulty: 'Medium',
     status: 'Seed connector ready',
     notes: 'Test lookup found public DRI record 4155 for St. George Crossing in Waynesboro/Burke County. Added src/data/regionalDevelopmentSeed.js as a one-record data-shape stub; do not treat it as a complete development pipeline.'
+  },
+  {
+    name: 'Georgia DOT Traffic Analysis & Data Application (TADA)',
+    url: 'https://gdottrafficdata.drakewell.com/publicmultinodemap.asp',
+    dataType: 'Public traffic count stations, AADT context, roadway-volume map views and reports',
+    geography: 'Georgia statewide; filter or map-query around Waynesboro/Burke County corridors',
+    accessMethod: 'Public GDOT/Drakewell web application; use as a reference surface first, then identify permitted export/report endpoints before caching counts.',
+    cadence: 'Traffic count updates as published by GDOT; exact station cadence varies',
+    difficulty: 'Medium',
+    status: 'Source hub identified',
+    notes: 'Low-volume check returned the public map application. This can support downtown foot-traffic, corridor-priority, and infrastructure modules once station export rules/endpoints are confirmed.'
   }
 ];
 
@@ -302,6 +313,14 @@ export const sourcePriorities = [
     source: 'City of Waynesboro Code of Ordinances / Municode Library',
     value: 'Gives The Council and code/blight modules an official regulatory baseline without inventing policy claims.',
     nextStep: 'Create a curated index of relevant ordinance sections after manual verification; cite Municode URLs and retrieval dates.',
+    difficulty: 'Medium'
+  },
+  {
+    lane: 'Traffic / corridors',
+    target: 'Scope GDOT TADA station exports around Waynesboro gateways',
+    source: 'Georgia DOT Traffic Analysis & Data Application (TADA)',
+    value: 'Adds defensible roadway-volume context to downtown foot-traffic assumptions, corridor prioritization, and infrastructure planning.',
+    nextStep: 'Use the public map/report interface manually first, then cache only permitted station metadata/AADT exports with GDOT attribution.',
     difficulty: 'Medium'
   }
 ];

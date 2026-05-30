@@ -36,6 +36,7 @@ Purpose: replace synthetic demo data with legitimate public or semi-public sourc
 | U.S. Census TIGERweb Incorporated Places | https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/4 | Official Census incorporated-place boundary metadata, GEOID, place code, center/interior points, land/water area | Public ArcGIS REST query; low-volume cached seed, no credentials required | Census TIGER/Line geography updates annually/periodically by vintage | Low | Test query for `GEOID = '1380984'` returned Waynesboro city metadata including place code `80984`, center `+33.0908907, -082.0145919`, land area `14,173,192` sq m, and water area `136,228` sq m. Added `src/data/geographySeed.js` as a map credibility stub; no parcel geometry stored yet. |
 | OpenStreetMap / Nominatim | https://nominatim.openstreetmap.org/search?format=json&q=Waynesboro%2C%20Georgia&limit=1 | Boundary lookup, place coordinates, basemap context | Public endpoint with usage-policy-compliant low-volume queries and OSM attribution | Community updated | Low | Test call returned Waynesboro relation data; a normalized seed shape is in `src/data/sourceRegistry.js`. |
 | Georgia DCA Developments of Regional Impact Submissions | https://apps.dca.ga.gov/DRI/Submissions.aspx | Major development review submissions, project names, development type, county, jurisdiction, regional commission, status, determinations | Public DCA submissions table and application-summary pages; cite detail URLs and cache low-volume seeds | As DRI submissions are filed/reviewed | Medium | Test lookup found public DRI record `4155` for St. George Crossing in Waynesboro/Burke County; added `src/data/regionalDevelopmentSeed.js` as a one-record economic-development data-shape stub, not a complete development pipeline. |
+| Georgia DOT Traffic Analysis & Data Application (TADA) | https://gdottrafficdata.drakewell.com/publicmultinodemap.asp | Public traffic count stations, AADT context, roadway-volume map views and reports | Public GDOT/Drakewell web application; reference manually first, then identify permitted export/report endpoints before caching counts | GDOT-published traffic count updates; station cadence varies | Medium | Low-volume check returned the public map application. Candidate source for downtown foot-traffic assumptions, corridor priority, and infrastructure context once station export rules/endpoints are confirmed. |
 
 ## Immediate connector candidates
 
@@ -45,11 +46,12 @@ Purpose: replace synthetic demo data with legitimate public or semi-public sourc
 4. **City document index deepening**: parse selected city agenda packets/minutes after manual review; fields should include title, category/board, date, URL, retrieval timestamp, and source page.
 5. **Map credibility seed connector**: use normalized OSM center plus Census TIGERweb incorporated-place metadata (`GEOID 1380984`, `PLACE 80984`) for the downtown map status bar; add geometry only after deciding whether the product needs full municipal boundary rendering.
 6. **DCA DRI development-review seed**: expand the one-record DRI seed into a safe cached connector that filters public submissions for Burke County / Waynesboro and links detail pages without over-claiming project status.
-7. **County finance extraction**: after link indexing, selectively extract totals/vendor lines from published budgets/check registers with PDF/XLS parsers and source-page receipts.
-8. **Census ACS profile connector**: use API key in environment or a cached manual export; map fields to KPI cards with timestamps.
-9. **DOR digest report index**: collect state report links first, then parse only stable CSV/XLS/PDF downloads if available.
-10. **Ordinance reference layer**: curate a citation-only index from Municode for zoning, code-enforcement, signs, nuisances, and downtown policy contexts; manually verify sections before using them in Council text.
-11. **Downtown/DDA source hub**: review the official Downtown Development Authority page for board/program links that can anchor the downtown command center before parcel exports are available.
+7. **GDOT TADA traffic/corridor source**: manually review GDOT station coverage around Waynesboro, then identify permitted report/export paths for AADT and corridor counts before replacing downtown foot-traffic placeholders.
+8. **County finance extraction**: after link indexing, selectively extract totals/vendor lines from published budgets/check registers with PDF/XLS parsers and source-page receipts.
+9. **Census ACS profile connector**: use API key in environment or a cached manual export; map fields to KPI cards with timestamps.
+10. **DOR digest report index**: collect state report links first, then parse only stable CSV/XLS/PDF downloads if available.
+11. **Ordinance reference layer**: curate a citation-only index from Municode for zoning, code-enforcement, signs, nuisances, and downtown policy contexts; manually verify sections before using them in Council text.
+12. **Downtown/DDA source hub**: review the official Downtown Development Authority page for board/program links that can become an official downtown data layer.
 
 ## Open questions
 
@@ -59,3 +61,4 @@ Purpose: replace synthetic demo data with legitimate public or semi-public sourc
 - Which public safety data, if any, is published in machine-readable form for Waynesboro/Burke County?
 - Which Municode sections are most relevant to vacancies, nuisances, signs, zoning, and downtown redevelopment, and how should they be cited without turning the product into legal advice?
 - Does the Downtown Development Authority page link to meeting records, incentive programs, or district maps that can become an official downtown data layer?
+- Which GDOT TADA station/report export path is permitted for cached AADT and corridor-volume records around Waynesboro gateways?
