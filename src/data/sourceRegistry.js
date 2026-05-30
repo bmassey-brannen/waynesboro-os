@@ -242,6 +242,50 @@ export const sourceRegistry = [
     notes: 'Good candidate to connect the downtown command center to official redevelopment and board context before parcel-level data is available.'
   },
   {
+    name: 'City of Waynesboro Water Department / About Our Water',
+    url: 'https://www.waynesboroga.com/124/Water',
+    dataType: 'Official city water department pages, water service context, water quality/public information surface',
+    geography: 'City of Waynesboro',
+    accessMethod: 'Public city pages; cite as reference first, then connect reports or official exports if published.',
+    cadence: 'As posted by city; report cadence not yet confirmed',
+    difficulty: 'Medium',
+    status: 'Reference ready',
+    notes: 'Sitemap also exposes About Our Water and Water Rates pages. Good operations-lane anchor, but not live system telemetry.'
+  },
+  {
+    name: 'City of Waynesboro Sewer & Wastewater',
+    url: 'https://www.waynesboroga.com/123/Sewer-Wastewater',
+    dataType: 'Official sewer/wastewater department reference surface',
+    geography: 'City of Waynesboro',
+    accessMethod: 'Public city page; use as source hub for wastewater responsibilities and future capital/compliance document requests.',
+    cadence: 'As posted by city',
+    difficulty: 'Medium',
+    status: 'Reference ready',
+    notes: 'Supports infrastructure source labeling while operational scores remain synthetic.'
+  },
+  {
+    name: 'City of Waynesboro Public Works / Solid Waste / Storm Drainage',
+    url: 'https://www.waynesboroga.com/200/Public-Works',
+    dataType: 'Official public works, solid waste, storm drainage, roads/maintenance information pages',
+    geography: 'City of Waynesboro',
+    accessMethod: 'Public city pages; index source links and retrieval dates before extracting any operational claims.',
+    cadence: 'As posted by city',
+    difficulty: 'Medium',
+    status: 'Source hub identified',
+    notes: 'Sitemap exposes Public Works, Solid Waste, and Storm Drainage Information. Useful for operations-lane references; routes/work orders/complaints require official data or requests.'
+  },
+  {
+    name: 'City of Waynesboro Police and Fire department pages',
+    url: 'https://www.waynesboroga.com/122/Police',
+    dataType: 'Official public safety department pages and service/contact context',
+    geography: 'City of Waynesboro',
+    accessMethod: 'Public city pages; no access to incident systems, dispatch, or private records.',
+    cadence: 'As posted by city',
+    difficulty: 'High',
+    status: 'Reference only',
+    notes: 'Sitemap exposes Police and Fire pages. Public-safety KPIs must stay synthetic until aggregate incident/response records are officially published or obtained.'
+  },
+  {
     name: 'Georgia DCA Developments of Regional Impact Submissions',
     url: 'https://apps.dca.ga.gov/DRI/Submissions.aspx',
     dataType: 'Major development review submissions, project names, development type, county, jurisdiction, regional commission, status, and determination text',

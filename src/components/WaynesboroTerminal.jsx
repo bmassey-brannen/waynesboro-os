@@ -17,6 +17,7 @@ import { dataCommonsSnapshot } from '../data/dataCommonsSnapshot.js';
 import { officialDocumentsSnapshot } from '../data/officialDocumentsSnapshot.js';
 import { waynesboroGeographySeed } from '../data/geographySeed.js';
 import { regionalDevelopmentSeed } from '../data/regionalDevelopmentSeed.js';
+import { operationsSourceSeed } from '../data/operationsSourceSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -578,18 +579,41 @@ function ProjectTracker() {
 
 function InfrastructureSafetyHousing() {
   return (
-    <section id="operations" className="module three-stack">
-      <section className="panel">
-        <div className="panel-head"><div><span className="eyebrow">INFRASTRUCTURE</span><h2>System health</h2></div></div>
-        {infrastructure.map((item) => <div key={item.system} className="ops-row"><b>{item.system}</b><ScoreBar score={item.health} /><span>{item.risk}</span><em>{item.next}</em></div>)}
-      </section>
-      <section className="panel">
-        <div className="panel-head"><div><span className="eyebrow">PUBLIC SAFETY</span><h2>Incidents / response / trends</h2></div></div>
-        <div className="safety-grid">{safety.map((item) => <article key={item.metric} className={`safety-card ${item.severity}`}><span>{item.metric}</span><b>{item.value}</b><em>{item.trend}</em></article>)}</div>
-      </section>
-      <section className="panel">
-        <div className="panel-head"><div><span className="eyebrow">HOUSING & DEVELOPMENT</span><h2>Development heat map</h2></div></div>
-        {housing.map((zone) => <div key={zone.zone} className="heat-row"><b>{zone.zone}</b><div className="heat"><span style={{ width: `${zone.heat}%` }} /></div><em>{zone.note}</em></div>)}
+    <section id="operations" className="module operations-module">
+      <div className="three-stack">
+        <section className="panel">
+          <div className="panel-head"><div><span className="eyebrow">INFRASTRUCTURE</span><h2>System health</h2></div><span className="terminal-badge">SYNTHETIC</span></div>
+          {infrastructure.map((item) => <div key={item.system} className="ops-row"><b>{item.system}</b><ScoreBar score={item.health} /><span>{item.risk}</span><em>{item.next}</em></div>)}
+        </section>
+        <section className="panel">
+          <div className="panel-head"><div><span className="eyebrow">PUBLIC SAFETY</span><h2>Incidents / response / trends</h2></div><span className="terminal-badge">NEEDS AGGREGATE</span></div>
+          <div className="safety-grid">{safety.map((item) => <article key={item.metric} className={`safety-card ${item.severity}`}><span>{item.metric}</span><b>{item.value}</b><em>{item.trend}</em></article>)}</div>
+          <p className="source-note">Displayed public-safety figures are demo placeholders until official aggregate incident or response-time data is released or obtained through a records process.</p>
+        </section>
+        <section className="panel">
+          <div className="panel-head"><div><span className="eyebrow">HOUSING & DEVELOPMENT</span><h2>Development heat map</h2></div><span className="terminal-badge">SYNTHETIC</span></div>
+          {housing.map((zone) => <div key={zone.zone} className="heat-row"><b>{zone.zone}</b><div className="heat"><span style={{ width: `${zone.heat}%` }} /></div><em>{zone.note}</em></div>)}
+        </section>
+      </div>
+      <section className="panel ops-source-ledger">
+        <div className="panel-head">
+          <div>
+            <span className="eyebrow">OPERATIONS SOURCE LEDGER</span>
+            <h2>Official city service pages now anchor the operations lane</h2>
+          </div>
+          <span className="terminal-badge gold">REFERENCE LAYER</span>
+        </div>
+        <div className="ops-source-grid">
+          {operationsSourceSeed.map((source) => (
+            <article key={source.lane}>
+              <div className="ops-source-top"><span>{source.lane}</span><b>{source.status}</b></div>
+              <a href={source.url} target="_blank" rel="noreferrer">{source.title}</a>
+              <p>{source.integrationUse}</p>
+              {source.secondaryUrl && <small>Secondary reference linked in seed file</small>}
+            </article>
+          ))}
+        </div>
+        <p className="source-note">This is a public reference layer, not live telemetry. The next trustworthy upgrade is to attach retrieval dates, reports, adopted budgets, work orders, or records-request responses before any operational score is treated as fact.</p>
       </section>
     </section>
   );
