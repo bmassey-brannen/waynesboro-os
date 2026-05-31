@@ -264,6 +264,17 @@ export const sourceRegistry = [
     notes: 'Sitemap also exposes About Our Water and Water Rates pages. Good operations-lane anchor, but not live system telemetry.'
   },
   {
+    name: 'EPA SDWIS Federal Reporting Services',
+    url: 'https://sdwis.epa.gov/ords/sfdw_pub/r/sfdw/sdwis_fed_reports_public/200',
+    dataType: 'Public drinking-water system search and federal reporting views: water-system identity, inventory, monitoring/reporting context, and compliance report paths where published',
+    geography: 'Public water systems serving Waynesboro / Burke County; confirm exact PWSID before display',
+    accessMethod: 'Public EPA SDWIS Federal Reporting Services web application; manual search/reference first, then cache only permitted public report exports if an export path is exposed.',
+    cadence: 'EPA/state reporting updates; report-specific cadence varies',
+    difficulty: 'Medium',
+    status: 'Source hub identified',
+    notes: 'Useful operations-lane source for water-system identity and compliance context. Treat as evidence/reference, not live utility telemetry; confirm PWSID and Georgia primacy-source details before binding metrics.'
+  },
+  {
     name: 'City of Waynesboro Sewer & Wastewater',
     url: 'https://www.waynesboroga.com/123/Sewer-Wastewater',
     dataType: 'Official sewer/wastewater department reference surface',
@@ -376,6 +387,14 @@ export const sourcePriorities = [
     source: 'Georgia DOT Traffic Analysis & Data Application (TADA)',
     value: 'Adds defensible roadway-volume context to downtown foot-traffic assumptions, corridor prioritization, and infrastructure planning.',
     nextStep: 'Use the public map/report interface manually first, then cache only permitted station metadata/AADT exports with GDOT attribution.',
+    difficulty: 'Medium'
+  },
+  {
+    lane: 'Operations / water',
+    target: 'Confirm Waynesboro public-water system identity in EPA SDWIS',
+    source: 'EPA SDWIS Federal Reporting Services',
+    value: 'Adds a federal public reporting path for water-system inventory/compliance context while city utility widgets remain labeled placeholders.',
+    nextStep: 'Manually search SDWIS for Waynesboro/Burke County, confirm the exact PWSID, then cache only permitted public report metadata with EPA attribution.',
     difficulty: 'Medium'
   },
   {

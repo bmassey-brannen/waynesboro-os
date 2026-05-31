@@ -728,6 +728,57 @@ function PublicTrustRibbon() {
   );
 }
 
+function CivicBriefingStrip() {
+  const cityPopulation = metricById['waynesboro-population'];
+  const medianIncome = metricById['waynesboro-median-income'];
+  const latestDocYear = officialDocumentsSnapshot.recentDocuments
+    .map((doc) => Number(doc.year))
+    .filter(Boolean)
+    .sort((a, b) => b - a)[0];
+  const waterSource = sourceRegistry.find((source) => source.name.includes('SDWIS'));
+
+  const briefItems = [
+    {
+      label: 'Verified baseline',
+      value: `${cityPopulation?.displayValue || 'N/A'} residents`,
+      detail: `${medianIncome?.displayValue || 'N/A'} median household income · Data Commons`
+    },
+    {
+      label: 'Official record trail',
+      value: `${officialDocumentsSnapshot.summary.documentCount} links indexed`,
+      detail: `City/county documents metadata only${latestDocYear ? ` · latest year ${latestDocYear}` : ''}`
+    },
+    {
+      label: 'Decision focus',
+      value: 'Parcels + permits + corridors',
+      detail: 'Next layer should narrow downtown assets, development signals, and gateway traffic.'
+    },
+    {
+      label: 'Operations source watch',
+      value: waterSource ? 'EPA SDWIS scoped' : 'Water source pending',
+      detail: 'Use public water-system reports as evidence, not live utility telemetry.'
+    }
+  ];
+
+  return (
+    <section className="civic-briefing-strip" aria-label="civic briefing snapshot">
+      <div>
+        <span className="eyebrow">CIVIC BRIEF SNAPSHOT</span>
+        <h2>What the first screen says before the meeting starts</h2>
+      </div>
+      <div className="briefing-cards">
+        {briefItems.map((item) => (
+          <article key={item.label}>
+            <span>{item.label}</span>
+            <b>{item.value}</b>
+            <small>{item.detail}</small>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default function WaynesboroTerminal() {
   const [active, setActive] = useState('executive');
   const nav = [
@@ -751,6 +802,7 @@ export default function WaynesboroTerminal() {
           <div className="market-clock"><b>HYBRID DATA MODE</b><span>Data Commons live · local ops placeholders labeled</span></div>
         </header>
         <PublicTrustRibbon />
+        <CivicBriefingStrip />
         <ExecutiveDashboard />
         <SourceReadiness />
         <EconomicDevelopment />
