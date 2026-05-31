@@ -616,7 +616,7 @@ export const sourceRegistry = [
     notes: 'Added src/data/affordableHousingSeed.js and a Housing Affordability source panel in Operations. This is a source route only: do not present affordable-housing unit counts, LIHTC awards, eligibility, applicant status, or development-pipeline facts until the PDF and Georgia DCA records are manually reviewed and source-labeled.'
   },
   {
-    name: 'U.S. Census LEHD LODES workforce and commuting downloads',
+    name: 'U.S. Census LEHD LODES data downloads',
     url: 'https://lehd.ces.census.gov/data/lodes/LODES8/ga/',
     dataType: 'Public block-level workplace area, residence area, origin-destination commute-flow, and block-geography crosswalk CSV/GZIP files',
     geography: 'Georgia statewide block-level files; aggregate to Waynesboro place GEOID 1380984 and Burke County only after crosswalk QA',
@@ -625,6 +625,17 @@ export const sourceRegistry = [
     difficulty: 'Medium',
     status: 'Source route verified',
     notes: 'HEAD checks returned HTTP 200 for Georgia WAC, RAC, OD main jobs, Georgia crosswalk, and LODES technical documentation. Added src/data/lehdCommutingSeed.js and a compact economic workforce/commuting source panel. Do not present city job counts, commuter inflow/outflow, employer lists, or block-level claims until place aggregation and disclosure-safe summarization are complete.'
+  },
+  {
+    name: 'Census Reporter ACS journey-to-work tables',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B08301,B08303&geo_ids=16000US1380984',
+    dataType: 'ACS means-of-transportation and travel-time-to-work estimates with margins of error',
+    geography: 'Waynesboro city, Georgia (16000US1380984)',
+    accessMethod: 'Public no-key Census Reporter API; low-volume B08301/B08303 request cached in src/data/commuteProfileSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024 release.',
+    difficulty: 'Low',
+    status: 'Public API seed ready',
+    notes: 'Runtime query returned Waynesboro journey-to-work estimates: workers 16+, drove-alone, carpool, worked-from-home, and travel-time buckets. Added an Economic commute profile panel. Treat as survey context only; not live traffic volume, transit ridership, employer roster, road-safety, or downtown foot-traffic data.'
   },
   {
     name: 'Census Reporter ACS housing tenure and occupancy tables',
@@ -644,7 +655,7 @@ export const readinessStrip = [
   { lane: 'City documents', status: 'Index-ready', source: 'Agenda Center / Archive Center', tone: 'good' },
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
   { lane: 'Map base', status: 'Boundary seed ready', source: 'OSM + TIGERweb + Census Reporter GeoJSON', tone: 'good' },
-  { lane: 'Economy', status: 'Workforce + commute routes', source: 'BLS LAUS + Census LEHD/LODES + CBP', tone: 'good' },
+  { lane: 'Economy', status: 'Workforce + commute routes', source: 'BLS LAUS + ACS journey-to-work + Census LEHD/LODES + CBP', tone: 'good' },
   { lane: 'Education', status: 'GaDOE routes indexed', source: 'Georgia Insights + Burke County Public Schools', tone: 'watch' },
   { lane: 'Finance', status: 'Sales-tax + digest routes', source: 'Georgia DOR Distributions / Digest Compliance', tone: 'good' },
   { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },
@@ -694,6 +705,14 @@ export const sourcePriorities = [
     value: 'Adds a public route for jobs located in Waynesboro, resident-worker context, and commute-flow questions without inventing employer or license data.',
     nextStep: 'Download the Georgia block crosswalk, filter blocks to place GEOID 1380984, then aggregate WAC/RAC/OD rows into disclosure-safe city and county summary cards.',
     difficulty: 'Medium'
+  },
+  {
+    lane: 'Jobs / commuting',
+    target: 'Reconcile ACS journey-to-work estimates with LEHD and GDOT corridor evidence',
+    source: 'Census Reporter ACS B08301/B08303 journey-to-work tables',
+    value: 'Gives the economic lane a city-level commute-mode and travel-time context without pretending to know live traffic, employers, or downtown foot traffic.',
+    nextStep: 'Keep the ACS commute seed visible with MOE, then cross-check against LEHD place aggregation and permitted GDOT TADA station exports before producing corridor recommendations.',
+    difficulty: 'Low'
   },
   {
     lane: 'Education / talent pipeline',

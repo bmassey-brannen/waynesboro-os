@@ -48,6 +48,7 @@ import { usgsHydrologySeed } from '../data/usgsHydrologySeed.js';
 import { hydrologyObservationsSeed } from '../data/hydrologyObservationsSeed.js';
 import { lehdCommutingSeed } from '../data/lehdCommutingSeed.js';
 import { housingTenureSeed } from '../data/housingTenureSeed.js';
+import { commuteProfileSeed } from '../data/commuteProfileSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -109,7 +110,7 @@ function KpiCard({ item }) {
   );
 }
 
-function DataTable({ title, eyebrow, rows, columns }) {
+function DataTable({ title, eyebrow, rows, columns, badge = 'SYNTHETIC TABLE', note = 'Demo table: values remain placeholders until connected to source-labeled public records.' }) {
   return (
     <section className="panel table-panel">
       <div className="panel-head">
@@ -117,7 +118,7 @@ function DataTable({ title, eyebrow, rows, columns }) {
           <span className="eyebrow">{eyebrow}</span>
           <h2>{title}</h2>
         </div>
-        <span className="terminal-badge">LIVE MOCK</span>
+        <span className="terminal-badge gold">{badge}</span>
       </div>
       <div className="table-wrap">
         <table>
@@ -137,6 +138,7 @@ function DataTable({ title, eyebrow, rows, columns }) {
           </tbody>
         </table>
       </div>
+      {note && <p className="table-source-note">{note}</p>}
     </section>
   );
 }
@@ -746,6 +748,43 @@ function LehdCommutingPanel() {
   );
 }
 
+function CommuteProfilePanel() {
+  const primary = commuteProfileSeed.metrics.filter((metric) => ['drove-alone', 'worked-from-home', 'commute-under-15', 'commute-45-plus'].includes(metric.id));
+  return (
+    <section className="commute-profile-panel" aria-label="ACS commute profile source panel">
+      <div className="bridge-head">
+        <div>
+          <span className="eyebrow">COMMUTE PROFILE · ACS CONTEXT</span>
+          <h3>Census Reporter adds source-labeled journey-to-work context</h3>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="commute-profile-grid">
+        {primary.map((metric) => (
+          <article key={metric.id}>
+            <span>{metric.label}</span>
+            <b>{metric.percent ? `${metric.percent.toFixed(1)}%` : metric.displayValue}</b>
+            <small>{metric.displayValue} estimate{metric.moe ? ` · MOE ±${metric.moe}` : ''} · {metric.table}</small>
+          </article>
+        ))}
+      </div>
+      <div className="commute-route-grid">
+        {commuteProfileSeed.tableRoutes.map((route) => (
+          <a key={route.table} href={route.url} target="_blank" rel="noreferrer">
+            <span>{route.table}</span>
+            <b>{route.label}</b>
+            <small>{route.integrationUse}</small>
+          </a>
+        ))}
+      </div>
+      <div className="commute-next-actions">
+        {commuteProfileSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p>{commuteProfileSeed.caveat} Release: {commuteProfileSeed.release.name} ({commuteProfileSeed.release.years}); retrieved through Census Reporter.</p>
+    </section>
+  );
+}
+
 function FederalFundingPanel() {
   const money = (value) => `$${(value / 1000000).toFixed(value >= 10000000 ? 1 : 2)}M`;
   return (
@@ -814,6 +853,8 @@ function EconomicDevelopment() {
         title="Ranked Development Pipeline"
         eyebrow="ECONOMIC DEVELOPMENT"
         rows={economicPipeline}
+        badge="SYNTHETIC PIPELINE"
+        note="Prospect ranking is demo architecture only; DCA DRI, city permits, business records, and source-labeled project documents must be attached before public project claims."
         columns={[
           { key: 'prospect', label: 'Prospect' },
           { key: 'industry', label: 'Industry' },
@@ -839,6 +880,7 @@ function EconomicDevelopment() {
         <LaborForceSourcePanel />
         <EducationWorkforcePanel />
         <LehdCommutingPanel />
+        <CommuteProfilePanel />
         <FederalFundingPanel />
         <SalesTaxDistributionPanel />
         <div className="dri-watch-card">
@@ -930,6 +972,8 @@ function DowntownCommandCenter() {
         title="Storefront Intelligence"
         eyebrow="OCCUPANCY / OWNERSHIP / TRAFFIC"
         rows={downtownProperties}
+        badge="SCHEMATIC MOCK"
+        note="Storefront rows are presentation placeholders until parcel, business-directory, DDA, qPublic/export, or field-verified records are attached."
         columns={[
           { key: 'name', label: 'Asset' },
           { key: 'occupancy', label: 'Occupancy', render: (row) => <span className={`pill ${row.occupancy === 'Vacant' ? 'bad' : row.occupancy === 'Partial' ? 'watch' : 'good'}`}>{row.occupancy}</span> },
@@ -1766,7 +1810,7 @@ function MeetingReadinessStrip() {
     { label: 'Claims discipline', value: 'Source-gated', detail: 'Verified baseline first; synthetic operating scores stay visibly labeled.' },
     { label: 'Presentation packet', value: 'Print aware', detail: 'Dense panels remain readable for PDF/meeting screenshots and council-style review.' },
     {
-      label: 'Next evidence lane', value: 'Housing tenure + vacancy', detail: 'ACS housing context is visible with MOE; parcel-level vacancy still requires qPublic/export or records QA.' }
+      label: 'Next evidence lane', value: 'Commute + corridors', detail: 'ACS journey-to-work context is seeded; LEHD and GDOT station evidence still gate corridor conclusions.' }
   ];
 
   return (
