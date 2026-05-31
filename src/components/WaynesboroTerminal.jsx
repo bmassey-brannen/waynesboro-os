@@ -60,6 +60,7 @@ import { disabilityAccessSeed } from '../data/disabilityAccessSeed.js';
 import { hazardousWasteSeed } from '../data/hazardousWasteSeed.js';
 import { incomeDistributionSeed } from '../data/incomeDistributionSeed.js';
 import { mapboxReadinessSeed } from '../data/mapboxReadinessSeed.js';
+import { householdCompositionSeed } from '../data/householdCompositionSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -326,6 +327,54 @@ function AgeProfilePanel() {
   );
 }
 
+function HouseholdCompositionPanel() {
+  const primaryMetrics = householdCompositionSeed.metrics.filter((metric) => ['family-households', 'living-alone', 'female-no-spouse-family', 'nonfamily-households'].includes(metric.id));
+  const headline = householdCompositionSeed.metrics.find((metric) => metric.id === 'living-alone');
+
+  return (
+    <section className="household-composition-panel" aria-label="ACS household composition context">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">HOUSEHOLD COMPOSITION · ACS CONTEXT</span>
+          <h2>Service-demand context before households become assumptions</h2>
+        </div>
+        <span className="terminal-badge gold">NO-KEY API SEED</span>
+      </div>
+      <div className="household-composition-hero">
+        <article>
+          <span>Planning context</span>
+          <b>{headline?.displayShare || 'N/A'}</b>
+          <small>{headline?.displayValue || 'N/A'} Waynesboro ACS households living alone · MOE {headline?.displayMoe || 'n/a'}</small>
+        </article>
+        <div>
+          <h3>Why this belongs on the executive screen</h3>
+          <p>Household mix changes how the city should ask questions about outreach, recreation, housing, broadband, mobility, and emergency-readiness. This panel keeps that context source-labeled without implying case files, eligibility, school enrollment, or live service demand.</p>
+          <a href={householdCompositionSeed.sourceUrl} target="_blank" rel="noreferrer">Census Reporter B11001 source route</a>
+        </div>
+      </div>
+      <div className="household-composition-grid">
+        {primaryMetrics.map((metric) => (
+          <article key={metric.id}>
+            <span>{metric.label}</span>
+            <b>{metric.displayShare}</b>
+            <small>{metric.displayValue} households · MOE {metric.displayMoe}</small>
+          </article>
+        ))}
+      </div>
+      <div className="household-comparison-strip">
+        {householdCompositionSeed.comparison.map((row) => (
+          <article key={row.geography}>
+            <span>{row.geography}</span>
+            <b>{row.livingAloneShare}</b>
+            <small>living alone · {row.familyShare} family households · {row.femaleNoSpouseFamilyShare} female no-spouse family households</small>
+          </article>
+        ))}
+      </div>
+      <p>{householdCompositionSeed.posture}</p>
+    </section>
+  );
+}
+
 function ExecutiveDashboard() {
   const executiveKpis = buildExecutiveKpis();
   return (
@@ -339,6 +388,7 @@ function ExecutiveDashboard() {
       <div className="kpi-grid">{executiveKpis.map((item) => <KpiCard key={item.label} item={item} />)}</div>
       <BaselineComparisonPanel />
       <AgeProfilePanel />
+      <HouseholdCompositionPanel />
     </section>
   );
 }
@@ -2466,7 +2516,7 @@ function PageBriefStrip({ page }) {
     sources: [
       { label: 'Registry', value: `${sourceRegistry.length} sources`, detail: 'Source routes, seeds, and manual lanes tracked.' },
       { label: 'Queue', value: `${sourcePriorities.length} tasks`, detail: 'Top 8 rendered to avoid backlog sprawl.' },
-      { label: 'Latest seed', value: 'Housing cost', detail: 'B25070/B25091 affordability burden context.' }
+      { label: 'Latest seed', value: 'Household mix', detail: 'ACS B11001 household composition context.' }
     ],
     economic: [
       { label: 'Workforce', value: 'ACS + BLS', detail: 'City survey context plus county LAUS.' },

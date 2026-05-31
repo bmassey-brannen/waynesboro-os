@@ -55,6 +55,17 @@ export const sourceRegistry = [
     notes: 'Runtime query returned Waynesboro B19001 income brackets; the UI shows under-$50K and $100K+ rollups plus bracket bars with MOE. Treat as ACS survey context only, not tax records, payroll data, poverty eligibility, local revenue, or household-level data.'
   },
   {
+    name: 'Census Reporter ACS household composition table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B11001&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS B11001 household type estimates: family households, nonfamily households, living-alone householders, and household-composition comparison context with margins of error',
+    geography: 'Waynesboro city, Burke County, and Georgia comparison rows',
+    accessMethod: 'Public no-key Census Reporter API; low-volume request cached in src/data/householdCompositionSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Runtime query returned Waynesboro B11001 context including 2,204 households, 66.7% family households, 28.3% householders living alone, and 33.2% female householder/no spouse family households. Added an executive household-composition panel. Treat as ACS survey planning context only; not household-level records, benefits eligibility, school enrollment, homelessness, or municipal service telemetry.'
+  },
+  {
     name: 'Census QuickFacts',
     url: 'https://www.census.gov/quickfacts/fact/table/waynesborocitygeorgia,burkecountygeorgia/PST045223',
     dataType: 'Public demographic and economic quick facts for city/county context',
@@ -761,7 +772,7 @@ export const sourceRegistry = [
 ];
 
 export const readinessStrip = [
-  { lane: 'Demographics', status: 'Live snapshot + age profile', source: 'Data Commons API / Census Reporter B01001', tone: 'good' },
+  { lane: 'Demographics', status: 'Live snapshot + age + household mix', source: 'Data Commons API / Census Reporter B01001/B11001', tone: 'good' },
   { lane: 'City documents', status: 'Index-ready', source: 'Agenda Center / Archive Center', tone: 'good' },
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
   { lane: 'Map base', status: 'Boundary seed ready', source: 'OSM + TIGERweb + Census Reporter GeoJSON', tone: 'good' },
