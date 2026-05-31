@@ -48,6 +48,7 @@ import { usgsHydrologySeed } from '../data/usgsHydrologySeed.js';
 import { hydrologyObservationsSeed } from '../data/hydrologyObservationsSeed.js';
 import { lehdCommutingSeed } from '../data/lehdCommutingSeed.js';
 import { housingTenureSeed } from '../data/housingTenureSeed.js';
+import { housingAgeSeed } from '../data/housingAgeSeed.js';
 import { commuteProfileSeed } from '../data/commuteProfileSeed.js';
 import { workforceEducationSeed } from '../data/workforceEducationSeed.js';
 import { foodAccessSeed } from '../data/foodAccessSeed.js';
@@ -57,6 +58,7 @@ import { vehicleAccessSeed } from '../data/vehicleAccessSeed.js';
 import { disabilityAccessSeed } from '../data/disabilityAccessSeed.js';
 import { hazardousWasteSeed } from '../data/hazardousWasteSeed.js';
 import { incomeDistributionSeed } from '../data/incomeDistributionSeed.js';
+import { mapboxReadinessSeed } from '../data/mapboxReadinessSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -551,6 +553,63 @@ function CommunityDevelopmentPolicyPanel() {
   );
 }
 
+function CredentialReadinessPanel() {
+  const connectorCards = [
+    {
+      label: 'Data Commons baseline',
+      status: dataCommonsSnapshot.status === 'active' ? 'LIVE SNAPSHOT' : 'CHECK',
+      detail: `${dataCommonsSnapshot.metrics.length} normalized observations · fetched ${new Date(dataCommonsSnapshot.fetchedAt).toLocaleDateString()}`,
+      tone: 'live'
+    },
+    {
+      label: 'BLS LAUS workforce',
+      status: laborForceSeed.credentialStatus === 'local_key_configured' ? 'KEY OK' : laborForceSeed.credentialStatus === 'local_key_rejected_fell_back_to_public_low_volume' ? 'KEY REJECTED · PUBLIC FALLBACK' : 'PUBLIC MODE',
+      detail: `${laborForceSeed.latestPeriod} · ${laborForceSeed.series.length} Burke County metrics cached`,
+      tone: laborForceSeed.credentialStatus === 'local_key_rejected_fell_back_to_public_low_volume' ? 'watch' : 'live'
+    },
+    {
+      label: 'CDC PLACES / Socrata',
+      status: healthEquitySeed.credentialStatus?.appToken === 'local_token_configured' ? 'TOKEN OK' : healthEquitySeed.credentialStatus?.appToken === 'local_token_rejected_fell_back_to_public_low_volume' ? 'TOKEN REJECTED · PUBLIC FALLBACK' : 'PUBLIC MODE',
+      detail: `${healthEquitySeed.observedShape.rowsForBurkeCountyObserved} Burke County tract-measure rows observed`,
+      tone: healthEquitySeed.credentialStatus?.appToken === 'local_token_rejected_fell_back_to_public_low_volume' ? 'watch' : 'live'
+    },
+    {
+      label: 'Census API',
+      status: 'KEY PENDING',
+      detail: 'ACS Profile, Building Permits, and CBP remain on Census Reporter/source-route fallbacks until key is added.',
+      tone: 'watch'
+    },
+    {
+      label: 'Mapbox presentation map',
+      status: mapboxReadinessSeed.credentialStatus === 'local_token_configured' ? 'TOKEN READY · THROTTLED' : 'TOKEN MISSING',
+      detail: mapboxReadinessSeed.publicUsePolicy,
+      tone: 'watch'
+    }
+  ];
+
+  return (
+    <section className="panel credential-readiness-panel" aria-label="local API credential readiness without exposing secrets">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">API CREDENTIAL READINESS</span>
+          <h2>Local keys are staged; public snapshots never expose secrets</h2>
+        </div>
+        <span className="terminal-badge gold">NO SECRETS IN BROWSER</span>
+      </div>
+      <div className="credential-grid">
+        {connectorCards.map((card) => (
+          <article key={card.label} className={`credential-card ${card.tone}`}>
+            <span>{card.label}</span>
+            <b>{card.status}</b>
+            <small>{card.detail}</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">Credential status is generated server-side from .env.local as a public-safe readiness summary. Raw keys stay ignored by git and are not bundled into the GitHub Pages site.</p>
+    </section>
+  );
+}
+
 function SourceReadiness() {
   const statusCounts = sourceRegistry.reduce((counts, source) => {
     counts[source.status] = (counts[source.status] || 0) + 1;
@@ -587,6 +646,7 @@ function SourceReadiness() {
         </div>
         <p className="source-note">Every dashboard number remains synthetic until it carries a source, timestamp, geography, and connector status. Data Commons is now connected server-side for baseline demographics; city documents remain the next official local evidence lane.</p>
       </section>
+      <CredentialReadinessPanel />
       <DataCommonsLivePanel />
       <CensusReporterCrosscheckPanel />
       <TaxDigestSourcePanel />
@@ -688,7 +748,7 @@ function LaborForceSourcePanel() {
       <div className="bridge-head">
         <div>
           <span className="eyebrow">WORKFORCE SOURCE SNAPSHOT</span>
-          <h3>BLS LAUS county labor context now has a no-key public API path</h3>
+          <h3>BLS LAUS county labor context refreshed from public API with credential fallback status</h3>
         </div>
         <span className="terminal-badge live">BLS PUBLIC API</span>
       </div>
@@ -1944,6 +2004,54 @@ function HousingTenureSourcePanel() {
   );
 }
 
+function HousingAgeSourcePanel() {
+  const headline = housingAgeSeed.derived.find((item) => item.id === 'pre-1980-housing');
+  const vintageBars = housingAgeSeed.groups.slice(5);
+
+  return (
+    <section className="panel housing-age-panel" aria-label="ACS housing age source snapshot">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">HOUSING STOCK AGE · ACS CONTEXT</span>
+          <h2>Older housing context before rehab, blight, or infrastructure claims</h2>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="housing-age-hero">
+        <article>
+          <span>{headline.label}</span>
+          <b>{headline.displayShare}</b>
+          <small>{headline.displayValue} of {housingAgeSeed.totalHousingUnits.toLocaleString()} ACS housing units · MOE on total ±{housingAgeSeed.totalMoe.toLocaleString()}</small>
+        </article>
+        <div>
+          <h3>Presentation-safe use</h3>
+          <p>Use this as a planning signal for rehabilitation, weatherization, grant readiness, and parcel-export prioritization — not as a condition finding or inspection record.</p>
+          <a href={housingAgeSeed.sourceUrl} target="_blank" rel="noreferrer">Census Reporter B25034 source query</a>
+        </div>
+      </div>
+      <div className="housing-age-bars">
+        {vintageBars.map((group) => (
+          <article key={group.id}>
+            <div><span>{group.label}</span><b>{group.displayShare}</b></div>
+            <div className="mini-bar"><span style={{ width: group.displayShare }} /></div>
+            <small>{group.estimate.toLocaleString()} units · MOE ±{group.moe.toLocaleString()}</small>
+          </article>
+        ))}
+      </div>
+      <div className="housing-age-comparison">
+        {housingAgeSeed.comparison.map((item) => (
+          <article key={item.geography}>
+            <span>{item.geography}</span>
+            <b>{item.pre1980Share}</b>
+            <small>pre-1980 share · {item.post2000Share} post-2000 · {item.totalUnits.toLocaleString()} units</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{housingAgeSeed.caveat} Release: {housingAgeSeed.release.name} ({housingAgeSeed.release.years}); retrieved {new Date(housingAgeSeed.retrievedAt).toLocaleDateString()}.</p>
+    </section>
+  );
+}
+
 function InfrastructureSafetyHousing() {
   return (
     <section id="operations" className="module operations-module">
@@ -1969,6 +2077,7 @@ function InfrastructureSafetyHousing() {
       <DisabilityAccessPanel />
       <FoodAccessSourcePanel />
       <HousingTenureSourcePanel />
+      <HousingAgeSourcePanel />
       <AffordableHousingSourcePanel />
       <WeatherReadinessPanel />
       <WaterSystemsPanel />

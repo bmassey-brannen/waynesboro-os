@@ -325,6 +325,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
 
 .source-readiness { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 14px; align-items: start; }
 .source-readiness > .source-summary,
+.source-readiness > .credential-readiness-panel,
 .source-readiness > .data-commons-panel,
 .source-readiness > .census-reporter-panel,
 .source-readiness > .tax-digest-panel { grid-column: span 6; }
@@ -367,6 +368,14 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .source-note { margin: 12px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
 .source-map-card small { display: block; margin-top: 12px; color: var(--muted); font-size: 10px; line-height: 1.4; }
 .data-commons-panel { background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(235,243,237,.96)); border-color: rgba(38,116,79,.24); }
+.credential-readiness-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(248,244,232,.96)); border-color: rgba(165,128,49,.25); }
+.credential-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.credential-card { min-width: 0; padding: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.78); border-top: 3px solid var(--forest-2); }
+.credential-card.watch { border-top-color: var(--gold-soft); background: rgba(255,250,237,.82); }
+.credential-card span, .credential-card b, .credential-card small { display: block; }
+.credential-card span { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; font-weight: 900; }
+.credential-card b { margin-top: 5px; color: var(--forest); font-size: 12px; line-height: 1.2; }
+.credential-card small { margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.35; overflow-wrap: anywhere; }
 .census-reporter-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(238,243,239,.96)); border-color: rgba(38,116,79,.22); }
 .official-docs-panel { grid-column: 1 / 3; background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(246,241,229,.96)); border-color: rgba(165,128,49,.24); }
 .civic-participation-panel, .community-development-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,240,.96)); border-color: rgba(38,116,79,.22); }
@@ -529,7 +538,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .ops-source-grid article { min-width: 0; padding: 11px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
 .ops-source-grid a { display: block; margin-top: 8px; color: #13251b; font-size: 13px; font-weight: 900; text-decoration: none; overflow-wrap: anywhere; }
 .ops-source-grid p { margin: 6px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
-.weather-readiness-panel, .water-system-panel, .state-water-panel, .utility-rate-panel, .broadband-access-panel, .affordable-housing-panel, .clean-water-panel, .hazardous-waste-panel, .hydrology-source-panel, .hydrology-observations-panel, .hazard-resilience-panel, .public-safety-source-panel, .health-equity-panel, .disability-access-panel, .food-access-panel, .transportation-project-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,238,.97)); border-color: rgba(38,116,79,.24); }
+.weather-readiness-panel, .water-system-panel, .state-water-panel, .utility-rate-panel, .broadband-access-panel, .affordable-housing-panel, .housing-age-panel, .clean-water-panel, .hazardous-waste-panel, .hydrology-source-panel, .hydrology-observations-panel, .hazard-resilience-panel, .public-safety-source-panel, .health-equity-panel, .disability-access-panel, .food-access-panel, .transportation-project-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,238,.97)); border-color: rgba(38,116,79,.24); }
 .transportation-project-panel { border-color: rgba(165,128,49,.24); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(248,244,232,.96)); }
 .transport-project-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
 .transport-project-grid a, .transport-project-grid article { min-width: 0; display: block; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--gold-soft); background: rgba(255,255,255,.78); text-decoration: none; }
@@ -587,6 +596,28 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .broadband-source-grid small, .broadband-shape-strip small, .housing-source-grid small, .housing-shape-strip small { margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.35; }
 .broadband-shape-strip, .housing-shape-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 7px; margin-top: 10px; }
 .broadband-shape-strip article, .housing-shape-strip article { min-width: 0; padding: 8px; border: 1px solid rgba(165,128,49,.18); background: rgba(165,128,49,.06); }
+.housing-age-panel { border-color: rgba(31,93,66,.27); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(236,243,238,.97)); }
+.housing-age-hero { display: grid; grid-template-columns: minmax(220px, .36fr) minmax(0, .64fr); gap: 9px; margin-top: 12px; align-items: stretch; }
+.housing-age-hero article, .housing-age-hero > div { min-width: 0; padding: 11px; border: 1px solid var(--line); background: rgba(255,255,255,.8); }
+.housing-age-hero article { border-left: 4px solid var(--forest-2); }
+.housing-age-hero span, .housing-age-hero b, .housing-age-hero small, .housing-age-hero h3, .housing-age-hero p, .housing-age-hero a,
+.housing-age-bars span, .housing-age-bars b, .housing-age-bars small,
+.housing-age-comparison span, .housing-age-comparison b, .housing-age-comparison small { display: block; overflow-wrap: anywhere; }
+.housing-age-hero span, .housing-age-bars span, .housing-age-comparison span { color: var(--gold); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
+.housing-age-hero b { margin-top: 4px; color: var(--forest-2); font-size: 32px; line-height: 1; letter-spacing: -.05em; }
+.housing-age-hero small, .housing-age-bars small, .housing-age-comparison small { margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.housing-age-hero h3 { margin: 4px 0 0; color: #13251b; font-size: 16px; line-height: 1.16; letter-spacing: -.02em; }
+.housing-age-hero p { margin: 7px 0 0; color: var(--muted); font-size: 11px; line-height: 1.42; }
+.housing-age-hero a { margin-top: 9px; color: var(--forest-2); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; text-decoration: none; }
+.housing-age-bars, .housing-age-comparison { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.housing-age-bars article, .housing-age-comparison article { min-width: 0; padding: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.76); }
+.housing-age-bars article { border-left: 3px solid var(--forest-2); }
+.housing-age-comparison { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.housing-age-comparison article { border-left: 3px solid var(--gold-soft); background: rgba(165,128,49,.055); }
+.housing-age-bars article > div:first-child { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.housing-age-bars b, .housing-age-comparison b { margin-top: 4px; color: var(--forest-2); font-size: 21px; line-height: 1; letter-spacing: -.04em; }
+.mini-bar { height: 7px; margin-top: 8px; overflow: hidden; border-radius: 999px; background: rgba(31,93,66,.1); }
+.mini-bar span { height: 100%; background: linear-gradient(90deg, var(--forest-2), var(--gold-soft)); }
 .vehicle-access-panel, .disability-access-panel { border-color: rgba(31,93,66,.26); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(237,244,240,.97)); }
 .vehicle-access-hero, .disability-access-hero { display: grid; grid-template-columns: minmax(210px, .38fr) minmax(0, .62fr); gap: 9px; align-items: stretch; margin-top: 12px; }
 .vehicle-access-hero article, .vehicle-access-hero > div, .disability-access-hero article, .disability-access-hero > div { min-width: 0; padding: 11px; border: 1px solid var(--line); background: rgba(255,255,255,.78); }
@@ -791,7 +822,8 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .hydrology-observation-hero { grid-template-columns: 1fr; }
   .state-water-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .meeting-readiness-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .broadband-shape-strip, .housing-shape-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .broadband-shape-strip, .housing-shape-strip, .housing-age-bars, .housing-age-comparison { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .housing-age-hero { grid-template-columns: 1fr; }
   .health-equity-summary { grid-template-columns: 1fr; }
   .public-safety-questions { grid-template-columns: 1fr; }
   .forecast-snapshot-head { grid-template-columns: 1fr; }
@@ -823,14 +855,14 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .source-queue-card .priority-list { grid-template-columns: 1fr; }
   .economic-module > .intelligence-card, .economic-module .metric-stack { grid-template-columns: 1fr; }
   .kpi-grid, .source-status-strip, .source-stats, .source-maturity-strip, .doc-source-grid, .doc-link-list { grid-template-columns: 1fr; }
-  .dc-meta-grid, .dc-metric-grid, .comparison-grid, .age-profile-grid, .cbp-query-grid, .business-source-grid, .education-route-grid, .income-rollup-grid, .income-bracket-grid, .income-next-actions, .lehd-route-grid, .commute-route-grid, .commute-profile-grid, .housing-tenure-grid, .housing-derived-strip, .labor-force-grid, .funding-summary-grid, .funding-quarter-grid, .sales-tax-source-grid, .permit-route-grid, .community-route-grid, .community-next-steps, .census-crosscheck-grid, .tax-digest-grid { grid-template-columns: 1fr; }
+  .dc-meta-grid, .dc-metric-grid, .comparison-grid, .age-profile-grid, .credential-grid, .cbp-query-grid, .business-source-grid, .education-route-grid, .income-rollup-grid, .income-bracket-grid, .income-next-actions, .lehd-route-grid, .commute-route-grid, .commute-profile-grid, .housing-tenure-grid, .housing-derived-strip, .labor-force-grid, .funding-summary-grid, .funding-quarter-grid, .sales-tax-source-grid, .permit-route-grid, .community-route-grid, .community-next-steps, .census-crosscheck-grid, .tax-digest-grid, .tax-digest-next, .civic-route-grid, .civic-next-steps, .census-link-row, .labor-query-row, .funding-link-row { grid-template-columns: 1fr; }
   .page-brief-strip { grid-template-columns: 1fr; }
   .map-source-bar { grid-template-columns: 1fr; }
   .civic-asset-head { display: block; }
   .civic-asset-list, .city-map-source-list { grid-template-columns: 1fr; }
   .ops-source-grid, .public-safety-source-grid, .public-safety-questions, .operations-confidence-grid, .health-equity-summary, .health-equity-samples, .food-access-grid, .food-access-actions { grid-template-columns: 1fr; }
   .weather-meta-grid, .weather-endpoint-list { grid-template-columns: 1fr; }
-  .internet-subscription-grid, .digital-next-actions, .broadband-source-grid, .broadband-shape-strip, .housing-source-grid, .housing-shape-strip, .vehicle-access-grid, .vehicle-comparison-strip, .disability-age-grid, .disability-comparison-strip, .state-water-grid, .state-water-next, .meeting-readiness-strip, .transport-project-grid, .transport-project-actions, .hazardous-waste-summary, .hazardous-waste-list, .hazardous-waste-actions { grid-template-columns: 1fr; }
+  .internet-subscription-grid, .digital-next-actions, .broadband-source-grid, .broadband-shape-strip, .housing-source-grid, .housing-shape-strip, .housing-age-hero, .housing-age-bars, .housing-age-comparison, .vehicle-access-grid, .vehicle-comparison-strip, .disability-age-grid, .disability-comparison-strip, .state-water-grid, .state-water-next, .meeting-readiness-strip, .transport-project-grid, .transport-project-actions, .hazardous-waste-summary, .hazardous-waste-list, .hazardous-waste-actions { grid-template-columns: 1fr; }
   .vehicle-access-hero, .disability-access-hero { grid-template-columns: 1fr; }
   .forecast-period-grid { grid-template-columns: 1fr; }
   .water-system-list { grid-template-columns: 1fr; }

@@ -11,6 +11,10 @@
     "preview": "astro preview",
     "astro": "astro",
     "fetch:datacommons": "node scripts/fetch-data-commons.js",
+    "fetch:bls": "node scripts/fetch-bls-laus.js",
+    "fetch:socrata": "node scripts/fetch-cdc-places.js",
+    "write:mapbox-readiness": "node scripts/write-mapbox-readiness.js",
+    "refresh:public-data": "npm run fetch:datacommons && npm run fetch:bls && npm run fetch:socrata && npm run write:mapbox-readiness",
     "fetch:docs": "node scripts/fetch-official-documents.js",
     "audit:public": "python3 scripts/publication-audit.py"
   },

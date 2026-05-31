@@ -735,6 +735,17 @@ export const sourceRegistry = [
     difficulty: 'Low',
     status: 'Public API seed ready',
     notes: 'Runtime query returned Waynesboro disability-status context: 495 residents / 8.9% in the ACS universe, plus Burke County and Georgia comparison rows. Added an Operations accessibility/service-context panel. Treat as ACS survey context only; not clinical records, ADA compliance findings, benefits eligibility, EMS demand, school data, or municipal telemetry.'
+  },
+  {
+    name: 'Census Reporter ACS year structure built table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B25034&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS B25034 housing-stock age estimates with margins of error and city/county/state comparison context',
+    geography: 'Waynesboro city, Georgia (16000US1380984), Burke County (05000US13033), and Georgia (04000US13)',
+    accessMethod: 'Public no-key Census Reporter API; low-volume B25034 request cached in src/data/housingAgeSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024 release.',
+    difficulty: 'Low',
+    status: 'Public API seed ready',
+    notes: 'Runtime query returned Waynesboro year-structure-built context: 2,036 pre-1980 units / 76.2% of ACS housing units, plus Burke County and Georgia comparisons. Added an Operations housing-age panel. Treat as survey planning context only; not parcel condition, code-enforcement, rehabilitation-cost, lead-paint, vacancy, or downtown building-inventory evidence.'
   }
 ];
 
@@ -750,7 +761,7 @@ export const readinessStrip = [
   { lane: 'Utilities', status: 'State verification route', source: 'City Water Rates / EPA SDWIS / Georgia EPD DWW', tone: 'good' },
   { lane: 'Digital access', status: 'ACS context + FCC route', source: 'Census Reporter B28002 / FCC BDC', tone: 'good' },
   { lane: 'Mobility access', status: 'ACS vehicle + disability seeds', source: 'Census Reporter B08201 / B18101', tone: 'good' },
-  { lane: 'Housing', status: 'ACS tenure + LIHTC route', source: 'Census Reporter / City DocumentCenter / Georgia DCA', tone: 'good' },
+  { lane: 'Housing', status: 'ACS tenure + age + LIHTC route', source: 'Census Reporter B25003/B25002/B25034 / City DocumentCenter / Georgia DCA', tone: 'good' },
   { lane: 'Environmental', status: 'CWA + RCRA seeds ready', source: 'EPA ECHO Clean Water Act / RCRA', tone: 'good' },
   { lane: 'Hydrology', status: 'USGS IV snapshot', source: 'USGS NWIS Site + Instantaneous Values', tone: 'good' },
   { lane: 'Resilience', status: 'Hazard source stack', source: 'FEMA NFHL / NOAA Storm Events', tone: 'watch' },
@@ -929,6 +940,14 @@ export const sourcePriorities = [
     source: 'Census Reporter ACS housing tables B25003/B25002/B25077/B25064',
     value: 'Adds source-labeled housing context and margins of error while keeping parcel vacancy, downtown occupancy, and affordability findings gated behind stronger local records.',
     nextStep: 'Compare Census Reporter values to Data Commons and city/DCA housing documents, then request/obtain parcel-level vacancy or ownership exports before promoting downtown or neighborhood claims.',
+    difficulty: 'Low'
+  },
+  {
+    lane: 'Housing stock age',
+    target: 'Cross-check ACS structure-age context before rehab or blight recommendations',
+    source: 'Census Reporter ACS B25034 year structure built table',
+    value: 'Adds a public city-level planning signal for older housing, weatherization, and parcel-export prioritization without making parcel condition or code-enforcement claims.',
+    nextStep: 'Pair pre-1980 housing context with qPublic/parcel exports, code-enforcement aggregates, LIHTC/DCA records, and permit history before The Council recommends rehabilitation priorities.',
     difficulty: 'Low'
   },
   {
