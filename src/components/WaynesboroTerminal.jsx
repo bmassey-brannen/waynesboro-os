@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import {
   beautificationFactors,
-  councilBrief,
   downtownProperties,
   economicPipeline,
   housing,
@@ -34,6 +33,7 @@ import { hazardResilienceSeed } from '../data/hazardResilienceSeed.js';
 import { publicSafetySourceSeed } from '../data/publicSafetySourceSeed.js';
 import { healthEquitySeed } from '../data/healthEquitySeed.js';
 import { laborForceSeed } from '../data/laborForceSeed.js';
+import { salesTaxDistributionSeed } from '../data/salesTaxDistributionSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -587,6 +587,33 @@ function LaborForceSourcePanel() {
   );
 }
 
+function SalesTaxDistributionPanel() {
+  return (
+    <section className="sales-tax-panel" aria-label="Georgia DOR sales tax distribution source panel">
+      <div className="bridge-head">
+        <div>
+          <span className="eyebrow">LOCAL REVENUE SOURCE ROUTING</span>
+          <h3>Georgia DOR distribution pages now bracket the sales-tax placeholder</h3>
+        </div>
+        <span className="terminal-badge gold">ROW PARSE PENDING</span>
+      </div>
+      <div className="sales-tax-source-grid">
+        {salesTaxDistributionSeed.sources.map((source) => (
+          <a key={source.label} href={source.url} target="_blank" rel="noreferrer">
+            <span>{source.cadence}</span>
+            <b>{source.label}</b>
+            <small>{source.integrationUse}</small>
+          </a>
+        ))}
+      </div>
+      <div className="sales-tax-next">
+        {salesTaxDistributionSeed.nextSteps.map((step) => <span key={step}>{step}</span>)}
+      </div>
+      <p>{salesTaxDistributionSeed.caveat}</p>
+    </section>
+  );
+}
+
 function EconomicDevelopment() {
   const driRecord = regionalDevelopmentSeed.records[0];
   return (
@@ -617,6 +644,7 @@ function EconomicDevelopment() {
         </div>
         <BusinessSurfacePanel />
         <LaborForceSourcePanel />
+        <SalesTaxDistributionPanel />
         <div className="dri-watch-card">
           <span className="eyebrow">REGIONAL DEVELOPMENT WATCH · SOURCE SEED</span>
           <h3>{driRecord.projectName}</h3>
@@ -1132,6 +1160,33 @@ function InfrastructureSafetyHousing() {
 }
 
 function Council() {
+  const disciplinedBrief = [
+    {
+      status: 'Verified baseline',
+      title: `${metricById['waynesboro-population']?.displayValue || 'N/A'} residents · ${metricById['waynesboro-median-income']?.displayValue || 'N/A'} median income`,
+      note: 'Use Data Commons as the opening baseline, then compare against county/state context before making operating claims.',
+      action: 'Ask staff to validate whether local service demand, housing, and budget assumptions match the baseline.'
+    },
+    {
+      status: 'Official record trail',
+      title: `${officialDocumentsSnapshot.summary.documentCount} public document links indexed`,
+      note: 'Agendas, budgets, check registers, and finance reports are citation paths; contents still need manual review before quotation.',
+      action: 'Turn the next Council brief into a document-backed decision log, not a generic chatbot summary.'
+    },
+    {
+      status: 'Source route added',
+      title: 'DOR sales-tax distribution pages identified',
+      note: 'Revenue placeholders now have a credible state source path, but no Waynesboro sales-tax value has been promoted.',
+      action: 'Parse Burke/Waynesboro rows only after jurisdiction codes, tax type, period, and report URL are attached.'
+    },
+    {
+      status: 'Still synthetic',
+      title: 'Permits, parcels, crime, occupancy, and blight scores remain hypotheses',
+      note: 'The Council may discuss these as questions and operating priorities, not as municipal facts.',
+      action: 'Prioritize parcel/export permission, permit history, public-safety aggregates, and downtown inventory QA.'
+    }
+  ];
+
   const councilEvidence = [
     {
       label: 'Baseline facts',
@@ -1162,10 +1217,19 @@ function Council() {
   return (
     <section id="council" className="module council-panel">
       <section className="panel council-main">
-        <div className="panel-head"><div><span className="eyebrow">AI LAYER</span><h2>The Council</h2></div><span className="terminal-badge gold">MAYOR BRIEF</span></div>
+        <div className="panel-head"><div><span className="eyebrow">AI LAYER</span><h2>The Council</h2></div><span className="terminal-badge gold">SOURCE-GATED BRIEF</span></div>
         <div className="council-grid">
           <div className="orb">WOS</div>
-          <div className="brief-list">{councilBrief.map((line, index) => <p key={line}><b>{String(index + 1).padStart(2, '0')}</b>{line}</p>)}</div>
+          <div className="brief-list council-brief-cards">
+            {disciplinedBrief.map((line, index) => (
+              <article key={line.title}>
+                <div><b>{String(index + 1).padStart(2, '0')}</b><span>{line.status}</span></div>
+                <h3>{line.title}</h3>
+                <p>{line.note}</p>
+                <em>{line.action}</em>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
       <section className="panel roadmap">

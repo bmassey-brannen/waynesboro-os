@@ -132,6 +132,17 @@ export const sourceRegistry = [
     notes: 'Verified child hubs for Property Tax Millage Rates, Digest Consolidated Summaries, and Summary of Ad Valorem Taxes Levied. Latest observed 2025 downloads are indexed as a report-shape seed; no Burke row extraction yet.'
   },
   {
+    name: 'Georgia Department of Revenue Distributions Section: Sales Tax Reports',
+    url: 'https://dor.georgia.gov/local-government-services/distributions-section/sales-tax-distribution-rates-counties-and-cities',
+    dataType: 'Local sales-tax distribution-rate reports, sales-tax commodity reports, and county/city sales-tax ID-code crosswalks',
+    geography: 'Georgia counties and cities; filter to Burke County / Waynesboro only after row and jurisdiction-code verification',
+    accessMethod: 'Public DOR web pages and downloadable reports; low-volume link index cached in src/data/salesTaxDistributionSeed.js.',
+    cadence: 'Distribution-rate and ID-code pages update periodically; commodity report page observed as monthly/annual report surface',
+    difficulty: 'Medium',
+    status: 'Source pages verified',
+    notes: 'Low-volume source check reached DOR pages for Sales Tax Distribution Rates for Counties and Cities, Sales Tax Commodity Report, and County and City Sales Tax ID Codes. Added src/data/salesTaxDistributionSeed.js and an economic local-revenue source panel; no Waynesboro sales-tax amount is displayed until rows are parsed and reconciled.'
+  },
+  {
     name: 'Georgia Department of Labor Area Labor Profiles',
     url: 'https://dol.georgia.gov/workforce-statistics-economic-research',
     dataType: 'Labor force, unemployment, workforce and industry statistics',
@@ -491,7 +502,7 @@ export const readinessStrip = [
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
   { lane: 'Map base', status: 'Boundary seed ready', source: 'OSM + TIGERweb + Census Reporter GeoJSON', tone: 'good' },
   { lane: 'Economy', status: 'CBP scoped', source: 'Census CBP + BLS LAUS', tone: 'good' },
-  { lane: 'Finance', status: 'Tax digest seed', source: 'Georgia DOR Digest Compliance', tone: 'good' },
+  { lane: 'Finance', status: 'Sales-tax + digest routes', source: 'Georgia DOR Distributions / Digest Compliance', tone: 'good' },
   { lane: 'Utilities', status: 'Rate refs indexed', source: 'City Water Rates / DocumentCenter', tone: 'good' },
   { lane: 'Environmental', status: 'CWA seed ready', source: 'EPA ECHO Clean Water Act', tone: 'good' },
   { lane: 'Resilience', status: 'Hazard source stack', source: 'FEMA NFHL / NOAA Storm Events', tone: 'watch' },
@@ -524,6 +535,14 @@ export const sourcePriorities = [
     value: 'Replaces vague workforce placeholders with source-labeled Burke County unemployment and labor-force context for economic-development briefs.',
     nextStep: 'Add a tiny refresh script for LAUCN13033 series, cache latest non-preliminary rows with revision flags, and keep labels county-only unless a city series is confirmed.',
     difficulty: 'Low'
+  },
+  {
+    lane: 'Local revenue / sales tax',
+    target: 'Parse Georgia DOR sales-tax distribution reports for Burke / Waynesboro rows',
+    source: 'Georgia Department of Revenue Distributions Section: Sales Tax Reports',
+    value: 'Gives the synthetic sales-tax revenue card a legitimate state source route before any finance KPI is promoted as local fact.',
+    nextStep: 'Download the latest distribution-rate, commodity, and ID-code reports; verify jurisdiction codes and tax type, then cache only row-level values with source-report URL and period.',
+    difficulty: 'Medium'
   },
   {
     lane: 'Permits / development',
