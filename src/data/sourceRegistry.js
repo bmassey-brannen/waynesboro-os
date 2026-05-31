@@ -396,6 +396,17 @@ export const sourceRegistry = [
     notes: 'Useful candidate for public-safety baselines after the correct agency/ORI and reporting coverage are verified. Treat as source routing only; no crime-rate claims were added.'
   },
   {
+    name: 'Georgia DOT Crash Data & Reporting / AASHTOWare Safety Dashboard',
+    url: 'https://www.dot.ga.gov/GDOT/Pages/CrashReporting.aspx',
+    dataType: 'Crash-reporting source hub, public GDOT crash dashboard link, GEARS references, and crash-report documentation',
+    geography: 'Georgia public roads; future use should verify Burke County / Waynesboro corridor filters and export permissions',
+    accessMethod: 'Public GDOT page and public dashboard link; manually review dashboard filters/export terms before caching any local crash summaries.',
+    cadence: 'GDOT crash dashboard/reporting updates as source systems publish; exact dashboard refresh cadence not confirmed',
+    difficulty: 'Medium',
+    status: 'Road-safety source routed',
+    notes: 'Low-volume source check reached the GDOT Crash Data & Reporting page and found the GDOT Crash Data Dashboard link plus GEARS support/reporting documents. Dashboard direct request returned an old-browser page from this runtime, so keep as manual/source-routing path until Playwright/manual export rules are confirmed. No crash-rate claims added.'
+  },
+  {
     name: 'FEMA NFHL + NOAA Storm Events hazard source stack',
     url: 'https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer',
     dataType: 'Flood hazard map service references, FEMA Flood Map Service Center verification path, and NOAA/NCEI historical storm-event CSV source routing',

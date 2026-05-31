@@ -334,6 +334,28 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .lane article span { color: var(--muted); font-size: 11px; margin-top: 4px; }
 
 .operations-module { display: grid; gap: 14px; }
+.operations-confidence-strip {
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  gap: 12px;
+  align-items: stretch;
+  padding: 12px;
+  border: 1px solid rgba(31,44,37,.14);
+  border-left: 5px solid var(--forest-2);
+  background: linear-gradient(135deg, rgba(255,255,255,.96), rgba(237,244,238,.96));
+  box-shadow: var(--shadow);
+}
+.operations-confidence-strip > div:first-child { min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+.operations-confidence-strip h2 { margin: 4px 0 0; color: #13251b; font-size: 18px; line-height: 1.12; letter-spacing: -.03em; }
+.operations-confidence-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.operations-confidence-grid article { min-width: 0; padding: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.78); }
+.operations-confidence-grid article.good { border-left: 3px solid var(--good); }
+.operations-confidence-grid article.watch { border-left: 3px solid var(--gold-soft); }
+.operations-confidence-grid article.neutral { border-left: 3px solid var(--silver-2); }
+.operations-confidence-grid span, .operations-confidence-grid b, .operations-confidence-grid small { display: block; overflow-wrap: anywhere; }
+.operations-confidence-grid span { color: var(--gold); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
+.operations-confidence-grid b { margin-top: 4px; color: #14271e; font-size: 14px; line-height: 1.2; }
+.operations-confidence-grid small { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.35; }
 .ops-row { display: grid; grid-template-columns: 90px 110px minmax(0, 1fr); gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
 .ops-row span, .ops-row em, .heat-row em { color: var(--muted); font-size: 12px; font-style: normal; }
 .ops-row em { grid-column: 3; color: var(--gold); font-weight: 750; }
@@ -458,8 +480,9 @@ tr:hover td { background: rgba(31,93,66,.045); }
 
 @media (max-width: 1280px) {
   .kpi-grid, .source-status-strip { grid-template-columns: repeat(3, minmax(150px, 1fr)); }
-  .two-col, .three-col, .three-stack, .council-panel, .source-readiness, .civic-briefing-strip { grid-template-columns: 1fr; }
+  .two-col, .three-col, .three-stack, .council-panel, .source-readiness, .civic-briefing-strip, .operations-confidence-strip { grid-template-columns: 1fr; }
   .briefing-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .operations-confidence-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ops-source-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .weather-meta-grid, .weather-endpoint-list, .public-safety-source-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .public-safety-questions { grid-template-columns: 1fr; }
@@ -493,7 +516,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .map-source-bar { grid-template-columns: 1fr; }
   .civic-asset-head { display: block; }
   .civic-asset-list, .city-map-source-list { grid-template-columns: 1fr; }
-  .ops-source-grid, .public-safety-source-grid, .public-safety-questions { grid-template-columns: 1fr; }
+  .ops-source-grid, .public-safety-source-grid, .public-safety-questions, .operations-confidence-grid { grid-template-columns: 1fr; }
   .weather-meta-grid, .weather-endpoint-list { grid-template-columns: 1fr; }
   .forecast-period-grid { grid-template-columns: 1fr; }
   .water-system-list { grid-template-columns: 1fr; }

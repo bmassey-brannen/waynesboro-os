@@ -33,11 +33,20 @@ export const publicSafetySourceSeed = {
       accessMethod: 'Public county information page; records-level data requires official aggregate release or records request.',
       status: 'Records path identified',
       integrationUse: 'Future source path for aggregate call volume and response-time questions, not live dispatch telemetry.'
+    },
+    {
+      label: 'GDOT Crash Data & Reporting',
+      url: 'https://www.dot.ga.gov/GDOT/Pages/CrashReporting.aspx',
+      dataType: 'State crash-reporting source hub with GDOT Crash Data Dashboard link, GEARS references, and crash report documentation',
+      accessMethod: 'Public GDOT page; dashboard is a public web app but should be manually reviewed before any automated connector or local crash claims.',
+      status: 'Road-safety source routed',
+      integrationUse: 'Potential roadway/crash-safety context for corridors and downtown access after geography filters, dashboard export rules, and publication caveats are verified.'
     }
   ],
   nextQuestions: [
     'Which agency/ORI should represent City of Waynesboro police reporting in FBI CDE or GBI tables?',
     'Does the city or county publish monthly aggregate incident, fire, EMS, or E-911 call-volume reports?',
+    'Can GDOT crash dashboard filters/export rules support Burke County or Waynesboro corridor safety summaries without scraping the web app?',
     'What fields can be safely requested as aggregate public records without exposing private incident details?'
   ]
 };

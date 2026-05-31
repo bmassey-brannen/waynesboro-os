@@ -956,9 +956,61 @@ function PublicSafetySourcePanel() {
   );
 }
 
+function OperationsConfidenceStrip() {
+  const liveWeather = weatherAlertsSnapshot.featureCount === 0 ? 'Cached no-alert snapshot' : `${weatherAlertsSnapshot.featureCount} cached alert(s)`;
+  const primarySystem = waterSystemsSeed.systemsServingWaynesboro.find((system) => system.pwsName === 'WAYNESBORO');
+  const safetySources = publicSafetySourceSeed.sources.length;
+
+  const lanes = [
+    {
+      label: 'Health cards',
+      status: 'Synthetic scores',
+      detail: 'Infrastructure, housing, and response metrics are presentation placeholders until official exports exist.',
+      tone: 'watch'
+    },
+    {
+      label: 'Weather readiness',
+      status: liveWeather,
+      detail: `${weatherReadinessSeed.point.countyZone} / ${weatherReadinessSeed.point.forecastZone} public NWS routing cached for briefings.`,
+      tone: 'good'
+    },
+    {
+      label: 'Water identity',
+      status: primarySystem ? `${primarySystem.pwsId} seed` : 'PWSID pending',
+      detail: 'EPA ECHO/SDWIS identity only; no water-quality or live-utility claim promoted.',
+      tone: 'good'
+    },
+    {
+      label: 'Safety sources',
+      status: `${safetySources} routes indexed`,
+      detail: 'Crime, E-911, fire, and crash data paths are separated from synthetic public-safety counts.',
+      tone: 'neutral'
+    }
+  ];
+
+  return (
+    <section className="operations-confidence-strip" aria-label="operations lane data confidence">
+      <div>
+        <span className="eyebrow">OPERATIONS DATA CONFIDENCE</span>
+        <h2>Reference layer first; no live telemetry claims</h2>
+      </div>
+      <div className="operations-confidence-grid">
+        {lanes.map((lane) => (
+          <article key={lane.label} className={lane.tone}>
+            <span>{lane.label}</span>
+            <b>{lane.status}</b>
+            <small>{lane.detail}</small>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function InfrastructureSafetyHousing() {
   return (
     <section id="operations" className="module operations-module">
+      <OperationsConfidenceStrip />
       <div className="three-stack">
         <section className="panel">
           <div className="panel-head"><div><span className="eyebrow">INFRASTRUCTURE</span><h2>System health</h2></div><span className="terminal-badge">SYNTHETIC</span></div>
