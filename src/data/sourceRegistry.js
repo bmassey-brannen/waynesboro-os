@@ -99,6 +99,17 @@ export const sourceRegistry = [
     notes: 'Treat as an intake endpoint, not a public records database unless the vendor/county exposes public reports.'
   },
   {
+    name: 'City of Waynesboro Permitting / Planning / Open Records Routes',
+    url: 'https://www.waynesboroga.com/sitemap.xml',
+    dataType: 'Official city source routes for building permits, planning, licenses/permits, planning boards, zoning appeals, and open-records requests',
+    geography: 'City of Waynesboro, Georgia',
+    accessMethod: 'Public CivicPlus sitemap and pages; normalize links and lastmod metadata only until official exports or document contents are manually reviewed.',
+    cadence: 'Sitemap lastmod dates vary by page; source pages update as city staff publish changes',
+    difficulty: 'Medium',
+    status: 'Source routes indexed',
+    notes: 'Low-volume sitemap review found Building Permits, Planning, Licenses & Permits, Open Records Request, Planning Commission, and Zoning Board of Appeals pages. Added src/data/cityPermittingSeed.js and an economic-development intake panel; do not treat these routes as permit counts, license counts, or approval records.'
+  },
+  {
     name: 'Burke County Board of Commissioners Agendas and Minutes',
     url: 'https://www.burkecounty-ga.gov/departments/board_of_commissioners/meetings_agendas_minutes.php',
     dataType: 'Meetings, agendas, minutes, policy/project decision trail',
@@ -503,6 +514,7 @@ export const readinessStrip = [
   { lane: 'Map base', status: 'Boundary seed ready', source: 'OSM + TIGERweb + Census Reporter GeoJSON', tone: 'good' },
   { lane: 'Economy', status: 'CBP scoped', source: 'Census CBP + BLS LAUS', tone: 'good' },
   { lane: 'Finance', status: 'Sales-tax + digest routes', source: 'Georgia DOR Distributions / Digest Compliance', tone: 'good' },
+  { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },
   { lane: 'Utilities', status: 'Rate refs indexed', source: 'City Water Rates / DocumentCenter', tone: 'good' },
   { lane: 'Environmental', status: 'CWA seed ready', source: 'EPA ECHO Clean Water Act', tone: 'good' },
   { lane: 'Resilience', status: 'Hazard source stack', source: 'FEMA NFHL / NOAA Storm Events', tone: 'watch' },
@@ -542,6 +554,14 @@ export const sourcePriorities = [
     source: 'Georgia Department of Revenue Distributions Section: Sales Tax Reports',
     value: 'Gives the synthetic sales-tax revenue card a legitimate state source route before any finance KPI is promoted as local fact.',
     nextStep: 'Download the latest distribution-rate, commodity, and ID-code reports; verify jurisdiction codes and tax type, then cache only row-level values with source-report URL and period.',
+    difficulty: 'Medium'
+  },
+  {
+    lane: 'Permits / development',
+    target: 'Bind city permit/planning routes to a narrow aggregate-records request',
+    source: 'City of Waynesboro Building Permits / Licenses & Permits / Open Records Request',
+    value: 'Creates an official city route for replacing permit and license placeholders without scraping private intake systems.',
+    nextStep: 'Manually QA the city Building Permits, Licenses & Permits, Planning, and Open Records pages; if no tables are posted, request monthly aggregate permit/license counts only.',
     difficulty: 'Medium'
   },
   {

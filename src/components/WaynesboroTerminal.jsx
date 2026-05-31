@@ -34,6 +34,7 @@ import { publicSafetySourceSeed } from '../data/publicSafetySourceSeed.js';
 import { healthEquitySeed } from '../data/healthEquitySeed.js';
 import { laborForceSeed } from '../data/laborForceSeed.js';
 import { salesTaxDistributionSeed } from '../data/salesTaxDistributionSeed.js';
+import { cityPermittingSeed } from '../data/cityPermittingSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -474,7 +475,7 @@ function SourceReadiness() {
         <div className="panel-head"><div><span className="eyebrow">CONNECTOR ACTION QUEUE</span><h2>Highest-trust next moves</h2></div></div>
         <div className="priority-list">
           {sourcePriorities.map((item) => (
-            <article key={item.lane}>
+            <article key={`${item.lane}-${item.target}`}>
               <div className="priority-top"><span>{item.lane}</span><b>{item.difficulty}</b></div>
               <h3>{item.target}</h3>
               <p>{item.value}</p>
@@ -592,8 +593,8 @@ function SalesTaxDistributionPanel() {
     <section className="sales-tax-panel" aria-label="Georgia DOR sales tax distribution source panel">
       <div className="bridge-head">
         <div>
-          <span className="eyebrow">LOCAL REVENUE SOURCE ROUTING</span>
-          <h3>Georgia DOR distribution pages now bracket the sales-tax placeholder</h3>
+          <span className="eyebrow">LOCAL REVENUE ROUTE · SOURCE-GATED</span>
+          <h3>{salesTaxDistributionSeed.sourceName}</h3>
         </div>
         <span className="terminal-badge gold">ROW PARSE PENDING</span>
       </div>
@@ -610,6 +611,33 @@ function SalesTaxDistributionPanel() {
         {salesTaxDistributionSeed.nextSteps.map((step) => <span key={step}>{step}</span>)}
       </div>
       <p>{salesTaxDistributionSeed.caveat}</p>
+    </section>
+  );
+}
+
+function CityPermittingIntakePanel() {
+  return (
+    <section className="permitting-intake-panel" aria-label="City permitting and planning intake source panel">
+      <div className="bridge-head">
+        <div>
+          <span className="eyebrow">DEVELOPMENT INTAKE · OFFICIAL CITY ROUTES</span>
+          <h3>Permits, planning, licenses, and records requests</h3>
+        </div>
+        <span className="terminal-badge gold">SOURCE ROUTES ONLY</span>
+      </div>
+      <div className="permit-route-grid">
+        {cityPermittingSeed.routes.slice(0, 4).map((route) => (
+          <a key={route.label} href={route.url} target="_blank" rel="noreferrer">
+            <span>{route.dataType}</span>
+            <b>{route.label}</b>
+            <small>Last sitemap update {route.lastmod} · {route.integrationUse}</small>
+          </a>
+        ))}
+      </div>
+      <div className="permit-next-steps">
+        {cityPermittingSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p>{cityPermittingSeed.caveat}</p>
     </section>
   );
 }
@@ -643,6 +671,7 @@ function EconomicDevelopment() {
           <div><b>Industrial sites</b><span>3 priority pads · utilities diligence required</span></div>
         </div>
         <BusinessSurfacePanel />
+        <CityPermittingIntakePanel />
         <LaborForceSourcePanel />
         <SalesTaxDistributionPanel />
         <div className="dri-watch-card">
