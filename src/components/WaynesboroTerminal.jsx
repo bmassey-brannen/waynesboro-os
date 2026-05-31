@@ -31,6 +31,7 @@ import { businessSurfaceSeed } from '../data/businessSurfaceSeed.js';
 import { utilityRateSeed } from '../data/utilityRateSeed.js';
 import { cleanWaterPermitSeed } from '../data/cleanWaterPermitSeed.js';
 import { hazardResilienceSeed } from '../data/hazardResilienceSeed.js';
+import { publicSafetySourceSeed } from '../data/publicSafetySourceSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -928,6 +929,33 @@ function HazardResiliencePanel() {
   );
 }
 
+function PublicSafetySourcePanel() {
+  return (
+    <section className="panel public-safety-source-panel" aria-label="public safety source routing">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">PUBLIC SAFETY SOURCE ROUTING</span>
+          <h2>Crime and response cards stay synthetic until agency-level aggregates are verified</h2>
+        </div>
+        <span className="terminal-badge gold">NO LIVE DISPATCH</span>
+      </div>
+      <div className="public-safety-source-grid">
+        {publicSafetySourceSeed.sources.map((source) => (
+          <a key={source.label} href={source.url} target="_blank" rel="noreferrer">
+            <span>{source.status}</span>
+            <b>{source.label}</b>
+            <small>{source.integrationUse}</small>
+          </a>
+        ))}
+      </div>
+      <div className="public-safety-questions">
+        {publicSafetySourceSeed.nextQuestions.map((question) => <span key={question}>{question}</span>)}
+      </div>
+      <p className="source-note">{publicSafetySourceSeed.posture}</p>
+    </section>
+  );
+}
+
 function InfrastructureSafetyHousing() {
   return (
     <section id="operations" className="module operations-module">
@@ -946,6 +974,7 @@ function InfrastructureSafetyHousing() {
           {housing.map((zone) => <div key={zone.zone} className="heat-row"><b>{zone.zone}</b><div className="heat"><span style={{ width: `${zone.heat}%` }} /></div><em>{zone.note}</em></div>)}
         </section>
       </div>
+      <PublicSafetySourcePanel />
       <WeatherReadinessPanel />
       <WaterSystemsPanel />
       <UtilityRateReferencePanel />
@@ -1043,6 +1072,7 @@ function Council() {
 function PublicTrustRibbon() {
   const officialLinks = officialDocumentsSnapshot.summary.documentCount;
   const liveConnectors = sourceRegistry.filter((source) => source.status === 'Live connector active').length;
+  const connectorLabel = `${liveConnectors} public connector${liveConnectors === 1 ? '' : 's'} active`;
 
   return (
     <section className="trust-ribbon" aria-label="public demo data status">
@@ -1053,7 +1083,7 @@ function PublicTrustRibbon() {
       </article>
       <article>
         <span>Live baseline</span>
-        <b>{liveConnectors} public connector active</b>
+        <b>{connectorLabel}</b>
         <small>Data Commons baseline and NWS alert snapshot are source-labeled.</small>
       </article>
       <article>

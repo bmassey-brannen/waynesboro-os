@@ -342,7 +342,16 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .ops-source-grid article { min-width: 0; padding: 11px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
 .ops-source-grid a { display: block; margin-top: 8px; color: #13251b; font-size: 13px; font-weight: 900; text-decoration: none; overflow-wrap: anywhere; }
 .ops-source-grid p { margin: 6px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
-.weather-readiness-panel, .water-system-panel, .utility-rate-panel, .clean-water-panel, .hazard-resilience-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,238,.97)); border-color: rgba(38,116,79,.24); }
+.weather-readiness-panel, .water-system-panel, .utility-rate-panel, .clean-water-panel, .hazard-resilience-panel, .public-safety-source-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,238,.97)); border-color: rgba(38,116,79,.24); }
+.public-safety-source-panel { border-color: rgba(165,128,49,.24); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(248,244,232,.96)); }
+.public-safety-source-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.public-safety-source-grid a { min-width: 0; display: block; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--gold-soft); background: rgba(255,255,255,.78); text-decoration: none; }
+.public-safety-source-grid span, .public-safety-source-grid b, .public-safety-source-grid small, .public-safety-questions span { display: block; overflow-wrap: anywhere; }
+.public-safety-source-grid span { color: var(--gold); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
+.public-safety-source-grid b { margin-top: 4px; color: #13251b; font-size: 13px; line-height: 1.22; }
+.public-safety-source-grid small { margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.public-safety-questions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.public-safety-questions span { padding: 8px; border: 1px solid rgba(165,128,49,.22); background: rgba(165,128,49,.06); color: #3b4031; font-size: 11px; line-height: 1.35; font-weight: 750; }
 .utility-rate-panel { border-color: rgba(165,128,49,.25); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(248,244,232,.96)); }
 .clean-water-panel { border-color: rgba(31,93,66,.26); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(238,244,239,.97)); }
 .hazard-resilience-panel { border-color: rgba(165,128,49,.25); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(248,244,232,.96)); }
@@ -452,7 +461,8 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .two-col, .three-col, .three-stack, .council-panel, .source-readiness, .civic-briefing-strip { grid-template-columns: 1fr; }
   .briefing-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ops-source-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .weather-meta-grid, .weather-endpoint-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .weather-meta-grid, .weather-endpoint-list, .public-safety-source-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .public-safety-questions { grid-template-columns: 1fr; }
   .forecast-snapshot-head { grid-template-columns: 1fr; }
   .forecast-period-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .water-system-primary { grid-template-columns: 1fr; }
@@ -483,7 +493,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .map-source-bar { grid-template-columns: 1fr; }
   .civic-asset-head { display: block; }
   .civic-asset-list, .city-map-source-list { grid-template-columns: 1fr; }
-  .ops-source-grid { grid-template-columns: 1fr; }
+  .ops-source-grid, .public-safety-source-grid, .public-safety-questions { grid-template-columns: 1fr; }
   .weather-meta-grid, .weather-endpoint-list { grid-template-columns: 1fr; }
   .forecast-period-grid { grid-template-columns: 1fr; }
   .water-system-list { grid-template-columns: 1fr; }

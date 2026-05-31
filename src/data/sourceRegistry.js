@@ -374,6 +374,28 @@ export const sourceRegistry = [
     notes: 'Sitemap exposes Police and Fire pages. Public-safety KPIs must stay synthetic until aggregate incident/response records are officially published or obtained.'
   },
   {
+    name: 'Georgia Bureau of Investigation Crime Statistics',
+    url: 'https://gbi.georgia.gov/services/crime-statistics',
+    dataType: 'State public crime-statistics service surface and Georgia crime-reporting context',
+    geography: 'Georgia statewide; confirm Waynesboro/Burke County agency coverage before use',
+    accessMethod: 'Public web page; reference/manual review first, then normalize only official downloadable or agency-level tables if exposed.',
+    cadence: 'As published by GBI; exact table cadence must be confirmed',
+    difficulty: 'Medium',
+    status: 'Reference ready',
+    notes: 'Low-volume check reached the GBI Crime Statistics page. Added src/data/publicSafetySourceSeed.js as a public-safety source ledger; do not replace demo public-safety counts until agency/ORI coverage, date ranges, and table definitions are verified.'
+  },
+  {
+    name: 'FBI Crime Data Explorer',
+    url: 'https://cde.ucr.cjis.gov/LATEST/webapp/#/pages/home',
+    dataType: 'National public crime data portal and potential agency-level crime-reporting API/source path',
+    geography: 'United States; identify correct Waynesboro/Burke County reporting agency or ORI before binding values',
+    accessMethod: 'Public web app/API surface; this environment reached the CDE web app but api.usa.gov CDE probes timed out, so confirm endpoint reliability before coding a connector.',
+    cadence: 'FBI CDE updates as agencies submit/release data; reporting completeness varies by agency and year',
+    difficulty: 'Medium',
+    status: 'Endpoint needs confirmation',
+    notes: 'Useful candidate for public-safety baselines after the correct agency/ORI and reporting coverage are verified. Treat as source routing only; no crime-rate claims were added.'
+  },
+  {
     name: 'FEMA NFHL + NOAA Storm Events hazard source stack',
     url: 'https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer',
     dataType: 'Flood hazard map service references, FEMA Flood Map Service Center verification path, and NOAA/NCEI historical storm-event CSV source routing',
@@ -441,7 +463,7 @@ export const readinessStrip = [
   { lane: 'Environmental', status: 'CWA seed ready', source: 'EPA ECHO Clean Water Act', tone: 'good' },
   { lane: 'Resilience', status: 'Hazard source stack', source: 'FEMA NFHL / NOAA Storm Events', tone: 'watch' },
   { lane: 'Ordinances', status: 'Reference-ready', source: 'Municode Library', tone: 'good' },
-  { lane: 'Public safety', status: 'Official aggregate needed', source: 'E-911 / records request path', tone: 'neutral' }
+  { lane: 'Public safety', status: 'Crime source routing', source: 'GBI Crime Statistics / FBI CDE / E-911', tone: 'watch' }
 ];
 
 export const sourcePriorities = [
@@ -539,6 +561,14 @@ export const sourcePriorities = [
     source: 'FEMA NFHL / FEMA MSC / NOAA NCEI Storm Events',
     value: 'Adds defensible flood and historical severe-weather context for downtown, infrastructure, and Council planning without making unsupported parcel-risk claims.',
     nextStep: 'Confirm NFHL ArcGIS REST access outside this runtime TLS issue, then build a low-volume county/point metadata cache and filter NOAA annual Storm Events CSVs to Georgia / Burke County.',
+    difficulty: 'Medium'
+  },
+  {
+    lane: 'Public safety',
+    target: 'Confirm agency/ORI and aggregate-reporting path before crime KPI promotion',
+    source: 'GBI Crime Statistics / FBI Crime Data Explorer / Burke County E-911',
+    value: 'Gives the public-safety lane a credible source-routing plan while preventing demo incident cards from reading like official crime claims.',
+    nextStep: 'Manually identify the reporting agency/ORI for Waynesboro, test GBI/FBI table availability, and request only aggregate call/incident fields if local reports are not posted.',
     difficulty: 'Medium'
   },
   {
