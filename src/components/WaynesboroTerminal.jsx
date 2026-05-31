@@ -28,6 +28,7 @@ import { censusReporterSeed } from '../data/censusReporterSeed.js';
 import { taxDigestSeed } from '../data/taxDigestSeed.js';
 import { cityMapSourceSeed } from '../data/cityMapSourceSeed.js';
 import { businessSurfaceSeed } from '../data/businessSurfaceSeed.js';
+import { utilityRateSeed } from '../data/utilityRateSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -844,6 +845,30 @@ function WaterSystemsPanel() {
   );
 }
 
+function UtilityRateReferencePanel() {
+  return (
+    <section className="panel utility-rate-panel">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">UTILITY RATE / WATER REFERENCES</span>
+          <h2>Official city pages now separate source links from operating guesses</h2>
+        </div>
+        <span className="terminal-badge gold">REFERENCE INDEX</span>
+      </div>
+      <div className="utility-reference-grid">
+        {utilityRateSeed.references.map((ref) => (
+          <a href={ref.url} target="_blank" rel="noreferrer" key={ref.label}>
+            <span>{ref.type}</span>
+            <b>{ref.label}</b>
+            <small>{ref.integrationUse}</small>
+          </a>
+        ))}
+      </div>
+      <p className="source-note">{utilityRateSeed.caveat} Retrieved/source-checked {new Date(utilityRateSeed.retrievedAt).toLocaleDateString()} from public City of Waynesboro pages.</p>
+    </section>
+  );
+}
+
 function InfrastructureSafetyHousing() {
   return (
     <section id="operations" className="module operations-module">
@@ -864,6 +889,7 @@ function InfrastructureSafetyHousing() {
       </div>
       <WeatherReadinessPanel />
       <WaterSystemsPanel />
+      <UtilityRateReferencePanel />
       <section className="panel ops-source-ledger">
         <div className="panel-head">
           <div>

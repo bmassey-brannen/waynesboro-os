@@ -305,7 +305,18 @@ export const sourceRegistry = [
     cadence: 'As posted by city; report cadence not yet confirmed',
     difficulty: 'Medium',
     status: 'Reference ready',
-    notes: 'Sitemap also exposes About Our Water and Water Rates pages. Good operations-lane anchor, but not live system telemetry.'
+    notes: 'Sitemap and page navigation expose About Our Water at /216/About-Our-Water and Water Rates at /219/Water-Rates. Good operations-lane anchors, but not live system telemetry.'
+  },
+  {
+    name: 'City of Waynesboro Water Rates and DocumentCenter fee schedules',
+    url: 'https://www.waynesboroga.com/219/Water-Rates',
+    dataType: 'Official water-rate page plus DocumentCenter links for the 2025 Schedule of Rates and Fees and outdoor watering restrictions PDF',
+    geography: 'City of Waynesboro utility customers / public water users',
+    accessMethod: 'Public CivicPlus pages and PDF/document links; index links and manually verify PDFs before extracting charges or policy text.',
+    cadence: 'As posted by city; fee schedules appear annual but cadence must be confirmed from adopted documents.',
+    difficulty: 'Medium',
+    status: 'Reference index ready',
+    notes: 'Low-volume public check found /216/About-Our-Water, /219/Water-Rates, DocumentCenter/View/877/2025-Schedule-of-Rates-and-Fees, and DocumentCenter/View/143 outdoor watering restrictions. Added src/data/utilityRateSeed.js and an operations reference panel; do not present rates/rules as parsed facts until manual QA.'
   },
   {
     name: 'EPA SDWIS Federal Reporting Services',
@@ -404,6 +415,7 @@ export const readinessStrip = [
   { lane: 'Map base', status: 'Boundary seed ready', source: 'OSM + TIGERweb + Census Reporter GeoJSON', tone: 'good' },
   { lane: 'Economy', status: 'CBP scoped', source: 'Census County Business Patterns', tone: 'watch' },
   { lane: 'Finance', status: 'Tax digest seed', source: 'Georgia DOR Digest Compliance', tone: 'good' },
+  { lane: 'Utilities', status: 'Rate refs indexed', source: 'City Water Rates / DocumentCenter', tone: 'good' },
   { lane: 'Ordinances', status: 'Reference-ready', source: 'Municode Library', tone: 'good' },
   { lane: 'Public safety', status: 'Official aggregate needed', source: 'E-911 / records request path', tone: 'neutral' }
 ];
@@ -480,6 +492,14 @@ export const sourcePriorities = [
     value: 'Adds a public, timestamped water-system identity layer with Waynesboro PWSID GA0330004 while keeping utility health scores clearly separate from live telemetry.',
     nextStep: 'Build a small refresh script around get_systems + get_qid, then add manual QA against the EPA SDWIS Federal Reporting Services web view before citing compliance details.',
     difficulty: 'Low'
+  },
+  {
+    lane: 'Utilities / rates',
+    target: 'Manually QA the 2025 Schedule of Rates and Fees before parsing any utility-cost facts',
+    source: 'City of Waynesboro Water Rates / DocumentCenter fee schedule',
+    value: 'Creates a public, city-sourced bridge from the operations lane to utility-cost and water-use reference cards without inventing rate figures.',
+    nextStep: 'Open the linked DocumentCenter fee schedule and watering-restrictions PDF, extract only clearly labeled fields with retrieval dates, then compare against adopted budget/ordinance sources.',
+    difficulty: 'Medium'
   },
   {
     lane: 'Civic assets / map',

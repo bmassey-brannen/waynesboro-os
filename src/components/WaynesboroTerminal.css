@@ -342,7 +342,14 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .ops-source-grid article { min-width: 0; padding: 11px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
 .ops-source-grid a { display: block; margin-top: 8px; color: #13251b; font-size: 13px; font-weight: 900; text-decoration: none; overflow-wrap: anywhere; }
 .ops-source-grid p { margin: 6px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
-.weather-readiness-panel, .water-system-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,238,.97)); border-color: rgba(38,116,79,.24); }
+.weather-readiness-panel, .water-system-panel, .utility-rate-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,238,.97)); border-color: rgba(38,116,79,.24); }
+.utility-rate-panel { border-color: rgba(165,128,49,.25); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(248,244,232,.96)); }
+.utility-reference-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.utility-reference-grid a { min-width: 0; display: block; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--gold-soft); background: rgba(255,255,255,.76); text-decoration: none; }
+.utility-reference-grid span, .utility-reference-grid b, .utility-reference-grid small { display: block; overflow-wrap: anywhere; }
+.utility-reference-grid span { color: var(--gold); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
+.utility-reference-grid b { margin-top: 4px; color: #13251b; font-size: 12px; line-height: 1.25; }
+.utility-reference-grid small { margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.35; }
 .weather-meta-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; margin-top: 12px; }
 .weather-meta-grid article { min-width: 0; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
 .water-system-primary { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(180px, .45fr) minmax(220px, .65fr); gap: 9px; margin-top: 12px; }
@@ -431,6 +438,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .forecast-period-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .water-system-primary { grid-template-columns: 1fr; }
   .water-system-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .utility-reference-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .active-alert-snapshot { grid-template-columns: 1fr; }
   .comparison-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .evidence-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -457,6 +465,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .weather-meta-grid, .weather-endpoint-list { grid-template-columns: 1fr; }
   .forecast-period-grid { grid-template-columns: 1fr; }
   .water-system-list { grid-template-columns: 1fr; }
+  .utility-reference-grid { grid-template-columns: 1fr; }
   .evidence-grid { grid-template-columns: 1fr; }
   .factor, .ops-row, .heat-row { grid-template-columns: 1fr; }
   .source-list article { grid-template-columns: 1fr; }
