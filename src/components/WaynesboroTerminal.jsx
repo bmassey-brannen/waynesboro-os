@@ -49,6 +49,7 @@ import { hydrologyObservationsSeed } from '../data/hydrologyObservationsSeed.js'
 import { lehdCommutingSeed } from '../data/lehdCommutingSeed.js';
 import { housingTenureSeed } from '../data/housingTenureSeed.js';
 import { housingAgeSeed } from '../data/housingAgeSeed.js';
+import { housingCostBurdenSeed } from '../data/housingCostBurdenSeed.js';
 import { commuteProfileSeed } from '../data/commuteProfileSeed.js';
 import { workforceEducationSeed } from '../data/workforceEducationSeed.js';
 import { foodAccessSeed } from '../data/foodAccessSeed.js';
@@ -569,9 +570,9 @@ function CredentialReadinessPanel() {
     },
     {
       label: 'CDC PLACES / Socrata',
-      status: healthEquitySeed.credentialStatus?.appToken === 'local_token_configured' ? 'TOKEN OK' : healthEquitySeed.credentialStatus?.appToken === 'local_token_rejected_fell_back_to_public_low_volume' ? 'TOKEN REJECTED · PUBLIC FALLBACK' : 'PUBLIC MODE',
+      status: healthEquitySeed.credentialStatus?.appTokenStatus === 'local_token_configured' ? 'TOKEN OK' : healthEquitySeed.credentialStatus?.appTokenStatus === 'local_token_rejected_fell_back_to_public_low_volume' ? 'TOKEN REJECTED · PUBLIC FALLBACK' : 'PUBLIC MODE',
       detail: `${healthEquitySeed.observedShape.rowsForBurkeCountyObserved} Burke County tract-measure rows observed`,
-      tone: healthEquitySeed.credentialStatus?.appToken === 'local_token_rejected_fell_back_to_public_low_volume' ? 'watch' : 'live'
+      tone: healthEquitySeed.credentialStatus?.appTokenStatus === 'local_token_rejected_fell_back_to_public_low_volume' ? 'watch' : 'live'
     },
     {
       label: 'Census API',
@@ -615,6 +616,14 @@ function SourceReadiness() {
     counts[source.status] = (counts[source.status] || 0) + 1;
     return counts;
   }, {});
+  const seedReadyCount = (statusCounts['Seed connector ready'] || 0) + (statusCounts['Public API seed ready'] || 0);
+  const maturityStatuses = [
+    { label: 'Live connector active', statuses: ['Live connector active'], detail: 'browser-safe snapshots only' },
+    { label: 'Seed connector ready', statuses: ['Seed connector ready', 'Public API seed ready'], detail: 'cached public seeds' },
+    { label: 'Source routes indexed', statuses: ['Source routes indexed', 'Source route indexed'], detail: 'identified, not parsed' },
+    { label: 'Reference / doc ready', statuses: ['Reference ready', 'Ready for document index'], detail: 'citation or document lane' },
+    { label: 'Manual / scoped', statuses: ['Manual research', 'Connector scoped', 'Connector planned'], detail: 'requires QA or access' }
+  ];
   const featuredSources = sourceRegistry
     .filter((source) => ['Live connector active', 'Ready for document index', 'Seed connector ready', 'Reference ready', 'Source hub identified'].includes(source.status))
     .slice(0, 7);
@@ -633,14 +642,14 @@ function SourceReadiness() {
           <article><b>{sourceRegistry.length}</b><span>sources identified</span></article>
           <article><b>{statusCounts['Reference ready'] || 0}</b><span>reference ready</span></article>
           <article><b>{statusCounts['Ready for document index'] || 0}</b><span>doc-index ready</span></article>
-          <article><b>{statusCounts['Seed connector ready'] || 0}</b><span>seed connector</span></article>
+          <article><b>{seedReadyCount}</b><span>seed connector</span></article>
         </div>
         <div className="source-maturity-strip" aria-label="source maturity summary">
-          {['Live connector active', 'Seed connector ready', 'Source route indexed', 'Reference ready', 'Manual research'].map((status) => (
-            <article key={status}>
-              <span>{status}</span>
-              <b>{statusCounts[status] || 0}</b>
-              <small>{status === 'Live connector active' ? 'browser-safe snapshots only' : status === 'Source route indexed' ? 'identified, not parsed' : 'tracked in registry'}</small>
+          {maturityStatuses.map((group) => (
+            <article key={group.label}>
+              <span>{group.label}</span>
+              <b>{group.statuses.reduce((total, status) => total + (statusCounts[status] || 0), 0)}</b>
+              <small>{group.detail}</small>
             </article>
           ))}
         </div>
@@ -1100,6 +1109,18 @@ function EconomicDevelopment() {
 function DowntownCommandCenter() {
   const civicAssets = osmCivicAssetsSeed.assets.slice(0, 5);
   const mapSources = cityMapSourceSeed.links.slice(0, 5);
+  const latValues = civicAssets.map((asset) => asset.lat);
+  const lonValues = civicAssets.map((asset) => asset.lon);
+  const bounds = {
+    minLat: Math.min(...latValues) - 0.006,
+    maxLat: Math.max(...latValues) + 0.006,
+    minLon: Math.min(...lonValues) - 0.006,
+    maxLon: Math.max(...lonValues) + 0.006
+  };
+  const projectAsset = (asset) => ({
+    left: `${12 + ((asset.lon - bounds.minLon) / (bounds.maxLon - bounds.minLon)) * 76}%`,
+    top: `${12 + ((bounds.maxLat - asset.lat) / (bounds.maxLat - bounds.minLat)) * 70}%`
+  });
 
   return (
     <section id="downtown" className="module three-col">
@@ -1122,13 +1143,31 @@ function DowntownCommandCenter() {
             <small>Real parcel geometry still requires qPublic/export permission.</small>
           </article>
         </div>
-        <div className="city-map">
+        <div className="city-map evidence-map" aria-label="Cached civic anchor map for Waynesboro">
           <div className="gridlines" />
-          {downtownProperties.map((p, index) => <button key={p.name} className={`map-node node-${index}`}>{p.name}</button>)}
-          <span className="map-label label-a">Liberty St</span>
-          <span className="map-label label-b">Sixth St</span>
-          <span className="map-label label-c">Redevelopment seam</span>
-          <div className="map-disclaimer">Schematic mock parcel layer · centered from OSM seed, not a live GIS boundary</div>
+          <div className="map-route route-liberty" />
+          <div className="map-route route-sixth" />
+          <div className="map-zone zone-downtown">Downtown core</div>
+          <div className="map-zone zone-health">Health / services</div>
+          {downtownProperties.map((p, index) => <button key={p.name} className={`map-node parcel-node node-${index}`} type="button"><span>Mock parcel</span>{p.name}</button>)}
+          {civicAssets.map((asset, index) => (
+            <a
+              key={asset.id}
+              className={`asset-marker asset-${asset.type} asset-index-${index}`}
+              href={`https://www.openstreetmap.org/${asset.osmElement}`}
+              target="_blank"
+              rel="noreferrer"
+              style={projectAsset(asset)}
+              title={`${asset.name} · ${asset.type}`}
+            >
+              <span>{asset.type}</span>
+              <b>{asset.name}</b>
+            </a>
+          ))}
+          <span className="map-label label-a">schematic corridor</span>
+          <span className="map-label label-b">orientation axis</span>
+          <span className="map-label label-c">redevelopment study area</span>
+          <div className="map-disclaimer">Relative OSM anchor plot + schematic parcel layer · not survey/GIS accurate · no Mapbox requests</div>
         </div>
         <div className="layer-strip">{mapLayers.map((layer) => <span key={layer}>{layer}</span>)}</div>
         <div className="civic-asset-seed" aria-label="OpenStreetMap civic asset seed">
@@ -2004,6 +2043,52 @@ function HousingTenureSourcePanel() {
   );
 }
 
+function HousingCostBurdenPanel() {
+  const headline = housingCostBurdenSeed.metrics.find((metric) => metric.id === 'renter-cost-burden');
+  return (
+    <section className="panel housing-cost-panel" aria-label="ACS housing cost burden source snapshot">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">HOUSING COST BURDEN · ACS CONTEXT</span>
+          <h2>Affordability pressure context before program or eligibility claims</h2>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="housing-cost-hero">
+        <article>
+          <span>{headline.label}</span>
+          <b>{headline.displayShare}</b>
+          <small>{headline.displayValue} of {headline.denominator.toLocaleString()} renter-occupied units · MOE ±{headline.moe.toLocaleString()}</small>
+        </article>
+        <div>
+          <h3>Guardrail for public use</h3>
+          <p>Cost-burden estimates can frame affordability questions, grant readiness, and housing-source priorities — but they cannot stand in for rent rolls, household eligibility, eviction records, or city program enrollment.</p>
+          <a href={housingCostBurdenSeed.sourceUrl} target="_blank" rel="noreferrer">Census Reporter B25070 / B25091 source query</a>
+        </div>
+      </div>
+      <div className="housing-cost-grid">
+        {housingCostBurdenSeed.metrics.map((metric) => (
+          <article key={metric.id}>
+            <span>{metric.label}</span>
+            <b>{metric.displayShare}</b>
+            <small>{metric.displayValue} households · MOE ±{metric.moe.toLocaleString()} · {metric.sourceTable}</small>
+          </article>
+        ))}
+      </div>
+      <div className="housing-cost-comparison">
+        {housingCostBurdenSeed.comparisonRows.map((row) => (
+          <article key={row.geography}>
+            <span>{row.geography}</span>
+            <b>{row.renterCostBurdenShare}</b>
+            <small>renter cost burden · {row.ownerCostBurdenShare} owner burden</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{housingCostBurdenSeed.caveat} Release: {housingCostBurdenSeed.release.name} ({housingCostBurdenSeed.release.years}); retrieved {new Date(housingCostBurdenSeed.retrievedAt).toLocaleDateString()}.</p>
+    </section>
+  );
+}
+
 function HousingAgeSourcePanel() {
   const headline = housingAgeSeed.derived.find((item) => item.id === 'pre-1980-housing');
   const vintageBars = housingAgeSeed.groups.slice(5);
@@ -2077,6 +2162,7 @@ function InfrastructureSafetyHousing() {
       <DisabilityAccessPanel />
       <FoodAccessSourcePanel />
       <HousingTenureSourcePanel />
+      <HousingCostBurdenPanel />
       <HousingAgeSourcePanel />
       <AffordableHousingSourcePanel />
       <WeatherReadinessPanel />
@@ -2380,7 +2466,7 @@ function PageBriefStrip({ page }) {
     sources: [
       { label: 'Registry', value: `${sourceRegistry.length} sources`, detail: 'Source routes, seeds, and manual lanes tracked.' },
       { label: 'Queue', value: `${sourcePriorities.length} tasks`, detail: 'Top 8 rendered to avoid backlog sprawl.' },
-      { label: 'Latest seed', value: 'ACS disability', detail: 'B18101 added as accessibility context.' }
+      { label: 'Latest seed', value: 'Housing cost', detail: 'B25070/B25091 affordability burden context.' }
     ],
     economic: [
       { label: 'Workforce', value: 'ACS + BLS', detail: 'City survey context plus county LAUS.' },
@@ -2395,7 +2481,8 @@ function PageBriefStrip({ page }) {
     operations: [
       { label: 'Telemetry guardrail', value: 'Reference layer', detail: 'No live dispatch, utility, or emergency claims.' },
       { label: 'Mobility', value: noVehicleMetric?.displayShare || 'ACS seeded', detail: 'Zero-vehicle context with MOE caveats.' },
-      { label: 'Accessibility', value: disabledMetric?.displayShare || 'ACS seeded', detail: 'Disability context added for planning only.' }
+      { label: 'Accessibility', value: disabledMetric?.displayShare || 'ACS seeded', detail: 'Disability context added for planning only.' },
+      { label: 'Affordability', value: housingCostBurdenSeed.metrics.find((metric) => metric.id === 'renter-cost-burden')?.displayShare || 'ACS seeded', detail: 'Renter cost-burden survey context with MOE caveats.' }
     ],
     council: [
       { label: 'Advisor mode', value: 'Source-gated', detail: 'The Council separates evidence from placeholder judgment.' },
