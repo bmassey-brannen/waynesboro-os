@@ -625,6 +625,17 @@ export const sourceRegistry = [
     difficulty: 'Medium',
     status: 'Source route verified',
     notes: 'HEAD checks returned HTTP 200 for Georgia WAC, RAC, OD main jobs, Georgia crosswalk, and LODES technical documentation. Added src/data/lehdCommutingSeed.js and a compact economic workforce/commuting source panel. Do not present city job counts, commuter inflow/outflow, employer lists, or block-level claims until place aggregation and disclosure-safe summarization are complete.'
+  },
+  {
+    name: 'Census Reporter ACS housing tenure and occupancy tables',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B25003,B25002,B25077,B25064&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS housing tenure, occupancy status, median owner-occupied value, and median gross rent estimates with margins of error',
+    geography: 'Waynesboro city, Georgia (16000US1380984), with Burke County and Georgia cross-check geographies in the request shape',
+    accessMethod: 'Public no-key Census Reporter API; low-volume request with User-Agent cached in src/data/housingTenureSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024 release.',
+    difficulty: 'Low',
+    status: 'Public API seed ready',
+    notes: 'Runtime query returned occupied, owner/renter, vacant housing, median home value, and median gross rent estimates for Waynesboro with MOE. Added an Operations housing source panel. Treat as ACS context only; not parcel-level vacancy, rent-roll, tax, code-enforcement, official housing-program, or downtown occupancy data.'
   }
 ];
 
@@ -639,7 +650,7 @@ export const readinessStrip = [
   { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },
   { lane: 'Utilities', status: 'State verification route', source: 'City Water Rates / EPA SDWIS / Georgia EPD DWW', tone: 'good' },
   { lane: 'Broadband', status: 'FCC route scoped', source: 'FCC Broadband Map / BDC downloads', tone: 'watch' },
-  { lane: 'Housing', status: 'LIHTC route indexed', source: 'City DocumentCenter / Georgia DCA', tone: 'watch' },
+  { lane: 'Housing', status: 'ACS tenure + LIHTC route', source: 'Census Reporter / City DocumentCenter / Georgia DCA', tone: 'good' },
   { lane: 'Environmental', status: 'CWA seed ready', source: 'EPA ECHO Clean Water Act', tone: 'good' },
   { lane: 'Hydrology', status: 'USGS IV snapshot', source: 'USGS NWIS Site + Instantaneous Values', tone: 'good' },
   { lane: 'Resilience', status: 'Hazard source stack', source: 'FEMA NFHL / NOAA Storm Events', tone: 'watch' },
@@ -771,6 +782,14 @@ export const sourcePriorities = [
     value: 'Adds a public federal route for broadband availability and digital-infrastructure planning without guessing provider coverage or outage status.',
     nextStep: 'Manually review FCC download/export rules and current filing vintage; cache only permitted aggregate availability counts by geography/technology/speed tier with source URL and vintage.',
     difficulty: 'Medium'
+  },
+  {
+    lane: 'Housing / tenure',
+    target: 'Cross-check ACS housing tenure and vacancy estimates before parcel claims',
+    source: 'Census Reporter ACS housing tables B25003/B25002/B25077/B25064',
+    value: 'Adds source-labeled housing context and margins of error while keeping parcel vacancy, downtown occupancy, and affordability findings gated behind stronger local records.',
+    nextStep: 'Compare Census Reporter values to Data Commons and city/DCA housing documents, then request/obtain parcel-level vacancy or ownership exports before promoting downtown or neighborhood claims.',
+    difficulty: 'Low'
   },
   {
     lane: 'Housing affordability',

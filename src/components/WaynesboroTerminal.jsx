@@ -47,6 +47,7 @@ import { affordableHousingSeed } from '../data/affordableHousingSeed.js';
 import { usgsHydrologySeed } from '../data/usgsHydrologySeed.js';
 import { hydrologyObservationsSeed } from '../data/hydrologyObservationsSeed.js';
 import { lehdCommutingSeed } from '../data/lehdCommutingSeed.js';
+import { housingTenureSeed } from '../data/housingTenureSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -1545,6 +1546,36 @@ function AffordableHousingSourcePanel() {
   );
 }
 
+function HousingTenureSourcePanel() {
+  const primary = housingTenureSeed.metrics.filter((metric) => ['occupied-housing-units', 'renter-occupied-units', 'vacant-housing-units', 'median-gross-rent'].includes(metric.id));
+  return (
+    <section className="housing-tenure-panel">
+      <div className="bridge-head">
+        <div>
+          <span className="eyebrow">HOUSING SOURCE SNAPSHOT</span>
+          <h3>ACS housing context before parcel-level vacancy claims</h3>
+        </div>
+        <span className="terminal-badge live">PUBLIC API SEED</span>
+      </div>
+      <div className="housing-tenure-grid">
+        {primary.map((metric) => (
+          <article key={metric.id}>
+            <span>{metric.label}</span>
+            <b>{metric.displayValue}</b>
+            <small>MOE ±{metric.moe.toLocaleString()} · {metric.table}</small>
+          </article>
+        ))}
+      </div>
+      <div className="housing-derived-strip">
+        {housingTenureSeed.derived.map((item) => (
+          <span key={item.id}><b>{item.displayValue}</b> {item.label}</span>
+        ))}
+      </div>
+      <p>{housingTenureSeed.caveat} Release: {housingTenureSeed.release.name} ({housingTenureSeed.release.years}); retrieved through Census Reporter, not the credentialed Census API.</p>
+    </section>
+  );
+}
+
 function InfrastructureSafetyHousing() {
   return (
     <section id="operations" className="module operations-module">
@@ -1567,6 +1598,7 @@ function InfrastructureSafetyHousing() {
       <TransportationProjectSourcePanel />
       <PublicSafetySourcePanel />
       <HealthEquitySourcePanel />
+      <HousingTenureSourcePanel />
       <AffordableHousingSourcePanel />
       <WeatherReadinessPanel />
       <WaterSystemsPanel />
@@ -1617,9 +1649,9 @@ function Council() {
     },
     {
       status: 'Source route added',
-      title: 'Census LEHD jobs and commute-flow route now scoped',
-      note: 'The economic lane can now move from workforce placeholders toward public WAC/RAC/OD aggregation after block-to-place crosswalk QA.',
-      action: 'Use the Georgia crosswalk to confirm Waynesboro GEOID 1380984 block coverage before The Council cites city job counts, commuter inflow/outflow, or resident-worker summaries.'
+      title: 'ACS housing tenure and vacancy context now scoped',
+      note: 'The operations lane now shows source-labeled Census Reporter/ACS housing estimates with margins of error before any parcel-level vacancy or affordability claim is made.',
+      action: 'Use qPublic/parcel exports, city housing documents, and DCA materials before The Council treats ACS vacancy, rent, or tenure as a downtown property finding.'
     },
     {
       status: 'Still synthetic',
@@ -1734,7 +1766,7 @@ function MeetingReadinessStrip() {
     { label: 'Claims discipline', value: 'Source-gated', detail: 'Verified baseline first; synthetic operating scores stay visibly labeled.' },
     { label: 'Presentation packet', value: 'Print aware', detail: 'Dense panels remain readable for PDF/meeting screenshots and council-style review.' },
     {
-      label: 'Next evidence lane', value: 'Jobs + commute flows', detail: 'LEHD/LODES route is scoped; aggregate blocks before any city workforce claim.' }
+      label: 'Next evidence lane', value: 'Housing tenure + vacancy', detail: 'ACS housing context is visible with MOE; parcel-level vacancy still requires qPublic/export or records QA.' }
   ];
 
   return (
