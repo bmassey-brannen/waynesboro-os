@@ -27,6 +27,7 @@ import { economicSourceSeed } from '../data/economicSourceSeed.js';
 import { censusReporterSeed } from '../data/censusReporterSeed.js';
 import { taxDigestSeed } from '../data/taxDigestSeed.js';
 import { cityMapSourceSeed } from '../data/cityMapSourceSeed.js';
+import { businessSurfaceSeed } from '../data/businessSurfaceSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -526,6 +527,31 @@ function EconomicSourceBridge() {
   );
 }
 
+function BusinessSurfacePanel() {
+  const sourceCards = businessSurfaceSeed.surfaces.slice(0, 6);
+  return (
+    <section className="business-surface-panel" aria-label="official Waynesboro business source surface">
+      <div className="bridge-head">
+        <div>
+          <span className="eyebrow">CITY BUSINESS SOURCE SURFACE</span>
+          <h3>Official pages now route economic drilldowns before license data is connected</h3>
+        </div>
+        <span className="terminal-badge gold">PUBLIC LINKS</span>
+      </div>
+      <div className="business-source-grid">
+        {sourceCards.map((source) => (
+          <a key={source.label} href={source.url} target="_blank" rel="noreferrer">
+            <span>{source.dataType.split(':')[0]}</span>
+            <b>{source.label}</b>
+            <small>{source.integrationUse}</small>
+          </a>
+        ))}
+      </div>
+      <p>{businessSurfaceSeed.caveat}</p>
+    </section>
+  );
+}
+
 function EconomicDevelopment() {
   const driRecord = regionalDevelopmentSeed.records[0];
   return (
@@ -547,13 +573,14 @@ function EconomicDevelopment() {
         <span className="eyebrow">EMPLOYERS / ASSETS / OPPORTUNITIES</span>
         <h2>Economic command notes</h2>
         <div className="metric-stack">
-          <div><b>Active business licenses</b><span>312 · +18 YoY</span></div>
-          <div><b>New businesses</b><span>14 this period · restaurants, trades, services</span></div>
-          <div><b>Business closures</b><span>4 · concentrated in low-foot-traffic retail</span></div>
+          <div><b>Active business licenses</b><span>Synthetic placeholder · official licenses/permits path indexed</span></div>
+          <div><b>New businesses</b><span>Synthetic placeholder · directory/source surface ready for normalization</span></div>
+          <div><b>Business closures</b><span>Synthetic placeholder · requires official export or records request</span></div>
           <div><b>Largest employers</b><span>Government, healthcare, education, industrial employers</span></div>
           <div><b>Available commercial property</b><span>11 tracked spaces · 4 redevelopment-grade</span></div>
           <div><b>Industrial sites</b><span>3 priority pads · utilities diligence required</span></div>
         </div>
+        <BusinessSurfacePanel />
         <div className="dri-watch-card">
           <span className="eyebrow">REGIONAL DEVELOPMENT WATCH · SOURCE SEED</span>
           <h3>{driRecord.projectName}</h3>

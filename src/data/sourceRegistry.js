@@ -198,6 +198,17 @@ export const sourceRegistry = [
     notes: 'Low-volume public check found City Maps, SmallMaps/ArcGIS app links, and DocumentCenter map PDFs. Added src/data/cityMapSourceSeed.js and a downtown map source stack. This improves map credibility but does not replace qPublic parcels or live GIS geometry.'
   },
   {
+    name: 'City of Waynesboro Business / Resource Directory surface',
+    url: 'https://www.waynesboroga.com/35/Business',
+    dataType: 'Official business navigation, Resource Directory / Local Businesses, Downtown Businesses category, available downtown properties, licenses/permits, bid postings, and jobs modules',
+    geography: 'City of Waynesboro',
+    accessMethod: 'Public CivicPlus pages; low-volume link/category index only unless the city publishes exports or grants permission.',
+    cadence: 'As posted by city; bid and job modules update when listings are published',
+    difficulty: 'Medium',
+    status: 'Source surface indexed',
+    notes: 'Source check found Business page links for available downtown properties, licenses/permits, local businesses, starting a business, BusinessDirectoryII.aspx, Downtown Businesses category ID 29, Bids.aspx, and Jobs.aspx. Added src/data/businessSurfaceSeed.js as an economic drilldown/source-shape stub; not a verified license/vacancy count.'
+  },
+  {
     name: 'City of Waynesboro Agenda Center',
     url: 'https://www.waynesboroga.com/AgendaCenter',
     dataType: 'City council agendas, agenda packets, meeting notices, RSS/list views',
