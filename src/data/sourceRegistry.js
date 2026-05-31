@@ -55,6 +55,17 @@ export const sourceRegistry = [
     notes: 'Useful public-facing citation while structured ACS connector is built.'
   },
   {
+    name: 'U.S. Bureau of Labor Statistics LAUS Public API',
+    url: 'https://api.bls.gov/publicAPI/v2/timeseries/data/LAUCN130330000000003?startyear=2025&endyear=2025',
+    dataType: 'County labor-force statistics: unemployment rate, labor force, employed persons, and unemployed persons',
+    geography: 'Burke County, Georgia LAUS county area CN13033; not a Waynesboro city-level series',
+    accessMethod: 'Public BLS API with no key required for low-volume single-series calls; use an API key for higher-volume scheduled ingestion.',
+    cadence: 'Monthly LAUS releases; values may be preliminary/revised',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Low-volume API test returned December 2025 Burke County rate 4.2%, labor force 10,600, employed 10,156, unemployed 444. Added src/data/laborForceSeed.js and an economic workforce source snapshot; use as county context only.'
+  },
+  {
     name: 'Burke County qPublic / Schneider GIS',
     url: 'http://qpublic.net/ga/burke/',
     dataType: 'Parcel maps, property assessment records, ownership, parcel attributes',
@@ -479,7 +490,7 @@ export const readinessStrip = [
   { lane: 'City documents', status: 'Index-ready', source: 'Agenda Center / Archive Center', tone: 'good' },
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
   { lane: 'Map base', status: 'Boundary seed ready', source: 'OSM + TIGERweb + Census Reporter GeoJSON', tone: 'good' },
-  { lane: 'Economy', status: 'CBP scoped', source: 'Census County Business Patterns', tone: 'watch' },
+  { lane: 'Economy', status: 'CBP scoped', source: 'Census CBP + BLS LAUS', tone: 'good' },
   { lane: 'Finance', status: 'Tax digest seed', source: 'Georgia DOR Digest Compliance', tone: 'good' },
   { lane: 'Utilities', status: 'Rate refs indexed', source: 'City Water Rates / DocumentCenter', tone: 'good' },
   { lane: 'Environmental', status: 'CWA seed ready', source: 'EPA ECHO Clean Water Act', tone: 'good' },
@@ -505,6 +516,14 @@ export const sourcePriorities = [
     value: 'Adds real public development-review records to the economic-development pipeline without relying on rumors or private deal chatter.',
     nextStep: 'Build a cached low-volume parser for public DRI submissions and link only source pages / summaries; keep the project pipeline distinct from official status.',
     difficulty: 'Medium'
+  },
+  {
+    lane: 'Labor / workforce',
+    target: 'Promote BLS LAUS seed into a monthly county workforce connector',
+    source: 'U.S. Bureau of Labor Statistics LAUS Public API',
+    value: 'Replaces vague workforce placeholders with source-labeled Burke County unemployment and labor-force context for economic-development briefs.',
+    nextStep: 'Add a tiny refresh script for LAUCN13033 series, cache latest non-preliminary rows with revision flags, and keep labels county-only unless a city series is confirmed.',
+    difficulty: 'Low'
   },
   {
     lane: 'Permits / development',

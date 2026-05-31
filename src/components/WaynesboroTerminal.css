@@ -191,18 +191,22 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .dri-watch-card a { display: inline-flex; margin-top: 10px; color: var(--forest-2); font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; text-decoration: none; border-bottom: 1px solid rgba(31,93,66,.35); }
 .dri-facts { display: flex; flex-wrap: wrap; gap: 6px; }
 .dri-facts span { padding: 5px 7px; border: 1px solid var(--line); background: rgba(255,255,255,.75); color: #34433b; font-size: 10px; font-weight: 850; text-transform: uppercase; letter-spacing: .07em; }
-.economic-source-bridge, .business-surface-panel { margin-top: 12px; padding: 12px; border: 1px solid rgba(165,128,49,.24); border-left: 4px solid var(--gold-soft); background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(248,244,232,.94)); }
+.economic-source-bridge, .business-surface-panel, .labor-force-panel { margin-top: 12px; padding: 12px; border: 1px solid rgba(165,128,49,.24); border-left: 4px solid var(--gold-soft); background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(248,244,232,.94)); }
 .business-surface-panel { border-color: rgba(38,116,79,.22); border-left-color: var(--forest-2); background: linear-gradient(180deg, rgba(255,255,255,.94), rgba(237,244,238,.95)); }
+.labor-force-panel { border-color: rgba(38,116,79,.24); border-left-color: var(--forest-2); background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(238,244,240,.95)); }
 .bridge-head { display: flex; justify-content: space-between; gap: 10px; align-items: start; }
 .bridge-head h3 { margin: 4px 0 0; color: #13251b; font-size: 15px; letter-spacing: -.02em; line-height: 1.18; }
-.cbp-query-grid, .business-source-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin-top: 10px; }
-.cbp-query-grid a, .business-source-grid a { display: block; min-width: 0; padding: 8px; border: 1px solid var(--line); background: rgba(255,255,255,.72); text-decoration: none; }
-.cbp-query-grid span, .cbp-query-grid b, .cbp-query-grid small, .business-source-grid span, .business-source-grid b, .business-source-grid small { display: block; overflow-wrap: anywhere; }
-.cbp-query-grid span, .business-source-grid span { color: var(--gold); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
-.business-source-grid span { color: var(--forest-2); }
-.cbp-query-grid b, .business-source-grid b { margin-top: 3px; color: #17261e; font-size: 12px; }
-.cbp-query-grid small, .business-source-grid small { margin-top: 3px; color: var(--muted); font-size: 10px; line-height: 1.35; }
-.economic-source-bridge p, .business-surface-panel p { margin: 9px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
+.cbp-query-grid, .business-source-grid, .labor-force-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin-top: 10px; }
+.cbp-query-grid a, .business-source-grid a, .labor-force-grid article { display: block; min-width: 0; padding: 8px; border: 1px solid var(--line); background: rgba(255,255,255,.72); text-decoration: none; }
+.cbp-query-grid span, .cbp-query-grid b, .cbp-query-grid small, .business-source-grid span, .business-source-grid b, .business-source-grid small, .labor-force-grid span, .labor-force-grid b, .labor-force-grid small { display: block; overflow-wrap: anywhere; }
+.cbp-query-grid span, .business-source-grid span, .labor-force-grid span { color: var(--gold); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
+.business-source-grid span, .labor-force-grid span { color: var(--forest-2); }
+.cbp-query-grid b, .business-source-grid b, .labor-force-grid b { margin-top: 3px; color: #17261e; font-size: 12px; }
+.labor-force-grid b { color: var(--forest-2); font-size: 20px; letter-spacing: -.04em; }
+.cbp-query-grid small, .business-source-grid small, .labor-force-grid small { margin-top: 3px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.economic-source-bridge p, .business-surface-panel p, .labor-force-panel p { margin: 9px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
+.labor-query-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.labor-query-row a { padding: 5px 7px; border: 1px solid rgba(38,116,79,.22); color: var(--forest-2); background: rgba(255,255,255,.68); font-size: 10px; font-weight: 900; letter-spacing: .07em; text-transform: uppercase; text-decoration: none; }
 
 .source-readiness { display: grid; grid-template-columns: minmax(0, .95fr) minmax(440px, 1.05fr) 300px; gap: 14px; align-items: start; }
 .baseline-panel { margin-top: 14px; padding: 14px; border: 1px solid rgba(38,116,79,.22); background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(236,244,238,.97)); box-shadow: var(--shadow); }

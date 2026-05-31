@@ -33,6 +33,7 @@ import { cleanWaterPermitSeed } from '../data/cleanWaterPermitSeed.js';
 import { hazardResilienceSeed } from '../data/hazardResilienceSeed.js';
 import { publicSafetySourceSeed } from '../data/publicSafetySourceSeed.js';
 import { healthEquitySeed } from '../data/healthEquitySeed.js';
+import { laborForceSeed } from '../data/laborForceSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -557,6 +558,35 @@ function BusinessSurfacePanel() {
   );
 }
 
+function LaborForceSourcePanel() {
+  return (
+    <section className="labor-force-panel" aria-label="Burke County labor force public source panel">
+      <div className="bridge-head">
+        <div>
+          <span className="eyebrow">WORKFORCE SOURCE SNAPSHOT</span>
+          <h3>BLS LAUS county labor context now has a no-key public API path</h3>
+        </div>
+        <span className="terminal-badge live">BLS PUBLIC API</span>
+      </div>
+      <div className="labor-force-grid">
+        {laborForceSeed.series.map((metric) => (
+          <article key={metric.id}>
+            <span>{metric.label}</span>
+            <b>{metric.displayValue}</b>
+            <small>{metric.latestPeriod} · {metric.id}</small>
+          </article>
+        ))}
+      </div>
+      <div className="labor-query-row">
+        {laborForceSeed.queryTemplates.map((query) => (
+          <a key={query.label} href={query.url} target="_blank" rel="noreferrer">{query.label}</a>
+        ))}
+      </div>
+      <p>{laborForceSeed.caveat} Retrieved {new Date(laborForceSeed.retrievedAt).toLocaleString()} · {laborForceSeed.revisionNote}</p>
+    </section>
+  );
+}
+
 function EconomicDevelopment() {
   const driRecord = regionalDevelopmentSeed.records[0];
   return (
@@ -586,6 +616,7 @@ function EconomicDevelopment() {
           <div><b>Industrial sites</b><span>3 priority pads · utilities diligence required</span></div>
         </div>
         <BusinessSurfacePanel />
+        <LaborForceSourcePanel />
         <div className="dri-watch-card">
           <span className="eyebrow">REGIONAL DEVELOPMENT WATCH · SOURCE SEED</span>
           <h3>{driRecord.projectName}</h3>
