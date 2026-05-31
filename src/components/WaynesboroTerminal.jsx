@@ -42,6 +42,7 @@ import { communityDevelopmentSeed } from '../data/communityDevelopmentSeed.js';
 import { broadbandAccessSeed } from '../data/broadbandAccessSeed.js';
 import { stateDrinkingWaterSeed } from '../data/stateDrinkingWaterSeed.js';
 import { transportationProjectSeed } from '../data/transportationProjectSeed.js';
+import { educationWorkforceSeed } from '../data/educationWorkforceSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -683,6 +684,33 @@ function SalesTaxDistributionPanel() {
   );
 }
 
+function EducationWorkforcePanel() {
+  return (
+    <section className="education-workforce-panel" aria-label="education and workforce source routing panel">
+      <div className="bridge-head">
+        <div>
+          <span className="eyebrow">EDUCATION / WORKFORCE ROUTE · SOURCE-GATED</span>
+          <h3>GaDOE source paths now frame school-district and talent-pipeline context</h3>
+        </div>
+        <span className="terminal-badge gold">ROUTE INDEX</span>
+      </div>
+      <div className="education-route-grid">
+        {educationWorkforceSeed.routes.map((route) => (
+          <a key={route.label} href={route.url} target="_blank" rel="noreferrer">
+            <span>{route.dataType}</span>
+            <b>{route.label}</b>
+            <small>{route.integrationUse}</small>
+          </a>
+        ))}
+      </div>
+      <div className="education-next-steps">
+        {educationWorkforceSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p>{educationWorkforceSeed.caveat} Retrieved {new Date(educationWorkforceSeed.retrievedAt).toLocaleDateString()} · {educationWorkforceSeed.geography}</p>
+    </section>
+  );
+}
+
 function FederalFundingPanel() {
   const money = (value) => `$${(value / 1000000).toFixed(value >= 10000000 ? 1 : 2)}M`;
   return (
@@ -774,6 +802,7 @@ function EconomicDevelopment() {
         <BusinessSurfacePanel />
         <CityPermittingIntakePanel />
         <LaborForceSourcePanel />
+        <EducationWorkforcePanel />
         <FederalFundingPanel />
         <SalesTaxDistributionPanel />
         <div className="dri-watch-card">

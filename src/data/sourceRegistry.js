@@ -77,6 +77,17 @@ export const sourceRegistry = [
     notes: 'Low-volume FY2025 spending-over-time query for Burke County place of performance returned four quarterly rows and $184.9M total obligations, including $9.17M grant obligations. Added an economic funding context panel with caveats; award-level recipient/agency searches are required before any local-government or project claims.'
   },
   {
+    name: 'Georgia Insights / GaDOE Education Dashboards',
+    url: 'https://georgiainsights.gadoe.org/data-downloads/',
+    dataType: 'Public state education dashboards and data-download route for accountability, attendance, CTAE/workforce pathway, district finance, and whole-child indicators',
+    geography: 'Georgia school districts and schools; route to Burke County Public Schools / Waynesboro-area context after filters/export rules are confirmed',
+    accessMethod: 'Public Georgia Insights pages; manual dashboard/export review first, then cache only aggregate district/school records with school year and source URL.',
+    cadence: 'Dashboard/data-release cadence varies by GaDOE program and school year',
+    difficulty: 'Medium',
+    status: 'Source routes indexed',
+    notes: 'Low-volume checks reached Georgia Insights, Data Downloads, CCRPI, CTAE Advantage, Attendance, District Financial Information, and the Burke County Public Schools official site. Added src/data/educationWorkforceSeed.js and an economic education/workforce route panel; no student-level data or school-performance claims are displayed.'
+  },
+  {
     name: 'Burke County qPublic / Schneider GIS',
     url: 'http://qpublic.net/ga/burke/',
     dataType: 'Parcel maps, property assessment records, ownership, parcel attributes',
@@ -579,6 +590,7 @@ export const readinessStrip = [
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
   { lane: 'Map base', status: 'Boundary seed ready', source: 'OSM + TIGERweb + Census Reporter GeoJSON', tone: 'good' },
   { lane: 'Economy', status: 'Workforce + funding seeds', source: 'BLS LAUS + USAspending + Census CBP', tone: 'good' },
+  { lane: 'Education', status: 'GaDOE routes indexed', source: 'Georgia Insights + Burke County Public Schools', tone: 'watch' },
   { lane: 'Finance', status: 'Sales-tax + digest routes', source: 'Georgia DOR Distributions / Digest Compliance', tone: 'good' },
   { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },
   { lane: 'Utilities', status: 'State verification route', source: 'City Water Rates / EPA SDWIS / Georgia EPD DWW', tone: 'good' },
@@ -617,6 +629,14 @@ export const sourcePriorities = [
     value: 'Replaces vague workforce placeholders with source-labeled Burke County unemployment and labor-force context for economic-development briefs.',
     nextStep: 'Add a tiny refresh script for LAUCN13033 series, cache latest non-preliminary rows with revision flags, and keep labels county-only unless a city series is confirmed.',
     difficulty: 'Low'
+  },
+  {
+    lane: 'Education / talent pipeline',
+    target: 'Confirm Georgia Insights export paths for Burke County school/workforce indicators',
+    source: 'Georgia Insights / GaDOE Education Dashboards',
+    value: 'Adds a public education and CTAE/workforce context route without inventing school-performance, student-level, or city-government metrics.',
+    nextStep: 'Manually test Georgia Insights district/school filters for Burke County, confirm downloadable data terms, and cache only aggregate school-year rows with source URLs.',
+    difficulty: 'Medium'
   },
   {
     lane: 'Federal funding / grants',
