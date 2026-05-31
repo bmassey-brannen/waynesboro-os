@@ -51,6 +51,7 @@ import { lehdCommutingSeed } from '../data/lehdCommutingSeed.js';
 import { housingTenureSeed } from '../data/housingTenureSeed.js';
 import { housingAgeSeed } from '../data/housingAgeSeed.js';
 import { housingCostBurdenSeed } from '../data/housingCostBurdenSeed.js';
+import { housingStructureSeed } from '../data/housingStructureSeed.js';
 import { commuteProfileSeed } from '../data/commuteProfileSeed.js';
 import { workforceEducationSeed } from '../data/workforceEducationSeed.js';
 import { foodAccessSeed } from '../data/foodAccessSeed.js';
@@ -2525,6 +2526,54 @@ function HousingAgeSourcePanel() {
   );
 }
 
+function HousingStructurePanel() {
+  const headline = housingStructureSeed.derived.find((item) => item.id === 'small-multifamily');
+  const bars = housingStructureSeed.derived;
+
+  return (
+    <section className="panel housing-structure-panel" aria-label="ACS units in structure housing typology snapshot">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">HOUSING TYPOLOGY · ACS CONTEXT</span>
+          <h2>Structure mix before parcel, zoning, or infill claims</h2>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="housing-structure-hero">
+        <article>
+          <span>{headline.label}</span>
+          <b>{headline.displayShare}</b>
+          <small>{headline.displayValue} of {housingStructureSeed.totalHousingUnits.toLocaleString()} ACS housing units · total MOE ±{housingStructureSeed.totalMoe.toLocaleString()}</small>
+        </article>
+        <div>
+          <h3>Planning use, not a parcel inventory</h3>
+          <p>{housingStructureSeed.posture}</p>
+          <a href={housingStructureSeed.sourceUrl} target="_blank" rel="noreferrer">Census Reporter B25024 source query</a>
+        </div>
+      </div>
+      <div className="housing-structure-bars">
+        {bars.map((group) => (
+          <article key={group.id}>
+            <div><span>{group.label}</span><b>{group.displayShare}</b></div>
+            <div className="mini-bar"><span style={{ width: group.displayShare }} /></div>
+            <small>{group.displayValue} units · derived from {housingStructureSeed.table}</small>
+          </article>
+        ))}
+      </div>
+      <div className="housing-structure-comparison">
+        {housingStructureSeed.comparison.map((item) => (
+          <article key={item.geography}>
+            <span>{item.geography}</span>
+            <b>{item.singleFamilyShare}</b>
+            <small>single-family · {item.smallMultifamilyShare} 2–4 unit · {item.mobileHomeShare} mobile home</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{housingStructureSeed.caveat} Release: {housingStructureSeed.release.name} ({housingStructureSeed.release.years}); retrieved {new Date(housingStructureSeed.retrievedAt).toLocaleDateString()}.</p>
+    </section>
+  );
+}
+
 function InfrastructureSafetyHousing() {
   return (
     <section id="operations" className="module operations-module">
@@ -2554,6 +2603,7 @@ function InfrastructureSafetyHousing() {
       <HousingTenureSourcePanel />
       <HousingCostBurdenPanel />
       <HousingAgeSourcePanel />
+      <HousingStructurePanel />
       <AffordableHousingSourcePanel />
       <WeatherReadinessPanel />
       <WaterSystemsPanel />
@@ -2877,7 +2927,8 @@ function PageBriefStrip({ page }) {
       { label: 'Health access', value: healthInsuranceSeed.metrics.find((metric) => metric.id === 'uninsured-total')?.displayShare || 'ACS seeded', detail: 'B27010 insurance-coverage context; not enrollment, clinical, or service-demand data.' },
       { label: 'Energy mix', value: utilityEnergySeed.metrics.find((metric) => metric.id === 'electricity')?.displayShare || 'ACS seeded', detail: 'B25040 heating-fuel context; not utility accounts, outage exposure, or rate burden.' },
       { label: 'Language access', value: languageAccessSeed.metrics.find((metric) => metric.id === 'language-other-than-english')?.displayShare || 'ACS seeded', detail: 'C16001 communication-planning context; not a service workload claim.' },
-      { label: 'Affordability', value: housingCostBurdenSeed.metrics.find((metric) => metric.id === 'renter-cost-burden')?.displayShare || 'ACS seeded', detail: 'Renter cost-burden survey context with MOE caveats.' }
+      { label: 'Affordability', value: housingCostBurdenSeed.metrics.find((metric) => metric.id === 'renter-cost-burden')?.displayShare || 'ACS seeded', detail: 'Renter cost-burden survey context with MOE caveats.' },
+      { label: 'Housing type', value: housingStructureSeed.derived.find((item) => item.id === 'small-multifamily')?.displayShare || 'ACS seeded', detail: 'B25024 units-in-structure context; not parcels, zoning, or permits.' }
     ],
     council: [
       { label: 'Advisor mode', value: 'Source-gated', detail: 'The Council separates evidence from placeholder judgment.' },

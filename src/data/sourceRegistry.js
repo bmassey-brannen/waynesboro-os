@@ -803,6 +803,17 @@ export const sourceRegistry = [
     notes: 'Runtime query returned Waynesboro year-structure-built context: 2,036 pre-1980 units / 76.2% of ACS housing units, plus Burke County and Georgia comparisons. Added an Operations housing-age panel. Treat as survey planning context only; not parcel condition, code-enforcement, rehabilitation-cost, lead-paint, vacancy, or downtown building-inventory evidence.'
   },
   {
+    name: 'Census Reporter ACS units in structure table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B25024&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS B25024 housing-unit structure type estimates with margins of error and city/county/state comparison context',
+    geography: 'Waynesboro city, Georgia (16000US1380984), Burke County (05000US13033), and Georgia (04000US13)',
+    accessMethod: 'Public no-key Census Reporter API; low-volume B25024 request cached in src/data/housingStructureSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024 release.',
+    difficulty: 'Low',
+    status: 'Public API seed ready',
+    notes: 'Runtime query returned Waynesboro units-in-structure context: 2,673 housing units, 60.0% single-family, 28.2% in 2-4 unit structures, 9.1% in 5+ unit structures, and 2.7% mobile homes. Added an Operations housing-typology panel. Treat as ACS survey context only; not a parcel inventory, zoning determination, permit history, occupancy certificate, tax record, rent roll, or affordability-program evidence.'
+  },
+  {
     name: 'Census Reporter ACS house heating fuel table',
     url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B25040&geo_ids=16000US1380984,05000US13033,04000US13',
     dataType: 'ACS B25040 house-heating-fuel estimates with margins of error and city/county/state comparison context',
@@ -851,7 +862,7 @@ export const readinessStrip = [
   { lane: 'Utilities', status: 'Water + energy context', source: 'City Water Rates / EPA SDWIS / Georgia EPD DWW / ACS B25040', tone: 'good' },
   { lane: 'Digital access', status: 'ACS context + FCC route', source: 'Census Reporter B28002 / FCC BDC', tone: 'good' },
   { lane: 'Mobility access', status: 'ACS vehicle + disability seeds', source: 'Census Reporter B08201 / B18101', tone: 'good' },
-  { lane: 'Housing', status: 'ACS tenure + burden + age + LIHTC route', source: 'Census Reporter B25003/B25002/B25070/B25091/B25034 / City DocumentCenter / Georgia DCA', tone: 'good' },
+  { lane: 'Housing', status: 'ACS tenure + burden + age + typology + LIHTC route', source: 'Census Reporter B25003/B25002/B25070/B25091/B25034/B25024 / City DocumentCenter / Georgia DCA', tone: 'good' },
   { lane: 'Environmental', status: 'CWA + RCRA seeds ready', source: 'EPA ECHO Clean Water Act / RCRA', tone: 'good' },
   { lane: 'Hydrology', status: 'USGS IV snapshot', source: 'USGS NWIS Site + Instantaneous Values', tone: 'good' },
   { lane: 'Resilience', status: 'Hazard source stack', source: 'FEMA NFHL / NOAA Storm Events', tone: 'watch' },
