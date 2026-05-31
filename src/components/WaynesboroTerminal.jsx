@@ -44,6 +44,7 @@ import { stateDrinkingWaterSeed } from '../data/stateDrinkingWaterSeed.js';
 import { transportationProjectSeed } from '../data/transportationProjectSeed.js';
 import { educationWorkforceSeed } from '../data/educationWorkforceSeed.js';
 import { affordableHousingSeed } from '../data/affordableHousingSeed.js';
+import { usgsHydrologySeed } from '../data/usgsHydrologySeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -1230,6 +1231,55 @@ function HazardResiliencePanel() {
   );
 }
 
+function HydrologySourcePanel() {
+  const primarySite = usgsHydrologySeed.activeStreamSites.find((site) => site.stationName.includes('BRIER CREEK')) || usgsHydrologySeed.activeStreamSites[0];
+
+  return (
+    <section className="panel hydrology-source-panel" aria-label="USGS hydrology source inventory">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">HYDROLOGY / STORMWATER SOURCE</span>
+          <h2>USGS active stream-gage inventory for Burke County</h2>
+        </div>
+        <span className="terminal-badge live">PUBLIC NWIS</span>
+      </div>
+      <div className="hydrology-summary-grid">
+        <article>
+          <span>Query result</span>
+          <b>{usgsHydrologySeed.query.returnedRows} active stream sites</b>
+          <small>{usgsHydrologySeed.query.countyCd} county code · {usgsHydrologySeed.query.siteType} site type</small>
+        </article>
+        <article>
+          <span>Closest named route</span>
+          <b>{primarySite.stationName}</b>
+          <small>HUC {primarySite.hydrologicUnit} · drainage area {primarySite.drainageAreaSqMi.toLocaleString()} sq mi</small>
+        </article>
+        <article>
+          <span>Use in OS</span>
+          <b>Source inventory only</b>
+          <small>Current stage/flow cards require separate timestamped observations and unit QA.</small>
+        </article>
+      </div>
+      <div className="hydrology-site-list">
+        {usgsHydrologySeed.activeStreamSites.map((site) => (
+          <article key={site.siteNo}>
+            <div>
+              <span>{site.siteNo} · {site.mapName}</span>
+              <b>{site.stationName}</b>
+              <small>{site.latitude.toFixed(4)}, {site.longitude.toFixed(4)} · HUC {site.hydrologicUnit}</small>
+            </div>
+            <em>{site.drainageAreaSqMi.toLocaleString()} sq mi</em>
+          </article>
+        ))}
+      </div>
+      <div className="hydrology-next-actions">
+        {usgsHydrologySeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p className="source-note">{usgsHydrologySeed.caveat} Retrieved {new Date(usgsHydrologySeed.retrievedAt).toLocaleString()} from the public USGS NWIS Site Service.</p>
+    </section>
+  );
+}
+
 function HealthEquitySourcePanel() {
   return (
     <section className="panel health-equity-panel">
@@ -1328,6 +1378,12 @@ function OperationsConfidenceStrip() {
       status: `${safetySources} routes indexed`,
       detail: 'Crime, E-911, fire, and crash data paths are separated from synthetic public-safety counts.',
       tone: 'neutral'
+    },
+    {
+      label: 'Hydrology',
+      status: `${usgsHydrologySeed.query.returnedRows} USGS sites`,
+      detail: 'Active stream-gage inventory is source-routed for stormwater/resilience, not promoted as flood telemetry.',
+      tone: 'good'
     }
   ];
 
@@ -1443,6 +1499,7 @@ function InfrastructureSafetyHousing() {
       <UtilityRateReferencePanel />
       <BroadbandAccessPanel />
       <CleanWaterPermitPanel />
+      <HydrologySourcePanel />
       <HazardResiliencePanel />
       <section className="panel ops-source-ledger">
         <div className="panel-head">

@@ -484,6 +484,17 @@ export const sourceRegistry = [
     notes: 'Low-volume source check reached the GDOT Crash Data & Reporting page and found the GDOT Crash Data Dashboard link plus GEARS support/reporting documents. Dashboard direct request returned an old-browser page from this runtime, so keep as manual/source-routing path until Playwright/manual export rules are confirmed. No crash-rate claims added.'
   },
   {
+    name: 'USGS NWIS Site Service: Burke County active stream sites',
+    url: 'https://waterservices.usgs.gov/nwis/site/?format=rdb&countyCd=13033&siteType=ST&siteStatus=active&siteOutput=expanded',
+    dataType: 'Public hydrology station inventory: active stream-gage site numbers, names, coordinates, HUCs, drainage areas, and map references',
+    geography: 'Burke County, Georgia; stream sites near/around Waynesboro including Brier Creek and Savannah/Ogeechee River context',
+    accessMethod: 'Public USGS waterservices endpoint; low-volume RDB/tab-delimited query cached in src/data/usgsHydrologySeed.js.',
+    cadence: 'Site inventory changes infrequently; current observations require separate NWIS instantaneous/daily-value endpoints with timestamps and units',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Low-volume query returned three active Burke County stream sites: Savannah River near Waynesboro, Brier Creek near Waynesboro, and Ogeechee River at Midville. Added an Operations hydrology source panel; do not present as flood status, drainage performance, water quality, utility service, or emergency telemetry.'
+  },
+  {
     name: 'FEMA NFHL + NOAA Storm Events hazard source stack',
     url: 'https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer',
     dataType: 'Flood hazard map service references, FEMA Flood Map Service Center verification path, and NOAA/NCEI historical storm-event CSV source routing',
@@ -608,6 +619,7 @@ export const readinessStrip = [
   { lane: 'Broadband', status: 'FCC route scoped', source: 'FCC Broadband Map / BDC downloads', tone: 'watch' },
   { lane: 'Housing', status: 'LIHTC route indexed', source: 'City DocumentCenter / Georgia DCA', tone: 'watch' },
   { lane: 'Environmental', status: 'CWA seed ready', source: 'EPA ECHO Clean Water Act', tone: 'good' },
+  { lane: 'Hydrology', status: 'USGS stream-site seed', source: 'USGS NWIS Site Service', tone: 'good' },
   { lane: 'Resilience', status: 'Hazard source stack', source: 'FEMA NFHL / NOAA Storm Events', tone: 'watch' },
   { lane: 'Ordinances', status: 'Reference-ready', source: 'Municode Library', tone: 'good' },
   { lane: 'Public safety', status: 'Crime source routing', source: 'GBI Crime Statistics / FBI CDE / E-911', tone: 'watch' },
@@ -777,6 +789,14 @@ export const sourcePriorities = [
     value: 'Creates a public, city-sourced bridge from the operations lane to utility-cost and water-use reference cards without inventing rate figures.',
     nextStep: 'Open the linked DocumentCenter fee schedule and watering-restrictions PDF, extract only clearly labeled fields with retrieval dates, then compare against adopted budget/ordinance sources.',
     difficulty: 'Medium'
+  },
+  {
+    lane: 'Hydrology / stormwater',
+    target: 'Promote USGS stream-site seed into timestamped current-observation cards',
+    source: 'USGS NWIS Site Service / instantaneous values',
+    value: 'Adds a real public water-source path for resilience and stormwater context without inventing flood, drainage, water-quality, or emergency claims.',
+    nextStep: 'Query current/daily values for 02197830, 021973269, and 02201230, cache timestamps/units/availability flags, then label as county watershed context only.',
+    difficulty: 'Low'
   },
   {
     lane: 'Hazard / resilience',
