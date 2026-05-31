@@ -308,6 +308,17 @@ export const sourceRegistry = [
     notes: 'Sitemap exposes Police and Fire pages. Public-safety KPIs must stay synthetic until aggregate incident/response records are officially published or obtained.'
   },
   {
+    name: 'National Weather Service API / api.weather.gov',
+    url: 'https://api.weather.gov/points/33.0898731,-82.0156736',
+    dataType: 'Public forecast office routing, county/forecast/fire-weather zone metadata, forecast endpoints, and active alert endpoint paths',
+    geography: 'Waynesboro, Georgia point routed to Burke County zone GAC033 / forecast zone GAZ077',
+    accessMethod: 'Public NWS API with required User-Agent header; low-volume cached metadata and timestamped forecast/alert pulls only.',
+    cadence: 'Forecasts/alerts update continuously; point metadata changes rarely',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Low-volume point request returned grid office CAE, grid 32/17, county zone GAC033, forecast/fire zone GAZ077, and radar station KCLX. Added src/data/weatherReadinessSeed.js as a source-routing stub for operations/public-safety readiness; not live emergency telemetry.'
+  },
+  {
     name: 'Georgia DCA Developments of Regional Impact Submissions',
     url: 'https://apps.dca.ga.gov/DRI/Submissions.aspx',
     dataType: 'Major development review submissions, project names, development type, county, jurisdiction, regional commission, status, and determination text',
@@ -388,6 +399,14 @@ export const sourcePriorities = [
     value: 'Adds defensible roadway-volume context to downtown foot-traffic assumptions, corridor prioritization, and infrastructure planning.',
     nextStep: 'Use the public map/report interface manually first, then cache only permitted station metadata/AADT exports with GDOT attribution.',
     difficulty: 'Medium'
+  },
+  {
+    lane: 'Weather / readiness',
+    target: 'Promote NWS point routing into a timestamped forecast/alert connector',
+    source: 'National Weather Service API / api.weather.gov',
+    value: 'Adds a legitimate public alert and forecast path for public works, events, emergency-preparedness, and Council weather-risk briefs.',
+    nextStep: 'Fetch active alerts for county zone GAC033 and forecast periods for grid CAE 32/17 with retrieval timestamps and NWS attribution.',
+    difficulty: 'Low'
   },
   {
     lane: 'Operations / water',

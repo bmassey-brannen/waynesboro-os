@@ -19,6 +19,7 @@ import { waynesboroGeographySeed } from '../data/geographySeed.js';
 import { regionalDevelopmentSeed } from '../data/regionalDevelopmentSeed.js';
 import { operationsSourceSeed } from '../data/operationsSourceSeed.js';
 import { osmCivicAssetsSeed } from '../data/osmCivicAssetsSeed.js';
+import { weatherReadinessSeed } from '../data/weatherReadinessSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -596,6 +597,35 @@ function ProjectTracker() {
   );
 }
 
+function WeatherReadinessPanel() {
+  return (
+    <section className="panel weather-readiness-panel">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">WEATHER / HAZARD READINESS SOURCE</span>
+          <h2>NWS point routing for emergency briefings</h2>
+        </div>
+        <span className="terminal-badge live">PUBLIC API</span>
+      </div>
+      <div className="weather-meta-grid">
+        <article><span>Forecast office</span><b>{weatherReadinessSeed.point.gridId}</b><small>Grid {weatherReadinessSeed.point.gridX},{weatherReadinessSeed.point.gridY}</small></article>
+        <article><span>County zone</span><b>{weatherReadinessSeed.point.countyZone}</b><small>Burke County alert path</small></article>
+        <article><span>Forecast / fire zone</span><b>{weatherReadinessSeed.point.forecastZone}</b><small>Fire weather {weatherReadinessSeed.point.fireWeatherZone}</small></article>
+        <article><span>Radar station</span><b>{weatherReadinessSeed.point.radarStation}</b><small>{weatherReadinessSeed.point.relativeLocation}</small></article>
+      </div>
+      <div className="weather-endpoint-list">
+        {weatherReadinessSeed.endpoints.map((endpoint) => (
+          <a key={endpoint.label} href={endpoint.url} target="_blank" rel="noreferrer">
+            <b>{endpoint.label}</b>
+            <span>{endpoint.use}</span>
+          </a>
+        ))}
+      </div>
+      <p className="source-note">{weatherReadinessSeed.caveat}</p>
+    </section>
+  );
+}
+
 function InfrastructureSafetyHousing() {
   return (
     <section id="operations" className="module operations-module">
@@ -614,6 +644,7 @@ function InfrastructureSafetyHousing() {
           {housing.map((zone) => <div key={zone.zone} className="heat-row"><b>{zone.zone}</b><div className="heat"><span style={{ width: `${zone.heat}%` }} /></div><em>{zone.note}</em></div>)}
         </section>
       </div>
+      <WeatherReadinessPanel />
       <section className="panel ops-source-ledger">
         <div className="panel-head">
           <div>
