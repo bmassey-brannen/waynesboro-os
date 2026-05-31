@@ -803,6 +803,17 @@ export const sourceRegistry = [
     notes: 'Runtime query returned Waynesboro year-structure-built context: 2,036 pre-1980 units / 76.2% of ACS housing units, plus Burke County and Georgia comparisons. Added an Operations housing-age panel. Treat as survey planning context only; not parcel condition, code-enforcement, rehabilitation-cost, lead-paint, vacancy, or downtown building-inventory evidence.'
   },
   {
+    name: 'Census Reporter ACS house heating fuel table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B25040&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS B25040 house-heating-fuel estimates with margins of error and city/county/state comparison context',
+    geography: 'Waynesboro city, Georgia (16000US1380984), Burke County (05000US13033), and Georgia (04000US13)',
+    accessMethod: 'Public no-key Census Reporter API; low-volume B25040 request cached in src/data/utilityEnergySeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024 release.',
+    difficulty: 'Low',
+    status: 'Public API seed ready',
+    notes: 'Runtime query returned Waynesboro house-heating-fuel context: 1,584 occupied units / 71.9% using electricity and 620 / 28.1% using utility gas, with MOE and Burke/Georgia comparisons. Added an Operations energy-resilience panel. Treat as ACS survey context only; not utility customer counts, service territory, outage exposure, rate affordability, energy-burden eligibility, or municipal telemetry.'
+  },
+  {
     name: 'Census Reporter ACS population under 18 by age table',
     url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B09001,B01001&geo_ids=16000US1380984,05000US13033,04000US13',
     dataType: 'ACS B09001 under-18 age-band estimates with margins of error and city/county/state comparison context',
@@ -826,7 +837,7 @@ export const readinessStrip = [
   { lane: 'Education', status: 'GaDOE routes indexed', source: 'Georgia Insights + Burke County Public Schools', tone: 'watch' },
   { lane: 'Finance', status: 'Sales-tax + digest routes', source: 'Georgia DOR Distributions / Digest Compliance', tone: 'good' },
   { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },
-  { lane: 'Utilities', status: 'State verification route', source: 'City Water Rates / EPA SDWIS / Georgia EPD DWW', tone: 'good' },
+  { lane: 'Utilities', status: 'Water + energy context', source: 'City Water Rates / EPA SDWIS / Georgia EPD DWW / ACS B25040', tone: 'good' },
   { lane: 'Digital access', status: 'ACS context + FCC route', source: 'Census Reporter B28002 / FCC BDC', tone: 'good' },
   { lane: 'Mobility access', status: 'ACS vehicle + disability seeds', source: 'Census Reporter B08201 / B18101', tone: 'good' },
   { lane: 'Housing', status: 'ACS tenure + burden + age + LIHTC route', source: 'Census Reporter B25003/B25002/B25070/B25091/B25034 / City DocumentCenter / Georgia DCA', tone: 'good' },
@@ -1066,6 +1077,14 @@ export const sourcePriorities = [
     value: 'Creates a public, city-sourced bridge from the operations lane to utility-cost and water-use reference cards without inventing rate figures.',
     nextStep: 'Open the linked DocumentCenter fee schedule and watering-restrictions PDF, extract only clearly labeled fields with retrieval dates, then compare against adopted budget/ordinance sources.',
     difficulty: 'Medium'
+  },
+  {
+    lane: 'Utilities / energy resilience',
+    target: 'Cross-check ACS heating-fuel context against utility and resilience sources',
+    source: 'Census Reporter ACS B25040 house heating fuel table',
+    value: 'Adds source-labeled household energy context for cold/heat resilience planning without inventing utility customer counts, outage exposure, service territory, or rate-burden claims.',
+    nextStep: 'Calculate derived MOE for fuel shares, then pair with city utility-rate documents, electric/gas provider source routes, weatherization programs, and NWS weather-risk context before Council recommendations.',
+    difficulty: 'Low'
   },
   {
     lane: 'Hydrology / stormwater',

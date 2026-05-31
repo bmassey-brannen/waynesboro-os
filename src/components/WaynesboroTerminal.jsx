@@ -28,6 +28,7 @@ import { taxDigestSeed } from '../data/taxDigestSeed.js';
 import { cityMapSourceSeed } from '../data/cityMapSourceSeed.js';
 import { businessSurfaceSeed } from '../data/businessSurfaceSeed.js';
 import { utilityRateSeed } from '../data/utilityRateSeed.js';
+import { utilityEnergySeed } from '../data/utilityEnergySeed.js';
 import { cleanWaterPermitSeed } from '../data/cleanWaterPermitSeed.js';
 import { hazardResilienceSeed } from '../data/hazardResilienceSeed.js';
 import { stormEventsSeed } from '../data/stormEventsSeed.js';
@@ -1944,6 +1945,7 @@ function OperationsConfidenceStrip() {
   const liveWeather = weatherAlertsSnapshot.featureCount === 0 ? 'Cached no-alert snapshot' : `${weatherAlertsSnapshot.featureCount} cached alert(s)`;
   const primarySystem = waterSystemsSeed.systemsServingWaynesboro.find((system) => system.pwsName === 'WAYNESBORO');
   const safetySources = publicSafetySourceSeed.sources.length;
+  const electricHeat = utilityEnergySeed.metrics.find((metric) => metric.id === 'electricity');
 
   const lanes = [
     {
@@ -1963,6 +1965,12 @@ function OperationsConfidenceStrip() {
       status: primarySystem ? `${primarySystem.pwsId} seed` : 'PWSID pending',
       detail: 'EPA ECHO/SDWIS identity only; no water-quality or live-utility claim promoted.',
       tone: 'good'
+    },
+    {
+      label: 'Energy resilience',
+      status: `${electricHeat?.displayShare || 'ACS seeded'} electric heat`,
+      detail: 'ACS B25040 is heating-fuel planning context only; no utility account, outage, or rate-affordability claim promoted.',
+      tone: 'neutral'
     },
     {
       label: 'Safety sources',
@@ -2057,6 +2065,55 @@ function BroadbandAccessPanel() {
         {internetSubscriptionSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
       </div>
       <p className="source-note">{internetSubscriptionSeed.caveat} Source: {internetSubscriptionSeed.name} {internetSubscriptionSeed.release.name} ({internetSubscriptionSeed.release.years}). {broadbandAccessSeed.caveat} {broadbandAccessSeed.verification}</p>
+    </section>
+  );
+}
+
+function UtilityEnergyContextPanel() {
+  const electricMetric = utilityEnergySeed.metrics.find((metric) => metric.id === 'electricity');
+  const utilityGasMetric = utilityEnergySeed.metrics.find((metric) => metric.id === 'utility-gas');
+  const detailMetrics = utilityEnergySeed.metrics.filter((metric) => ['total-occupied-units', 'electricity', 'utility-gas'].includes(metric.id));
+
+  return (
+    <section className="panel utility-energy-panel" aria-label="ACS heating fuel planning context">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">ENERGY RESILIENCE · ACS CONTEXT</span>
+          <h2>Heating-fuel mix seed before utility or outage claims</h2>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="utility-energy-hero">
+        <article>
+          <span>Electricity as heating fuel</span>
+          <b>{electricMetric?.displayShare || 'N/A'}</b>
+          <small>{electricMetric?.displayValue || 'N/A'} households · {electricMetric?.displayMoe || 'MOE pending'} · {utilityEnergySeed.release}</small>
+        </article>
+        <div>
+          <h3>Resilience planning context, not utility telemetry</h3>
+          <p>{utilityEnergySeed.posture}</p>
+          <a href={utilityEnergySeed.sourceUrl} target="_blank" rel="noreferrer">Open Census Reporter B25040 query</a>
+        </div>
+      </div>
+      <div className="utility-energy-grid">
+        {detailMetrics.map((metric) => (
+          <article key={metric.id}>
+            <span>{metric.label}</span>
+            <b>{metric.displayShare || metric.displayValue}</b>
+            <small>{metric.displayValue} households · {metric.displayMoe}</small>
+          </article>
+        ))}
+      </div>
+      <div className="utility-energy-comparison">
+        {utilityEnergySeed.comparison.map((item) => (
+          <article key={item.geography}>
+            <span>{item.geography}</span>
+            <b>{item.electricityShare}</b>
+            <small>{item.utilityGasShare} utility gas · {item.propaneShare} propane · {item.totalOccupiedUnits.toLocaleString()} occupied units</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{utilityEnergySeed.caveat} Waynesboro utility-gas seed: {utilityGasMetric?.displayShare || 'N/A'} ({utilityGasMetric?.displayValue || 'N/A'} households), with share MOE still pending.</p>
     </section>
   );
 }
@@ -2447,6 +2504,7 @@ function InfrastructureSafetyHousing() {
       <WaterSystemsPanel />
       <StateDrinkingWaterPanel />
       <UtilityRateReferencePanel />
+      <UtilityEnergyContextPanel />
       <BroadbandAccessPanel />
       <VehicleAccessPanel />
       <CleanWaterPermitPanel />
@@ -2761,6 +2819,7 @@ function PageBriefStrip({ page }) {
       { label: 'Mobility', value: noVehicleMetric?.displayShare || 'ACS seeded', detail: 'Zero-vehicle context with MOE caveats.' },
       { label: 'Accessibility', value: disabledMetric?.displayShare || 'ACS seeded', detail: 'Disability context added for planning only.' },
       { label: 'Health access', value: healthInsuranceSeed.metrics.find((metric) => metric.id === 'uninsured-total')?.displayShare || 'ACS seeded', detail: 'B27010 insurance-coverage context; not enrollment, clinical, or service-demand data.' },
+      { label: 'Energy mix', value: utilityEnergySeed.metrics.find((metric) => metric.id === 'electricity')?.displayShare || 'ACS seeded', detail: 'B25040 heating-fuel context; not utility accounts, outage exposure, or rate burden.' },
       { label: 'Language access', value: languageAccessSeed.metrics.find((metric) => metric.id === 'language-other-than-english')?.displayShare || 'ACS seeded', detail: 'C16001 communication-planning context; not a service workload claim.' },
       { label: 'Affordability', value: housingCostBurdenSeed.metrics.find((metric) => metric.id === 'renter-cost-burden')?.displayShare || 'ACS seeded', detail: 'Renter cost-burden survey context with MOE caveats.' }
     ],
