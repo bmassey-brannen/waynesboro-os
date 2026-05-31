@@ -120,6 +120,25 @@ a { color: inherit; }
 .briefing-cards b { margin-top: 4px; color: #14271e; font-size: 15px; letter-spacing: -.02em; }
 .briefing-cards small { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.35; }
 
+.meeting-readiness-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: -4px;
+}
+.meeting-readiness-strip article {
+  min-width: 0;
+  padding: 10px 11px;
+  border: 1px solid rgba(31,44,37,.14);
+  border-top: 3px solid var(--forest-2);
+  background: rgba(255,255,255,.82);
+  box-shadow: 0 8px 20px rgba(20,32,27,.05);
+}
+.meeting-readiness-strip span, .meeting-readiness-strip b, .meeting-readiness-strip small { display: block; overflow-wrap: anywhere; }
+.meeting-readiness-strip span { color: var(--gold); font-size: 9px; text-transform: uppercase; letter-spacing: .12em; font-weight: 900; }
+.meeting-readiness-strip b { margin-top: 4px; color: var(--forest-2); font-size: 15px; letter-spacing: -.02em; }
+.meeting-readiness-strip small { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+
 .eyebrow { color: var(--forest-2); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; }
 .module { scroll-margin-top: 18px; }
 .module-title { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 14px; }
@@ -397,7 +416,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .ops-source-grid article { min-width: 0; padding: 11px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
 .ops-source-grid a { display: block; margin-top: 8px; color: #13251b; font-size: 13px; font-weight: 900; text-decoration: none; overflow-wrap: anywhere; }
 .ops-source-grid p { margin: 6px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
-.weather-readiness-panel, .water-system-panel, .utility-rate-panel, .broadband-access-panel, .clean-water-panel, .hazard-resilience-panel, .public-safety-source-panel, .health-equity-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,238,.97)); border-color: rgba(38,116,79,.24); }
+.weather-readiness-panel, .water-system-panel, .state-water-panel, .utility-rate-panel, .broadband-access-panel, .clean-water-panel, .hazard-resilience-panel, .public-safety-source-panel, .health-equity-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,238,.97)); border-color: rgba(38,116,79,.24); }
 .public-safety-source-panel, .health-equity-panel { border-color: rgba(165,128,49,.24); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(248,244,232,.96)); }
 .health-equity-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
 .health-equity-summary article, .health-equity-samples article { min-width: 0; padding: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.78); }
@@ -442,6 +461,17 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .utility-reference-grid span { color: var(--gold); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
 .utility-reference-grid b { margin-top: 4px; color: #13251b; font-size: 12px; line-height: 1.25; }
 .utility-reference-grid small { margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.state-water-panel { border-color: rgba(31,93,66,.26); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(238,244,239,.97)); }
+.state-water-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.state-water-grid a { min-width: 0; display: block; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.78); text-decoration: none; }
+.state-water-grid span, .state-water-grid b, .state-water-grid small, .state-water-shape span, .state-water-next span { display: block; overflow-wrap: anywhere; }
+.state-water-grid span, .state-water-shape span { color: var(--gold); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
+.state-water-grid b { margin-top: 4px; color: #13251b; font-size: 12px; line-height: 1.25; }
+.state-water-grid small { margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.state-water-shape { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.state-water-shape span { padding: 5px 7px; border: 1px solid rgba(31,93,66,.18); background: rgba(31,93,66,.06); color: var(--forest-2); }
+.state-water-next { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin-top: 10px; }
+.state-water-next span { padding: 8px; border: 1px solid rgba(165,128,49,.22); background: rgba(165,128,49,.07); color: #3f3b2d; font-size: 10px; line-height: 1.35; font-weight: 750; }
 .clean-water-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
 .clean-water-summary article { min-width: 0; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
 .clean-water-summary span, .clean-water-summary b, .clean-water-summary small,
@@ -545,7 +575,8 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .briefing-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .operations-confidence-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ops-source-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .weather-meta-grid, .weather-endpoint-list, .public-safety-source-grid, .health-equity-samples, .funding-summary-grid, .funding-quarter-grid, .sales-tax-source-grid, .permit-route-grid, .community-route-grid, .community-next-steps, .broadband-source-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .weather-meta-grid, .weather-endpoint-list, .public-safety-source-grid, .health-equity-samples, .funding-summary-grid, .funding-quarter-grid, .sales-tax-source-grid, .permit-route-grid, .community-route-grid, .community-next-steps, .broadband-source-grid, .state-water-grid, .state-water-next { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .meeting-readiness-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .broadband-shape-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .health-equity-summary { grid-template-columns: 1fr; }
   .public-safety-questions { grid-template-columns: 1fr; }
@@ -581,7 +612,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .civic-asset-list, .city-map-source-list { grid-template-columns: 1fr; }
   .ops-source-grid, .public-safety-source-grid, .public-safety-questions, .operations-confidence-grid, .health-equity-summary, .health-equity-samples { grid-template-columns: 1fr; }
   .weather-meta-grid, .weather-endpoint-list { grid-template-columns: 1fr; }
-  .broadband-source-grid, .broadband-shape-strip { grid-template-columns: 1fr; }
+  .broadband-source-grid, .broadband-shape-strip, .state-water-grid, .state-water-next, .meeting-readiness-strip { grid-template-columns: 1fr; }
   .forecast-period-grid { grid-template-columns: 1fr; }
   .water-system-list { grid-template-columns: 1fr; }
   .utility-reference-grid { grid-template-columns: 1fr; }
@@ -592,4 +623,16 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .source-list { grid-template-columns: 1fr; }
   .source-difficulty, .source-status { justify-self: start; }
   .council-grid { grid-template-columns: 1fr; }
+}
+
+@media print {
+  body { background: #fff; }
+  .terminal-shell { display: block; }
+  .sidebar { display: none; }
+  .workspace { padding: 0; gap: 10px; overflow: visible; }
+  .topbar, .panel, .kpi-card, .baseline-panel, .civic-briefing-strip, .meeting-readiness-strip article, .trust-ribbon article { box-shadow: none; break-inside: avoid; }
+  .topbar { color: #123d2b; background: #fff; border-color: var(--line-strong); }
+  .topbar .eyebrow, .public-disclaimer, .civic-mode-card span { color: #34433b; }
+  .civic-mode-card { color: #123d2b; background: #f7f7f2; border-color: var(--line-strong); }
+  a { text-decoration: none; }
 }

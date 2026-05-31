@@ -39,6 +39,7 @@ import { federalSpendingSeed } from '../data/federalSpendingSeed.js';
 import { civicParticipationSeed } from '../data/civicParticipationSeed.js';
 import { communityDevelopmentSeed } from '../data/communityDevelopmentSeed.js';
 import { broadbandAccessSeed } from '../data/broadbandAccessSeed.js';
+import { stateDrinkingWaterSeed } from '../data/stateDrinkingWaterSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -1036,6 +1037,36 @@ function WaterSystemsPanel() {
   );
 }
 
+function StateDrinkingWaterPanel() {
+  return (
+    <section className="panel state-water-panel" aria-label="Georgia EPD drinking water verification routes">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">STATE WATER VERIFICATION</span>
+          <h2>Georgia EPD route added before water-quality claims</h2>
+        </div>
+        <span className="terminal-badge gold">VERIFY BEFORE USE</span>
+      </div>
+      <div className="state-water-grid">
+        {stateDrinkingWaterSeed.routes.map((route) => (
+          <a key={route.label} href={route.url} target="_blank" rel="noreferrer">
+            <span>{route.type}</span>
+            <b>{route.label}</b>
+            <small>{route.status} · {route.use}</small>
+          </a>
+        ))}
+      </div>
+      <div className="state-water-shape">
+        {stateDrinkingWaterSeed.normalizedShape.map((field) => <span key={field}>{field}</span>)}
+      </div>
+      <div className="state-water-next">
+        {stateDrinkingWaterSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p className="source-note">{stateDrinkingWaterSeed.caveat} Retrieved {new Date(stateDrinkingWaterSeed.retrievedAt).toLocaleDateString()}.</p>
+    </section>
+  );
+}
+
 function UtilityRateReferencePanel() {
   return (
     <section className="panel utility-rate-panel">
@@ -1292,6 +1323,7 @@ function InfrastructureSafetyHousing() {
       <HealthEquitySourcePanel />
       <WeatherReadinessPanel />
       <WaterSystemsPanel />
+      <StateDrinkingWaterPanel />
       <UtilityRateReferencePanel />
       <BroadbandAccessPanel />
       <CleanWaterPermitPanel />
@@ -1336,9 +1368,9 @@ function Council() {
     },
     {
       status: 'Source route added',
-      title: 'FCC broadband data route now scoped',
-      note: 'Digital-infrastructure coverage can become a source-labeled operations layer after FCC export scope, vintage, and geography are verified.',
-      action: 'Review FCC data-download terms and cache only permitted Burke/Waynesboro aggregate availability records before The Council mentions coverage gaps.'
+      title: 'Georgia EPD drinking-water verification route now scoped',
+      note: 'Water-system identity can now be cross-checked against EPA ECHO/SDWIS and Georgia EPD Drinking Water Watch before any water-quality or compliance language appears.',
+      action: 'Manually verify GA0330004 / WAYNESBORO in Drinking Water Watch and the latest EPD annual report before The Council cites water-system facts beyond identity.'
     },
     {
       status: 'Still synthetic',
@@ -1447,6 +1479,27 @@ function PublicTrustRibbon() {
   );
 }
 
+function MeetingReadinessStrip() {
+  const checks = [
+    { label: 'First-screen posture', value: 'Public demo', detail: 'White/silver civic surface, forest-green identity, no affiliation or trading language.' },
+    { label: 'Claims discipline', value: 'Source-gated', detail: 'Verified baseline first; synthetic operating scores stay visibly labeled.' },
+    { label: 'Presentation packet', value: 'Print aware', detail: 'Dense panels remain readable for PDF/meeting screenshots and council-style review.' },
+    { label: 'Next evidence lane', value: 'Water + documents', detail: 'Cross-check EPD/SDWIS identity and official records before Council citations.' }
+  ];
+
+  return (
+    <section className="meeting-readiness-strip" aria-label="presentation and public readiness checklist">
+      {checks.map((item) => (
+        <article key={item.label}>
+          <span>{item.label}</span>
+          <b>{item.value}</b>
+          <small>{item.detail}</small>
+        </article>
+      ))}
+    </section>
+  );
+}
+
 function CivicBriefingStrip() {
   const cityPopulation = metricById['waynesboro-population'];
   const medianIncome = metricById['waynesboro-median-income'];
@@ -1522,6 +1575,7 @@ export default function WaynesboroTerminal() {
         </header>
         <PublicTrustRibbon />
         <CivicBriefingStrip />
+        <MeetingReadinessStrip />
         <ExecutiveDashboard />
         <SourceReadiness />
         <EconomicDevelopment />

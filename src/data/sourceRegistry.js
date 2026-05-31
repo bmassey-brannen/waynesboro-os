@@ -385,6 +385,17 @@ export const sourceRegistry = [
     notes: 'Useful operations-lane source for water-system identity and compliance context. Treat as evidence/reference, not live utility telemetry; confirm PWSID and Georgia primacy-source details before binding metrics.'
   },
   {
+    name: 'Georgia EPD Drinking Water Program / Drinking Water Watch',
+    url: 'https://epd.georgia.gov/watershed-protection-branch/drinking-water',
+    dataType: 'State drinking-water source hub, Drinking Water Watch public lookup route, annual public-water-system compliance report PDFs, and violations appendix paths',
+    geography: 'Georgia public water systems; Waynesboro/Burke County use requires exact PWSID cross-check such as GA0330004 / WAYNESBORO',
+    accessMethod: 'Public EPD web page and linked public lookup/report PDFs; use manual verification and low-volume cached report metadata only. Do not scrape lookup forms or imply current compliance without row/page citations.',
+    cadence: 'Program page updates as posted; annual compliance reports are report-year based; Drinking Water Watch reflects state/EPA reporting updates',
+    difficulty: 'Medium',
+    status: 'State verification route added',
+    notes: 'Low-volume check reached the Georgia EPD Drinking Water page with HTTP 200 and verified linked annual PWS compliance-report PDFs. Added src/data/stateDrinkingWaterSeed.js and an operations verification panel; this is not live telemetry or a water-quality claim.'
+  },
+  {
     name: 'EPA ECHO SDWIS REST Services',
     url: 'https://echodata.epa.gov/echo/sdw_rest_services.get_systems?output=JSON&p_co=Burke&p_st=GA&p_act=Y',
     dataType: 'Public Safe Drinking Water Act system identity fields, PWSIDs, system type, primary source, served geography, activity status, and related compliance row counts',
@@ -559,7 +570,7 @@ export const readinessStrip = [
   { lane: 'Economy', status: 'Workforce + funding seeds', source: 'BLS LAUS + USAspending + Census CBP', tone: 'good' },
   { lane: 'Finance', status: 'Sales-tax + digest routes', source: 'Georgia DOR Distributions / Digest Compliance', tone: 'good' },
   { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },
-  { lane: 'Utilities', status: 'Rate refs indexed', source: 'City Water Rates / DocumentCenter', tone: 'good' },
+  { lane: 'Utilities', status: 'State verification route', source: 'City Water Rates / EPA SDWIS / Georgia EPD DWW', tone: 'good' },
   { lane: 'Broadband', status: 'FCC route scoped', source: 'FCC Broadband Map / BDC downloads', tone: 'watch' },
   { lane: 'Environmental', status: 'CWA seed ready', source: 'EPA ECHO Clean Water Act', tone: 'good' },
   { lane: 'Resilience', status: 'Hazard source stack', source: 'FEMA NFHL / NOAA Storm Events', tone: 'watch' },
