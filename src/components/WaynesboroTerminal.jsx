@@ -35,6 +35,7 @@ import { healthEquitySeed } from '../data/healthEquitySeed.js';
 import { laborForceSeed } from '../data/laborForceSeed.js';
 import { salesTaxDistributionSeed } from '../data/salesTaxDistributionSeed.js';
 import { cityPermittingSeed } from '../data/cityPermittingSeed.js';
+import { federalSpendingSeed } from '../data/federalSpendingSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -615,6 +616,39 @@ function SalesTaxDistributionPanel() {
   );
 }
 
+function FederalFundingPanel() {
+  const money = (value) => `$${(value / 1000000).toFixed(value >= 10000000 ? 1 : 2)}M`;
+  return (
+    <section className="federal-funding-panel" aria-label="USAspending federal funding source panel">
+      <div className="bridge-head">
+        <div>
+          <span className="eyebrow">FEDERAL FUNDING CONTEXT · SOURCE-GATED</span>
+          <h3>USAspending exposes Burke County place-of-performance obligations</h3>
+        </div>
+        <span className="terminal-badge live">PUBLIC API</span>
+      </div>
+      <div className="funding-summary-grid">
+        <article><span>FY{federalSpendingSeed.fiscalYear} obligations</span><b>{money(federalSpendingSeed.totals.totalObligations)}</b><small>{federalSpendingSeed.geography}</small></article>
+        <article><span>Grant obligations</span><b>{money(federalSpendingSeed.totals.grantObligations)}</b><small>Requires award-level recipient review before local use.</small></article>
+        <article><span>Contract obligations</span><b>{money(federalSpendingSeed.totals.contractObligations)}</b><small>County context, not a city procurement claim.</small></article>
+      </div>
+      <div className="funding-quarter-grid">
+        {federalSpendingSeed.quarters.map((quarter) => (
+          <article key={quarter.label}>
+            <span>{quarter.label}</span>
+            <b>{money(quarter.total)}</b>
+            <small>Grants {money(quarter.grants)} · contracts {money(quarter.contracts)}</small>
+          </article>
+        ))}
+      </div>
+      <div className="funding-next-steps">
+        {federalSpendingSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p>{federalSpendingSeed.caveat} Retrieved {new Date(federalSpendingSeed.retrievedAt).toLocaleDateString()} from {federalSpendingSeed.sourceName}.</p>
+    </section>
+  );
+}
+
 function CityPermittingIntakePanel() {
   return (
     <section className="permitting-intake-panel" aria-label="City permitting and planning intake source panel">
@@ -673,6 +707,7 @@ function EconomicDevelopment() {
         <BusinessSurfacePanel />
         <CityPermittingIntakePanel />
         <LaborForceSourcePanel />
+        <FederalFundingPanel />
         <SalesTaxDistributionPanel />
         <div className="dri-watch-card">
           <span className="eyebrow">REGIONAL DEVELOPMENT WATCH · SOURCE SEED</span>
@@ -1204,9 +1239,9 @@ function Council() {
     },
     {
       status: 'Source route added',
-      title: 'DOR sales-tax distribution pages identified',
-      note: 'Revenue placeholders now have a credible state source path, but no Waynesboro sales-tax value has been promoted.',
-      action: 'Parse Burke/Waynesboro rows only after jurisdiction codes, tax type, period, and report URL are attached.'
+      title: 'USAspending funding context now visible',
+      note: 'Burke County place-of-performance obligations can guide grant/award review, but they are not city revenue or proof of local receipt.',
+      action: 'Drill into award-level recipient and agency records before The Council cites any project, grant, or local-government funding claim.'
     },
     {
       status: 'Still synthetic',

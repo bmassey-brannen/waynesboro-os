@@ -66,6 +66,17 @@ export const sourceRegistry = [
     notes: 'Low-volume API test returned December 2025 Burke County rate 4.2%, labor force 10,600, employed 10,156, unemployed 444. Added src/data/laborForceSeed.js and an economic workforce source snapshot; use as county context only.'
   },
   {
+    name: 'USAspending.gov Spending Over Time API',
+    url: 'https://api.usaspending.gov/api/v2/search/spending_over_time/',
+    dataType: 'Federal award obligation totals by quarter and award category using place-of-performance filters',
+    geography: 'Burke County, Georgia place of performance; not City of Waynesboro budget revenue',
+    accessMethod: 'Public API POST endpoint; low-volume cached source seed at src/data/federalSpendingSeed.js.',
+    cadence: 'USAspending updates as federal award records are published/revised; fiscal-year snapshots should be refreshed before presentations',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Low-volume FY2025 spending-over-time query for Burke County place of performance returned four quarterly rows and $184.9M total obligations, including $9.17M grant obligations. Added an economic funding context panel with caveats; award-level recipient/agency searches are required before any local-government or project claims.'
+  },
+  {
     name: 'Burke County qPublic / Schneider GIS',
     url: 'http://qpublic.net/ga/burke/',
     dataType: 'Parcel maps, property assessment records, ownership, parcel attributes',
@@ -512,7 +523,7 @@ export const readinessStrip = [
   { lane: 'City documents', status: 'Index-ready', source: 'Agenda Center / Archive Center', tone: 'good' },
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
   { lane: 'Map base', status: 'Boundary seed ready', source: 'OSM + TIGERweb + Census Reporter GeoJSON', tone: 'good' },
-  { lane: 'Economy', status: 'CBP scoped', source: 'Census CBP + BLS LAUS', tone: 'good' },
+  { lane: 'Economy', status: 'Workforce + funding seeds', source: 'BLS LAUS + USAspending + Census CBP', tone: 'good' },
   { lane: 'Finance', status: 'Sales-tax + digest routes', source: 'Georgia DOR Distributions / Digest Compliance', tone: 'good' },
   { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },
   { lane: 'Utilities', status: 'Rate refs indexed', source: 'City Water Rates / DocumentCenter', tone: 'good' },
@@ -546,6 +557,14 @@ export const sourcePriorities = [
     source: 'U.S. Bureau of Labor Statistics LAUS Public API',
     value: 'Replaces vague workforce placeholders with source-labeled Burke County unemployment and labor-force context for economic-development briefs.',
     nextStep: 'Add a tiny refresh script for LAUCN13033 series, cache latest non-preliminary rows with revision flags, and keep labels county-only unless a city series is confirmed.',
+    difficulty: 'Low'
+  },
+  {
+    lane: 'Federal funding / grants',
+    target: 'Move USAspending from quarterly obligation context to award-level grant review',
+    source: 'USAspending.gov Spending Over Time API',
+    value: 'Adds a no-key public funding source route for grant and federal-award context without presenting county place-of-performance obligations as city revenue.',
+    nextStep: 'Run award-level API searches by award-type group, cache recipient/agency/project metadata, and cross-check local-government awards against agenda/budget documents before citation.',
     difficulty: 'Low'
   },
   {
