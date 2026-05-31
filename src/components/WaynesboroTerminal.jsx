@@ -23,6 +23,7 @@ import { weatherReadinessSeed } from '../data/weatherReadinessSeed.js';
 import { weatherAlertsSnapshot } from '../data/weatherAlertsSnapshot.js';
 import { waterSystemsSeed } from '../data/waterSystemsSeed.js';
 import { economicSourceSeed } from '../data/economicSourceSeed.js';
+import { censusReporterSeed } from '../data/censusReporterSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -331,6 +332,39 @@ function DataCommonsLivePanel() {
   );
 }
 
+function CensusReporterCrosscheckPanel() {
+  const population = censusReporterSeed.metrics.find((metric) => metric.id === 'cr-waynesboro-population');
+  const income = censusReporterSeed.metrics.find((metric) => metric.id === 'cr-waynesboro-median-household-income');
+  const povertyCount = censusReporterSeed.metrics.find((metric) => metric.id === 'cr-waynesboro-poverty-count');
+  const povertyUniverse = censusReporterSeed.metrics.find((metric) => metric.id === 'cr-waynesboro-poverty-universe');
+  const povertyRate = povertyCount?.value && povertyUniverse?.value ? povertyCount.value / povertyUniverse.value : null;
+  const landSquareMiles = censusReporterSeed.geography.alandSquareMeters / 2589988.110336;
+
+  return (
+    <section className="panel census-reporter-panel">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">ACS REDUNDANCY / BOUNDARY PATH</span>
+          <h2>Census Reporter public API cross-check</h2>
+        </div>
+        <span className="terminal-badge live">NO KEY</span>
+      </div>
+      <div className="census-crosscheck-grid">
+        <article><span>Population</span><b>{population?.displayValue || 'N/A'}</b><small>ACS table {population?.table} · MOE ±{population?.moe?.toLocaleString?.() || 'n/a'}</small></article>
+        <article><span>Median household income</span><b>{income?.displayValue || 'N/A'}</b><small>ACS table {income?.table} · MOE ±${income?.moe?.toLocaleString?.() || 'n/a'}</small></article>
+        <article><span>Poverty cross-check</span><b>{povertyRate == null ? 'N/A' : formatPercent(povertyRate, 1)}</b><small>{povertyCount?.displayValue || 'N/A'} of {povertyUniverse?.displayValue || 'N/A'} poverty universe</small></article>
+        <article><span>Boundary seed</span><b>{landSquareMiles.toFixed(2)} sq mi</b><small>GeoJSON endpoint for place 16000US1380984</small></article>
+      </div>
+      <div className="census-link-row">
+        <a href={censusReporterSeed.endpoints.profile} target="_blank" rel="noreferrer">Open profile</a>
+        <a href={censusReporterSeed.endpoints.geo} target="_blank" rel="noreferrer">Open GeoJSON</a>
+        <a href={censusReporterSeed.endpoints.data} target="_blank" rel="noreferrer">Open data API</a>
+      </div>
+      <p className="source-note">{censusReporterSeed.caveat} Snapshot fetched {new Date(censusReporterSeed.fetchedAt).toLocaleString()}.</p>
+    </section>
+  );
+}
+
 function OfficialDocumentsPanel() {
   const summary = officialDocumentsSnapshot.summary;
   const typeLabels = Object.entries(summary.byType)
@@ -398,6 +432,7 @@ function SourceReadiness() {
         <p className="source-note">Every dashboard number remains synthetic until it carries a source, timestamp, geography, and connector status. Data Commons is now connected server-side for baseline demographics; city documents remain the next official local evidence lane.</p>
       </section>
       <DataCommonsLivePanel />
+      <CensusReporterCrosscheckPanel />
       <OfficialDocumentsPanel />
       <section className="panel source-queue-card">
         <div className="panel-head"><div><span className="eyebrow">CONNECTOR ACTION QUEUE</span><h2>Highest-trust next moves</h2></div></div>

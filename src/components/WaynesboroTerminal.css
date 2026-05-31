@@ -222,6 +222,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .source-note { margin: 12px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
 .source-map-card small { display: block; margin-top: 12px; color: var(--muted); font-size: 10px; line-height: 1.4; }
 .data-commons-panel { background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(235,243,237,.96)); border-color: rgba(38,116,79,.24); }
+.census-reporter-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(238,243,239,.96)); border-color: rgba(38,116,79,.22); }
 .official-docs-panel { grid-column: 1 / 3; background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(246,241,229,.96)); border-color: rgba(165,128,49,.24); }
 .dc-meta-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
 .dc-meta-grid div, .dc-metric-card { border: 1px solid var(--line); background: rgba(255,255,255,.78); padding: 9px; min-width: 0; }
@@ -231,6 +232,14 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .dc-metric-card b { display: block; margin-top: 4px; color: var(--forest-2); font-size: 23px; letter-spacing: -.04em; }
 .dc-metric-card small { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.35; }
 .dc-metric-card.county-context { background: rgba(165,128,49,.08); border-color: rgba(165,128,49,.24); }
+.census-crosscheck-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.census-crosscheck-grid article { min-width: 0; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
+.census-crosscheck-grid span, .census-crosscheck-grid b, .census-crosscheck-grid small { display: block; overflow-wrap: anywhere; }
+.census-crosscheck-grid span { color: var(--gold); font-size: 10px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
+.census-crosscheck-grid b { margin-top: 4px; color: var(--forest-2); font-size: 24px; letter-spacing: -.04em; }
+.census-crosscheck-grid small { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.census-link-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+.census-link-row a { padding: 6px 8px; border: 1px solid rgba(38,116,79,.2); color: var(--forest-2); background: rgba(255,255,255,.68); font-size: 10px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; text-decoration: none; }
 .doc-source-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
 .doc-source-grid article { border: 1px solid var(--line); background: rgba(255,255,255,.75); padding: 9px; }
 .doc-source-grid b, .doc-source-grid span { display: block; }
@@ -405,7 +414,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .trust-ribbon { grid-template-columns: 1fr; }
   .briefing-cards { grid-template-columns: 1fr; }
   .kpi-grid, .source-status-strip, .source-stats, .doc-source-grid, .doc-link-list { grid-template-columns: 1fr; }
-  .dc-meta-grid, .dc-metric-grid, .comparison-grid, .cbp-query-grid { grid-template-columns: 1fr; }
+  .dc-meta-grid, .dc-metric-grid, .comparison-grid, .cbp-query-grid, .census-crosscheck-grid { grid-template-columns: 1fr; }
   .map-source-bar { grid-template-columns: 1fr; }
   .civic-asset-head { display: block; }
   .civic-asset-list { grid-template-columns: 1fr; }

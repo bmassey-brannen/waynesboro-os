@@ -33,6 +33,17 @@ export const sourceRegistry = [
     notes: 'Good candidate to replace synthetic housing/development permit cards. Start with county-level permit trend, then test place-level coverage for Waynesboro.'
   },
   {
+    name: 'Census Reporter API / Profile',
+    url: 'https://censusreporter.org/profiles/16000US1380984-waynesboro-ga/',
+    dataType: 'ACS profile metrics and public GeoJSON boundary endpoint for Waynesboro place geography',
+    geography: 'Waynesboro city, Burke County, Georgia; Census place GEOID 16000US1380984',
+    accessMethod: 'Public no-key API and profile page; low-volume cached seed at src/data/censusReporterSeed.js.',
+    cadence: 'ACS-backed profile updates when Census Reporter refreshes its latest ACS release',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Low-volume test returned population, median household income, poverty fields, margins of error, and a GeoJSON boundary endpoint. Use as a redundant ACS source path and map-boundary seed; keep Data Commons/official Census labels visible before using in KPI cards.'
+  },
+  {
     name: 'Census QuickFacts',
     url: 'https://www.census.gov/quickfacts/fact/table/waynesborocitygeorgia,burkecountygeorgia/PST045223',
     dataType: 'Public demographic and economic quick facts for city/county context',
@@ -368,7 +379,7 @@ export const readinessStrip = [
   { lane: 'Demographics', status: 'Live snapshot', source: 'Data Commons API', tone: 'good' },
   { lane: 'City documents', status: 'Index-ready', source: 'Agenda Center / Archive Center', tone: 'good' },
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
-  { lane: 'Map base', status: 'Seed ready', source: 'OSM + Census TIGERweb', tone: 'good' },
+  { lane: 'Map base', status: 'Boundary seed ready', source: 'OSM + TIGERweb + Census Reporter GeoJSON', tone: 'good' },
   { lane: 'Economy', status: 'CBP scoped', source: 'Census County Business Patterns', tone: 'watch' },
   { lane: 'Ordinances', status: 'Reference-ready', source: 'Municode Library', tone: 'good' },
   { lane: 'Public safety', status: 'Official aggregate needed', source: 'E-911 / records request path', tone: 'neutral' }
