@@ -658,6 +658,17 @@ export const sourceRegistry = [
     difficulty: 'Low',
     status: 'Public API seed ready',
     notes: 'Runtime query returned occupied, owner/renter, vacant housing, median home value, and median gross rent estimates for Waynesboro with MOE. Added an Operations housing source panel. Treat as ACS context only; not parcel-level vacancy, rent-roll, tax, code-enforcement, official housing-program, or downtown occupancy data.'
+  },
+  {
+    name: 'Census Reporter ACS workforce and educational attainment tables',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B15003,B23025&geo_ids=16000US1380984',
+    dataType: 'ACS educational attainment and employment-status estimates with margins of error',
+    geography: 'Waynesboro city, Georgia (16000US1380984)',
+    accessMethod: 'Public no-key Census Reporter API; low-volume B15003/B23025 request cached in src/data/workforceEducationSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024 release.',
+    difficulty: 'Low',
+    status: 'Public API seed ready',
+    notes: 'Runtime query returned city-level attainment and ACS employment-status context for Waynesboro. Added an Economic workforce education panel. Treat as survey context only; not employer payroll, job postings, school performance, business-license data, or monthly unemployment.'
   }
 ];
 
@@ -666,7 +677,7 @@ export const readinessStrip = [
   { lane: 'City documents', status: 'Index-ready', source: 'Agenda Center / Archive Center', tone: 'good' },
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
   { lane: 'Map base', status: 'Boundary seed ready', source: 'OSM + TIGERweb + Census Reporter GeoJSON', tone: 'good' },
-  { lane: 'Economy', status: 'Workforce + commute routes', source: 'BLS LAUS + ACS journey-to-work + Census LEHD/LODES + CBP', tone: 'good' },
+  { lane: 'Economy', status: 'Workforce + commute routes', source: 'BLS LAUS + ACS workforce/attainment + LEHD/LODES + CBP', tone: 'good' },
   { lane: 'Education', status: 'GaDOE routes indexed', source: 'Georgia Insights + Burke County Public Schools', tone: 'watch' },
   { lane: 'Finance', status: 'Sales-tax + digest routes', source: 'Georgia DOR Distributions / Digest Compliance', tone: 'good' },
   { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },
@@ -707,6 +718,14 @@ export const sourcePriorities = [
     source: 'U.S. Bureau of Labor Statistics LAUS Public API',
     value: 'Replaces vague workforce placeholders with source-labeled Burke County unemployment and labor-force context for economic-development briefs.',
     nextStep: 'Add a tiny refresh script for LAUCN13033 series, cache latest non-preliminary rows with revision flags, and keep labels county-only unless a city series is confirmed.',
+    difficulty: 'Low'
+  },
+  {
+    lane: 'Talent / workforce',
+    target: 'Cross-check ACS attainment and employment-status context against education/workforce sources',
+    source: 'Census Reporter ACS B15003/B23025 + Georgia Insights + BLS LAUS',
+    value: 'Adds city-level talent and labor-force survey context without inventing employer demand, school outcomes, or monthly unemployment.',
+    nextStep: 'Propagate MOE for derived attainment percentages, compare ACS employment-status rates to BLS county LAUS, and pair with GaDOE/CTAE aggregate source routes before Council workforce recommendations.',
     difficulty: 'Low'
   },
   {

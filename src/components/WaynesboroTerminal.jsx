@@ -49,6 +49,7 @@ import { hydrologyObservationsSeed } from '../data/hydrologyObservationsSeed.js'
 import { lehdCommutingSeed } from '../data/lehdCommutingSeed.js';
 import { housingTenureSeed } from '../data/housingTenureSeed.js';
 import { commuteProfileSeed } from '../data/commuteProfileSeed.js';
+import { workforceEducationSeed } from '../data/workforceEducationSeed.js';
 import { foodAccessSeed } from '../data/foodAccessSeed.js';
 import './WaynesboroTerminal.css';
 
@@ -758,6 +759,43 @@ function LehdCommutingPanel() {
   );
 }
 
+function WorkforceEducationPanel() {
+  const primary = workforceEducationSeed.metrics.filter((metric) => ['high-school-or-higher', 'bachelor-or-higher', 'labor-force', 'acs-unemployed'].includes(metric.id));
+  return (
+    <section className="workforce-education-panel" aria-label="ACS workforce and education source panel">
+      <div className="bridge-head">
+        <div>
+          <span className="eyebrow">WORKFORCE EDUCATION · ACS CONTEXT</span>
+          <h3>City-level attainment and labor-force context is now source-labeled</h3>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="workforce-education-grid">
+        {primary.map((metric) => (
+          <article key={metric.id}>
+            <span>{metric.label}</span>
+            <b>{metric.percent ? `${metric.percent.toFixed(1)}%` : metric.displayValue}</b>
+            <small>{metric.displayValue} estimate{metric.moe ? ` · MOE ±${metric.moe}` : ''} · {metric.table}</small>
+          </article>
+        ))}
+      </div>
+      <div className="workforce-table-routes">
+        {workforceEducationSeed.tables.map((route) => (
+          <a key={route.table} href={workforceEducationSeed.queryUrl} target="_blank" rel="noreferrer">
+            <span>{route.table}</span>
+            <b>{route.label}</b>
+            <small>{route.integrationUse}</small>
+          </a>
+        ))}
+      </div>
+      <div className="workforce-next-actions">
+        {workforceEducationSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p>{workforceEducationSeed.caveat} Release: {workforceEducationSeed.release.name} ({workforceEducationSeed.release.years}); retrieved {new Date(workforceEducationSeed.retrievedAt).toLocaleDateString()}.</p>
+    </section>
+  );
+}
+
 function CommuteProfilePanel() {
   const primary = commuteProfileSeed.metrics.filter((metric) => ['drove-alone', 'worked-from-home', 'commute-under-15', 'commute-45-plus'].includes(metric.id));
   return (
@@ -889,6 +927,7 @@ function EconomicDevelopment() {
         <CityPermittingIntakePanel />
         <LaborForceSourcePanel />
         <EducationWorkforcePanel />
+        <WorkforceEducationPanel />
         <LehdCommutingPanel />
         <CommuteProfilePanel />
         <FederalFundingPanel />
