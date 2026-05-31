@@ -480,8 +480,8 @@ export const sourceRegistry = [
     accessMethod: 'Public FEMA/NOAA surfaces; use low-volume metadata/annual extracts only, and manually verify map products before presenting flood-zone or loss facts.',
     cadence: 'NFHL updates as FEMA map products are revised; NOAA Storm Events annual CSV files are updated as NCEI releases corrections.',
     difficulty: 'Medium',
-    status: 'Source stack identified',
-    notes: 'Added src/data/hazardResilienceSeed.js as a source-routing stub. Runtime TLS checks to hazards.fema.gov failed from this environment, so do not build an automated NFHL connector until service access is confirmed; NOAA/NCEI annual extract strategy still needs implementation.'
+    status: 'Seed connector ready',
+    notes: 'Added src/data/hazardResilienceSeed.js as a source-routing stub. Runtime TLS checks to hazards.fema.gov failed from this environment, so do not build an automated NFHL connector until service access is confirmed. On 2026-05-31, a low-volume NOAA/NCEI Storm Events CSV download for 2026 filtered STATE=GEORGIA / CZ_NAME=BURKE and returned one Burke County row; cached in src/data/stormEventsSeed.js as a connector-shape seed only.'
   },
   {
     name: 'National Weather Service API / api.weather.gov',

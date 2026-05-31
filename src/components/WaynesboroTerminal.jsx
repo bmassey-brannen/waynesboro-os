@@ -30,6 +30,7 @@ import { businessSurfaceSeed } from '../data/businessSurfaceSeed.js';
 import { utilityRateSeed } from '../data/utilityRateSeed.js';
 import { cleanWaterPermitSeed } from '../data/cleanWaterPermitSeed.js';
 import { hazardResilienceSeed } from '../data/hazardResilienceSeed.js';
+import { stormEventsSeed } from '../data/stormEventsSeed.js';
 import { publicSafetySourceSeed } from '../data/publicSafetySourceSeed.js';
 import { healthEquitySeed } from '../data/healthEquitySeed.js';
 import { laborForceSeed } from '../data/laborForceSeed.js';
@@ -1125,6 +1126,7 @@ function CleanWaterPermitPanel() {
 }
 
 function HazardResiliencePanel() {
+  const sampleEvent = stormEventsSeed.sampleEvents[0];
   return (
     <section className="panel hazard-resilience-panel">
       <div className="panel-head">
@@ -1143,7 +1145,24 @@ function HazardResiliencePanel() {
           </a>
         ))}
       </div>
-      <p className="source-note">{hazardResilienceSeed.caveat}</p>
+      <div className="storm-event-snapshot" aria-label="NOAA storm events seed snapshot">
+        <div>
+          <span className="eyebrow">NOAA STORM EVENTS SEED</span>
+          <h3>{stormEventsSeed.observedShape.rowsMatched} Burke County row found in {stormEventsSeed.observedShape.year}</h3>
+          <p>{stormEventsSeed.geography}</p>
+        </div>
+        <article>
+          <span>{sampleEvent.beginDateTime}</span>
+          <b>{sampleEvent.eventType}</b>
+          <small>{sampleEvent.note}</small>
+        </article>
+        <article>
+          <span>Connector posture</span>
+          <b>CSV filter proven</b>
+          <small>{stormEventsSeed.sourceFile}</small>
+        </article>
+      </div>
+      <p className="source-note">{hazardResilienceSeed.caveat} {stormEventsSeed.caveat}</p>
     </section>
   );
 }

@@ -455,6 +455,15 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .hazard-source-grid span { color: var(--gold); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
 .hazard-source-grid b { margin-top: 4px; color: #13251b; font-size: 12px; line-height: 1.25; }
 .hazard-source-grid small { margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.storm-event-snapshot { display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(2, minmax(180px, .4fr)); gap: 8px; align-items: stretch; margin-top: 10px; padding: 10px; border: 1px solid rgba(38,116,79,.22); border-left: 4px solid var(--forest-2); background: linear-gradient(135deg, rgba(255,255,255,.86), rgba(237,244,238,.92)); }
+.storm-event-snapshot > div, .storm-event-snapshot article { min-width: 0; }
+.storm-event-snapshot h3 { margin: 4px 0 0; color: #13251b; font-size: 15px; letter-spacing: -.02em; line-height: 1.18; }
+.storm-event-snapshot p { margin: 6px 0 0; color: var(--muted); font-size: 11px; line-height: 1.38; }
+.storm-event-snapshot article { padding: 9px; border: 1px solid var(--line); background: rgba(255,255,255,.72); }
+.storm-event-snapshot span, .storm-event-snapshot b, .storm-event-snapshot small { display: block; overflow-wrap: anywhere; }
+.storm-event-snapshot article span { color: var(--gold); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
+.storm-event-snapshot article b { margin-top: 5px; color: #13251b; font-size: 14px; line-height: 1.2; }
+.storm-event-snapshot article small { margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.35; }
 .utility-reference-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
 .utility-reference-grid a { min-width: 0; display: block; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--gold-soft); background: rgba(255,255,255,.76); text-decoration: none; }
 .utility-reference-grid span, .utility-reference-grid b, .utility-reference-grid small { display: block; overflow-wrap: anywhere; }
@@ -588,6 +597,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .clean-water-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .clean-water-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hazard-source-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .storm-event-snapshot { grid-template-columns: 1fr; }
   .active-alert-snapshot { grid-template-columns: 1fr; }
   .comparison-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .evidence-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
