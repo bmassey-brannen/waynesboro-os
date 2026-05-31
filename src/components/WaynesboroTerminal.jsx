@@ -29,6 +29,7 @@ import { taxDigestSeed } from '../data/taxDigestSeed.js';
 import { cityMapSourceSeed } from '../data/cityMapSourceSeed.js';
 import { businessSurfaceSeed } from '../data/businessSurfaceSeed.js';
 import { utilityRateSeed } from '../data/utilityRateSeed.js';
+import { cleanWaterPermitSeed } from '../data/cleanWaterPermitSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -869,6 +870,39 @@ function UtilityRateReferencePanel() {
   );
 }
 
+function CleanWaterPermitPanel() {
+  const statusCounts = cleanWaterPermitSeed.facilities.reduce((counts, facility) => {
+    counts[facility.permitStatus] = (counts[facility.permitStatus] || 0) + 1;
+    return counts;
+  }, {});
+
+  return (
+    <section className="panel clean-water-panel">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">CLEAN WATER PERMIT SOURCE</span>
+          <h2>EPA ECHO facility identity seed for Burke / Waynesboro</h2>
+        </div>
+        <span className="terminal-badge live">PUBLIC REST</span>
+      </div>
+      <div className="clean-water-summary">
+        <article><span>County query rows</span><b>{cleanWaterPermitSeed.query.queryRows}</b><small>Active Burke County CWA facility query</small></article>
+        <article><span>Current violation rows</span><b>{cleanWaterPermitSeed.query.currentViolationRows}</b><small>Summary count from ECHO response; verify before citing</small></article>
+        <article><span>Waynesboro sample</span><b>{cleanWaterPermitSeed.facilities.length}</b><small>{statusCounts.Effective || 0} effective · {statusCounts.Expired || 0} expired in cached sample</small></article>
+      </div>
+      <div className="clean-water-list">
+        {cleanWaterPermitSeed.facilities.map((facility) => (
+          <article key={facility.sourceId}>
+            <div><span>{facility.sourceId}</span><b>{facility.name}</b><small>{facility.address} · {facility.permitStatus}{facility.masterPermitNumber ? ` · ${facility.masterPermitNumber}` : ''}</small></div>
+            <em>{facility.statute}</em>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{cleanWaterPermitSeed.caveat} Retrieved {new Date(cleanWaterPermitSeed.retrievedAt).toLocaleString()} from EPA ECHO; this panel is a public source path, not a municipal environmental claim.</p>
+    </section>
+  );
+}
+
 function InfrastructureSafetyHousing() {
   return (
     <section id="operations" className="module operations-module">
@@ -890,6 +924,7 @@ function InfrastructureSafetyHousing() {
       <WeatherReadinessPanel />
       <WaterSystemsPanel />
       <UtilityRateReferencePanel />
+      <CleanWaterPermitPanel />
       <section className="panel ops-source-ledger">
         <div className="panel-head">
           <div>

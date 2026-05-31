@@ -385,6 +385,17 @@ export const sourceRegistry = [
     notes: 'Low-volume point request returned grid office CAE, grid 32/17, county zone GAC033, forecast/fire zone GAZ077, and radar station KCLX. Active-alert snapshot for GAC033 returned zero features at 2026-05-31T01:18:07+00:00 and is cached in src/data/weatherAlertsSnapshot.js. Gridpoint forecast endpoint returned five periods at 2026-05-31T03:29:33+00:00 and is cached in src/data/weatherForecastSnapshot.js; not dispatch telemetry or an official emergency command feed.'
   },
   {
+    name: 'EPA ECHO Clean Water Act REST Services',
+    url: 'https://echodata.epa.gov/echo/cwa_rest_services.get_facilities?output=JSON&p_st=GA&p_co=Burke&p_act=Y',
+    dataType: 'Public Clean Water Act facility identity, permit status, summary compliance-row counts, inspection-row counts, and query pagination metadata',
+    geography: 'Active Burke County, Georgia CWA facilities; Waynesboro-addressed rows displayed as a source-routing sample',
+    accessMethod: 'Public EPA ECHO REST endpoint; low-volume county query followed by get_qid pagination. Cache only public facility identity fields and retrieval timestamp.',
+    cadence: 'EPA ECHO refresh cadence varies by source table; refresh and manually verify profiles before public presentation.',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Low-volume query returned 10 active Burke County CWA facility rows and summary counts; added src/data/cleanWaterPermitSeed.js with five Waynesboro-addressed sample rows. Use as environmental/source-routing context only, not a violation finding or live utility telemetry.'
+  },
+  {
     name: 'Georgia DCA Developments of Regional Impact Submissions',
     url: 'https://apps.dca.ga.gov/DRI/Submissions.aspx',
     dataType: 'Major development review submissions, project names, development type, county, jurisdiction, regional commission, status, and determination text',
@@ -416,6 +427,7 @@ export const readinessStrip = [
   { lane: 'Economy', status: 'CBP scoped', source: 'Census County Business Patterns', tone: 'watch' },
   { lane: 'Finance', status: 'Tax digest seed', source: 'Georgia DOR Digest Compliance', tone: 'good' },
   { lane: 'Utilities', status: 'Rate refs indexed', source: 'City Water Rates / DocumentCenter', tone: 'good' },
+  { lane: 'Environmental', status: 'CWA seed ready', source: 'EPA ECHO Clean Water Act', tone: 'good' },
   { lane: 'Ordinances', status: 'Reference-ready', source: 'Municode Library', tone: 'good' },
   { lane: 'Public safety', status: 'Official aggregate needed', source: 'E-911 / records request path', tone: 'neutral' }
 ];
@@ -491,6 +503,14 @@ export const sourcePriorities = [
     source: 'EPA ECHO SDWIS REST Services',
     value: 'Adds a public, timestamped water-system identity layer with Waynesboro PWSID GA0330004 while keeping utility health scores clearly separate from live telemetry.',
     nextStep: 'Build a small refresh script around get_systems + get_qid, then add manual QA against the EPA SDWIS Federal Reporting Services web view before citing compliance details.',
+    difficulty: 'Low'
+  },
+  {
+    lane: 'Environmental / utilities',
+    target: 'Refresh EPA ECHO CWA facility seed and open profiles before public use',
+    source: 'EPA ECHO Clean Water Act REST Services',
+    value: 'Adds a legitimate public environmental-permit source path for utility, industrial, and infrastructure awareness without making unsupported compliance claims.',
+    nextStep: 'Build a refresh script for get_facilities + get_qid, then manually verify facility profile pages before any detail beyond identity/status is promoted.',
     difficulty: 'Low'
   },
   {

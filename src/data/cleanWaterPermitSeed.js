@@ -1,0 +1,93 @@
+export const cleanWaterPermitSeed = {
+  sourceName: 'EPA ECHO Clean Water Act REST Services',
+  sourceUrl: 'https://echodata.epa.gov/echo/cwa_rest_services.get_facilities?output=JSON&p_st=GA&p_co=Burke&p_act=Y',
+  qidUrlTemplate: 'https://echodata.epa.gov/echo/cwa_rest_services.get_qid?output=JSON&qid=<QueryID>&pageno=1&responseset=10',
+  retrievedAt: '2026-05-31T05:10:06Z',
+  geography: 'Active Clean Water Act facility query scoped to Burke County, Georgia; display subset includes Waynesboro-addressed rows from the returned county query.',
+  accessMethod: 'Public EPA ECHO REST endpoint; low-volume county query followed by get_qid pagination. Cache public permit/facility identity fields only and refresh before public presentation.',
+  query: {
+    state: 'GA',
+    county: 'Burke',
+    activeOnly: true,
+    returnedRows: 10,
+    queryRows: 10,
+    significantViolationRows: 1,
+    currentViolationRows: 3,
+    violationsLastFourQuarters: 3,
+    inspectionsRows: 5,
+    totalPenalties: '$0'
+  },
+  facilities: [
+    {
+      name: 'CITY OF WAYNESBORO',
+      sourceId: 'GAL038466',
+      address: '628 MYRICK ST',
+      city: 'WAYNESBORO',
+      county: 'Burke',
+      statute: 'CWA',
+      epaSystem: 'ICP',
+      permitStatus: 'Effective',
+      masterPermitNumber: null,
+      actualAverageFlow: null,
+      latitude: 33.087163,
+      caveat: 'Public ECHO facility identity row; not a live utility-performance or compliance finding.'
+    },
+    {
+      name: 'CMS WAYNESBORO LLC',
+      sourceId: 'GAIS15140',
+      address: '770 MILLS ROAD',
+      city: 'WAYNESBORO',
+      county: 'Burke',
+      statute: 'CWA',
+      epaSystem: 'ICP',
+      permitStatus: 'Effective',
+      masterPermitNumber: 'GAR050000',
+      actualAverageFlow: null,
+      latitude: 33.10397,
+      caveat: 'Public ECHO facility identity row; review source page before interpreting permit type or status.'
+    },
+    {
+      name: 'FIAMM ENERGY LLC',
+      sourceId: 'GAIS03625',
+      address: '1 FIAMM WAY',
+      city: 'WAYNESBORO',
+      county: 'Burke',
+      statute: 'CWA',
+      epaSystem: 'ICP',
+      permitStatus: 'Expired',
+      masterPermitNumber: 'GAR050000',
+      actualAverageFlow: null,
+      latitude: 33.1081,
+      caveat: 'Public ECHO facility identity row; expired status appears in cached API response and should be refreshed/verified before presentation.'
+    },
+    {
+      name: 'GA POWER/PLANT VOGTLE',
+      sourceId: 'GA0026786',
+      address: 'RIVER RD',
+      city: 'WAYNESBORO',
+      county: 'Burke',
+      statute: 'CWA',
+      epaSystem: 'ICP',
+      permitStatus: 'Effective',
+      masterPermitNumber: null,
+      actualAverageFlow: 13.6,
+      latitude: 33.1377,
+      caveat: 'Public ECHO facility identity row; use for environmental source routing, not an operational claim.'
+    },
+    {
+      name: 'INGEVITY GEORGIA, LLC',
+      sourceId: 'GAIS13332',
+      address: '1000 GARY WAY',
+      city: 'WAYNESBORO',
+      county: 'Burke',
+      statute: 'CWA',
+      epaSystem: 'ICP',
+      permitStatus: 'Effective',
+      masterPermitNumber: 'GAR050000',
+      actualAverageFlow: null,
+      latitude: 33.102992,
+      caveat: 'Public ECHO facility identity row; verify current ECHO profile before citing in a public brief.'
+    }
+  ],
+  caveat: 'This seed is a source-routing layer for environmental and utility-permit awareness. It is not a finding of violation, not a complete environmental inventory, and not live operational telemetry. Use ECHO source pages and official records before making facility-specific claims.'
+};
