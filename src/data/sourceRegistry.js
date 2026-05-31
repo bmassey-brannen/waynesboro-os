@@ -112,13 +112,13 @@ export const sourceRegistry = [
   {
     name: 'Georgia Department of Revenue Digest Compliance',
     url: 'https://dor.georgia.gov/local-government-services/digest-compliance',
-    dataType: 'Tax digest summaries, millage rates, ad valorem tax reports',
-    geography: 'Georgia counties and local governments',
-    accessMethod: 'Public state web pages and downloadable reports.',
+    dataType: 'Tax digest summaries, property tax millage-rate reports, and statewide ad valorem tax levy reports',
+    geography: 'Georgia counties and local governments; future extraction should filter Burke County / Waynesboro where rows support it',
+    accessMethod: 'Public state web pages and downloadable PDF/XLS reports; low-volume source index cached in src/data/taxDigestSeed.js.',
     cadence: 'Annual / periodic state reporting',
     difficulty: 'Medium',
-    status: 'Ready for connector scoping',
-    notes: 'Follow child pages for Tax Digest Consolidated Summaries and Property Tax Millage Rates.'
+    status: 'Seed connector ready',
+    notes: 'Verified child hubs for Property Tax Millage Rates, Digest Consolidated Summaries, and Summary of Ad Valorem Taxes Levied. Latest observed 2025 downloads are indexed as a report-shape seed; no Burke row extraction yet.'
   },
   {
     name: 'Georgia Department of Labor Area Labor Profiles',
@@ -381,6 +381,7 @@ export const readinessStrip = [
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
   { lane: 'Map base', status: 'Boundary seed ready', source: 'OSM + TIGERweb + Census Reporter GeoJSON', tone: 'good' },
   { lane: 'Economy', status: 'CBP scoped', source: 'Census County Business Patterns', tone: 'watch' },
+  { lane: 'Finance', status: 'Tax digest seed', source: 'Georgia DOR Digest Compliance', tone: 'good' },
   { lane: 'Ordinances', status: 'Reference-ready', source: 'Municode Library', tone: 'good' },
   { lane: 'Public safety', status: 'Official aggregate needed', source: 'E-911 / records request path', tone: 'neutral' }
 ];
@@ -432,6 +433,14 @@ export const sourcePriorities = [
     source: 'Georgia DOT Traffic Analysis & Data Application (TADA)',
     value: 'Adds defensible roadway-volume context to downtown foot-traffic assumptions, corridor prioritization, and infrastructure planning.',
     nextStep: 'Use the public map/report interface manually first, then cache only permitted station metadata/AADT exports with GDOT attribution.',
+    difficulty: 'Medium'
+  },
+  {
+    lane: 'Finance / tax digest',
+    target: 'Parse Georgia DOR digest and millage reports for Burke County rows',
+    source: 'Georgia Department of Revenue Digest Compliance',
+    value: 'Creates a public, state-sourced finance baseline for millage rates, tax digest values, and ad valorem levy context while local budget documents are being indexed.',
+    nextStep: 'Download the latest observed DOR PDF/XLS reports from taxDigestSeed, identify Burke County / Waynesboro rows manually first, then build a cached parser with retrieval timestamps.',
     difficulty: 'Medium'
   },
   {

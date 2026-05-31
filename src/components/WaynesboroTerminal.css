@@ -240,6 +240,14 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .census-crosscheck-grid small { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.35; }
 .census-link-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
 .census-link-row a { padding: 6px 8px; border: 1px solid rgba(38,116,79,.2); color: var(--forest-2); background: rgba(255,255,255,.68); font-size: 10px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; text-decoration: none; }
+.tax-digest-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(247,243,232,.96)); border-color: rgba(165,128,49,.24); }
+.tax-digest-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.tax-digest-grid article { min-width: 0; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--gold-soft); background: rgba(255,255,255,.76); }
+.tax-digest-grid span, .tax-digest-grid b, .tax-digest-grid small, .tax-digest-grid a { display: block; overflow-wrap: anywhere; }
+.tax-digest-grid span { color: var(--gold); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
+.tax-digest-grid b { margin-top: 4px; color: #14271e; font-size: 14px; line-height: 1.2; }
+.tax-digest-grid small { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.tax-digest-grid .download-link { margin-top: 8px; color: var(--forest-2); font-size: 10px; font-weight: 900; letter-spacing: .07em; text-transform: uppercase; text-decoration: none; }
 .doc-source-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
 .doc-source-grid article { border: 1px solid var(--line); background: rgba(255,255,255,.75); padding: 9px; }
 .doc-source-grid b, .doc-source-grid span { display: block; }
@@ -414,7 +422,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .trust-ribbon { grid-template-columns: 1fr; }
   .briefing-cards { grid-template-columns: 1fr; }
   .kpi-grid, .source-status-strip, .source-stats, .doc-source-grid, .doc-link-list { grid-template-columns: 1fr; }
-  .dc-meta-grid, .dc-metric-grid, .comparison-grid, .cbp-query-grid, .census-crosscheck-grid { grid-template-columns: 1fr; }
+  .dc-meta-grid, .dc-metric-grid, .comparison-grid, .cbp-query-grid, .census-crosscheck-grid, .tax-digest-grid { grid-template-columns: 1fr; }
   .map-source-bar { grid-template-columns: 1fr; }
   .civic-asset-head { display: block; }
   .civic-asset-list { grid-template-columns: 1fr; }

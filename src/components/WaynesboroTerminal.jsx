@@ -24,6 +24,7 @@ import { weatherAlertsSnapshot } from '../data/weatherAlertsSnapshot.js';
 import { waterSystemsSeed } from '../data/waterSystemsSeed.js';
 import { economicSourceSeed } from '../data/economicSourceSeed.js';
 import { censusReporterSeed } from '../data/censusReporterSeed.js';
+import { taxDigestSeed } from '../data/taxDigestSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -365,6 +366,31 @@ function CensusReporterCrosscheckPanel() {
   );
 }
 
+function TaxDigestSourcePanel() {
+  return (
+    <section className="panel tax-digest-panel">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">FINANCE / TAX DIGEST SOURCE</span>
+          <h2>Georgia DOR digest report index</h2>
+        </div>
+        <span className="terminal-badge gold">SOURCE SEED</span>
+      </div>
+      <div className="tax-digest-grid">
+        {taxDigestSeed.reportHubs.map((hub) => (
+          <article key={hub.id}>
+            <span>{hub.dataType}</span>
+            <a href={hub.url} target="_blank" rel="noreferrer"><b>{hub.label}</b></a>
+            <small>{hub.latestObserved}</small>
+            <a className="download-link" href={hub.latestDownloadUrl} target="_blank" rel="noreferrer">Latest observed download</a>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{taxDigestSeed.caveat} Use this as a state report bridge for finance drilldowns; city budget/adopted-rate documents still need local official records.</p>
+    </section>
+  );
+}
+
 function OfficialDocumentsPanel() {
   const summary = officialDocumentsSnapshot.summary;
   const typeLabels = Object.entries(summary.byType)
@@ -433,6 +459,7 @@ function SourceReadiness() {
       </section>
       <DataCommonsLivePanel />
       <CensusReporterCrosscheckPanel />
+      <TaxDigestSourcePanel />
       <OfficialDocumentsPanel />
       <section className="panel source-queue-card">
         <div className="panel-head"><div><span className="eyebrow">CONNECTOR ACTION QUEUE</span><h2>Highest-trust next moves</h2></div></div>
