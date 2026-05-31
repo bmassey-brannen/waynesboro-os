@@ -64,6 +64,7 @@ import { householdCompositionSeed } from '../data/householdCompositionSeed.js';
 import { languageAccessSeed } from '../data/languageAccessSeed.js';
 import { healthInsuranceSeed } from '../data/healthInsuranceSeed.js';
 import { povertyStatusSeed } from '../data/povertyStatusSeed.js';
+import { youthProfileSeed } from '../data/youthProfileSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -330,6 +331,75 @@ function AgeProfilePanel() {
   );
 }
 
+function YouthProfilePanel() {
+  const earlyChildhood = youthProfileSeed.ageBands.filter((band) => ['under-3', '3-4', '5'].includes(band.id));
+  const schoolAge = youthProfileSeed.ageBands.filter((band) => ['6-8', '9-11', '12-14', '15-17'].includes(band.id));
+  const largestBand = youthProfileSeed.ageBands.reduce((leader, band) => band.value > leader.value ? band : leader, youthProfileSeed.ageBands[0]);
+
+  return (
+    <section className="youth-profile-panel" aria-label="ACS youth age cohort and service planning context">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">YOUTH / FAMILY SERVICE CONTEXT · ACS B09001</span>
+          <h2>Under-18 cohorts break the age profile into usable planning bands</h2>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="youth-profile-hero">
+        <article>
+          <span>Under 18</span>
+          <b>{youthProfileSeed.totalUnder18.displayShareOfPopulation}</b>
+          <small>{youthProfileSeed.totalUnder18.displayValue} residents · MOE {youthProfileSeed.totalUnder18.displayMoe} · {youthProfileSeed.release.name}</small>
+        </article>
+        <div>
+          <h3>Why this improves the executive screen</h3>
+          <p>The earlier age panel showed a single under-18 bucket. This source-labeled split lets the OS ask better questions about childcare, school readiness, youth programs, safe routes, library/recreation, and early workforce pathways without pretending to know enrollment or department workload.</p>
+          <a href={youthProfileSeed.sourceUrl} target="_blank" rel="noreferrer">Open Census Reporter B09001 query</a>
+        </div>
+      </div>
+      <div className="youth-profile-grid">
+        {youthProfileSeed.ageBands.map((band) => (
+          <article key={band.id}>
+            <div>
+              <span>{band.label}</span>
+              <b>{band.displayChildShare}</b>
+            </div>
+            <div className="age-share-bar"><span style={{ width: band.displayChildShare }} /></div>
+            <small>{band.displayValue} people · MOE {band.displayMoe} · {band.planningUse}</small>
+          </article>
+        ))}
+      </div>
+      <div className="youth-context-strip">
+        <article>
+          <span>Early childhood</span>
+          <b>{earlyChildhood.reduce((sum, band) => sum + band.value, 0).toLocaleString()}</b>
+          <small>Under 6 estimate from B09001 rows; use as pre-K/childcare planning context only.</small>
+        </article>
+        <article>
+          <span>School-age bands</span>
+          <b>{schoolAge.reduce((sum, band) => sum + band.value, 0).toLocaleString()}</b>
+          <small>Ages 6–17 estimate; pair with Burke County Public Schools and Georgia Insights before conclusions.</small>
+        </article>
+        <article>
+          <span>Largest cohort</span>
+          <b>{largestBand.label}</b>
+          <small>{largestBand.displayValue} estimate · {largestBand.displayMoe} MOE · small cohorts need caution.</small>
+        </article>
+      </div>
+      <div className="youth-comparison-strip">
+        {youthProfileSeed.comparison.map((row) => (
+          <article key={row.geography}>
+            <span>{row.geography}</span>
+            <b>{row.under18Share}</b>
+            <small>{row.under18.toLocaleString()} under 18 · MOE ±{row.under18Moe.toLocaleString()} · population {row.totalPopulation.toLocaleString()}</small>
+          </article>
+        ))}
+      </div>
+      <p>{youthProfileSeed.caveat} Next: {youthProfileSeed.nextActions[0]}</p>
+    </section>
+  );
+}
+
 function HouseholdCompositionPanel() {
   const primaryMetrics = householdCompositionSeed.metrics.filter((metric) => ['family-households', 'living-alone', 'female-no-spouse-family', 'nonfamily-households'].includes(metric.id));
   const headline = householdCompositionSeed.metrics.find((metric) => metric.id === 'living-alone');
@@ -440,6 +510,7 @@ function ExecutiveDashboard() {
       <BaselineComparisonPanel />
       <PovertyStatusPanel />
       <AgeProfilePanel />
+      <YouthProfilePanel />
       <HouseholdCompositionPanel />
     </section>
   );
@@ -2667,12 +2738,13 @@ function PageBriefStrip({ page }) {
     executive: [
       { label: 'Baseline', value: metricById['waynesboro-population']?.displayValue || 'N/A', detail: 'Verified city population connector.' },
       { label: 'Claim posture', value: 'Hybrid mode', detail: 'Real baselines first; operating placeholders labeled.' },
-      { label: 'Need lens', value: povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-total')?.displayShare || 'ACS seeded', detail: 'B17001 context visible with MOE and strict eligibility guardrails.' }
+      { label: 'Need lens', value: povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-total')?.displayShare || 'ACS seeded', detail: 'B17001 context visible with MOE and strict eligibility guardrails.' },
+      { label: 'Youth lens', value: youthProfileSeed.totalUnder18.displayShareOfPopulation, detail: 'B09001 splits under-18 cohorts for family-service planning only.' }
     ],
     sources: [
       { label: 'Registry', value: `${sourceRegistry.length} sources`, detail: 'Source routes, seeds, and manual lanes tracked.' },
       { label: 'Queue', value: `${sourcePriorities.length} tasks`, detail: 'Top 8 rendered to avoid backlog sprawl.' },
-      { label: 'Latest seed', value: 'Poverty status', detail: 'ACS B17001 economic-mobility context.' }
+      { label: 'Latest seed', value: 'Youth profile', detail: 'ACS B09001 under-18 cohort context.' }
     ],
     economic: [
       { label: 'Workforce', value: 'ACS + BLS', detail: 'City survey context plus county LAUS.' },
