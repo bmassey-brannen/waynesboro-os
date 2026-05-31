@@ -88,6 +88,17 @@ export const sourceRegistry = [
     notes: 'Runtime query returned Waynesboro B27010 context: 5,569 table-universe residents, 1,102 / 19.8% estimated uninsured with approximate MOE ±274, concentrated in age 19-64 cells. Treat as ACS survey planning context only; not Medicaid enrollment, clinical records, provider capacity, household eligibility, EMS demand, or municipal health telemetry.'
   },
   {
+    name: 'Census Reporter ACS poverty status table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B17001&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS B17001 poverty-status estimates by sex and age with margins of error and city/county/state comparison context',
+    geography: 'Waynesboro city, Burke County, and Georgia comparison rows; poverty-status universe',
+    accessMethod: 'Public no-key Census Reporter API; low-volume request cached in src/data/povertyStatusSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Runtime query returned Waynesboro B17001 context: 5,507-person poverty-status universe, 1,433 / 26.0% estimated below poverty with MOE ±485, plus Burke County and Georgia comparison rows. Added an executive economic-mobility panel. Treat as ACS survey planning context only; not benefits eligibility, household-level records, program enrollment, tax data, school meal participation, or municipal service-demand telemetry.'
+  },
+  {
     name: 'Census QuickFacts',
     url: 'https://www.census.gov/quickfacts/fact/table/waynesborocitygeorgia,burkecountygeorgia/PST045223',
     dataType: 'Public demographic and economic quick facts for city/county context',
@@ -795,6 +806,7 @@ export const sourceRegistry = [
 
 export const readinessStrip = [
   { lane: 'Demographics', status: 'Live snapshot + age + household mix', source: 'Data Commons API / Census Reporter B01001/B11001', tone: 'good' },
+  { lane: 'Economic mobility', status: 'ACS poverty seed', source: 'Census Reporter B17001', tone: 'good' },
   { lane: 'Language access', status: 'ACS communication seed', source: 'Census Reporter C16001', tone: 'good' },
   { lane: 'City documents', status: 'Index-ready', source: 'Agenda Center / Archive Center', tone: 'good' },
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },

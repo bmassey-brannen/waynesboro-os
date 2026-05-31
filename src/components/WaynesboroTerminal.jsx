@@ -63,6 +63,7 @@ import { mapboxReadinessSeed } from '../data/mapboxReadinessSeed.js';
 import { householdCompositionSeed } from '../data/householdCompositionSeed.js';
 import { languageAccessSeed } from '../data/languageAccessSeed.js';
 import { healthInsuranceSeed } from '../data/healthInsuranceSeed.js';
+import { povertyStatusSeed } from '../data/povertyStatusSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -377,6 +378,54 @@ function HouseholdCompositionPanel() {
   );
 }
 
+function PovertyStatusPanel() {
+  const headline = povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-total');
+  const child = povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-child-under-18');
+
+  return (
+    <section className="poverty-status-panel" aria-label="ACS poverty status and economic mobility context">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">ECONOMIC MOBILITY · ACS CONTEXT</span>
+          <h2>Poverty-status seed adds a source-labeled need lens to the executive board</h2>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="poverty-status-hero">
+        <article>
+          <span>{headline.label}</span>
+          <b>{headline.displayShare}</b>
+          <small>{headline.displayValue} residents · MOE {headline.displayMoe} · universe {headline.denominator.toLocaleString()}</small>
+        </article>
+        <div>
+          <h3>Why this matters for the civic operating picture</h3>
+          <p>Use this as planning context for grant readiness, housing cost burden, food access, health access, mobility access, and service-location questions — not as proof of household eligibility or department workload.</p>
+          <a href={povertyStatusSeed.sourceUrl} target="_blank" rel="noreferrer">Census Reporter B17001 source query</a>
+        </div>
+      </div>
+      <div className="poverty-context-grid">
+        {povertyStatusSeed.metrics.map((metric) => (
+          <article key={metric.id}>
+            <span>{metric.label}</span>
+            <b>{metric.displayShare || metric.displayValue}</b>
+            <small>{metric.displayValue} estimate · {metric.displayMoe} · {metric.note}</small>
+          </article>
+        ))}
+      </div>
+      <div className="poverty-comparison-strip">
+        {povertyStatusSeed.comparison.map((row) => (
+          <article key={row.geography}>
+            <span>{row.geography}</span>
+            <b>{row.povertyShare}</b>
+            <small>{row.belowPovertyEstimate.toLocaleString()} below poverty · MOE {row.belowPovertyMoe} · universe {row.universe.toLocaleString()}</small>
+          </article>
+        ))}
+      </div>
+      <p>{povertyStatusSeed.caveat} Child below-poverty subtotal shown as {child?.displayValue || 'N/A'} with rollup MOE pending; release {povertyStatusSeed.release.name} ({povertyStatusSeed.release.years}).</p>
+    </section>
+  );
+}
+
 function ExecutiveDashboard() {
   const executiveKpis = buildExecutiveKpis();
   return (
@@ -389,6 +438,7 @@ function ExecutiveDashboard() {
       <SourceStatusStrip />
       <div className="kpi-grid">{executiveKpis.map((item) => <KpiCard key={item.label} item={item} />)}</div>
       <BaselineComparisonPanel />
+      <PovertyStatusPanel />
       <AgeProfilePanel />
       <HouseholdCompositionPanel />
     </section>
@@ -2372,10 +2422,10 @@ function Council() {
       action: 'Turn the next Council brief into a document-backed decision log, not a generic chatbot summary.'
     },
     {
-      status: 'Mobility access context',
-      title: `${vehicleAccessSeed.metrics.find((metric) => metric.id === 'no-vehicle')?.displayShare || 'N/A'} ACS households report no vehicle available`,
-      note: 'The operations lane now has a source-labeled B08201 vehicle-availability seed with MOE and city/county/state comparison, but it is still survey context only.',
-      action: 'Pair with commute tables, LEHD/LODES, GDOT, service locations, and local transportation programs before The Council recommends mobility interventions.'
+      status: 'Economic mobility context',
+      title: `${povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-total')?.displayShare || 'N/A'} ACS poverty-status estimate`,
+      note: 'The executive lane now has B17001 poverty-status context with MOE and city/county/state comparison, but it is still survey planning context only.',
+      action: 'Pair with income distribution, housing burden, vehicle access, food access, health access, and source-labeled service locations before The Council recommends interventions.'
     },
     {
       status: 'Still synthetic',
@@ -2489,8 +2539,7 @@ function MeetingReadinessStrip() {
     { label: 'First-screen posture', value: 'Public demo', detail: 'White/silver civic surface, forest-green identity, no affiliation or trading language.' },
     { label: 'Claims discipline', value: 'Source-gated', detail: 'Verified baseline first; synthetic operating scores stay visibly labeled.' },
     { label: 'Presentation packet', value: 'Print aware', detail: 'Dense panels remain readable for PDF/meeting screenshots and council-style review.' },
-    {
-      label: 'Next evidence lane', value: 'Mobility access', detail: `${vehicleAccessSeed.metrics.find((metric) => metric.id === 'no-vehicle')?.displayShare || 'N/A'} ACS zero-vehicle household context is seeded; do not turn it into transit, hardship, or service-demand claims yet.` }
+    { label: 'Next evidence lane', value: 'Poverty context', detail: `${povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-total')?.displayShare || 'N/A'} ACS B17001 poverty-status context is seeded; do not turn it into eligibility, program workload, or household-level claims.` }
   ];
 
   return (
@@ -2618,12 +2667,12 @@ function PageBriefStrip({ page }) {
     executive: [
       { label: 'Baseline', value: metricById['waynesboro-population']?.displayValue || 'N/A', detail: 'Verified city population connector.' },
       { label: 'Claim posture', value: 'Hybrid mode', detail: 'Real baselines first; operating placeholders labeled.' },
-      { label: 'Next proof', value: 'Documents + parcels', detail: 'Manual records review remains the highest-value lane.' }
+      { label: 'Need lens', value: povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-total')?.displayShare || 'ACS seeded', detail: 'B17001 context visible with MOE and strict eligibility guardrails.' }
     ],
     sources: [
       { label: 'Registry', value: `${sourceRegistry.length} sources`, detail: 'Source routes, seeds, and manual lanes tracked.' },
       { label: 'Queue', value: `${sourcePriorities.length} tasks`, detail: 'Top 8 rendered to avoid backlog sprawl.' },
-      { label: 'Latest seed', value: 'Household mix', detail: 'ACS B11001 household composition context.' }
+      { label: 'Latest seed', value: 'Poverty status', detail: 'ACS B17001 economic-mobility context.' }
     ],
     economic: [
       { label: 'Workforce', value: 'ACS + BLS', detail: 'City survey context plus county LAUS.' },
