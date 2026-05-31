@@ -680,11 +680,22 @@ export const sourceRegistry = [
     difficulty: 'Low',
     status: 'Public API seed ready',
     notes: 'Runtime query returned city-level attainment and ACS employment-status context for Waynesboro. Added an Economic workforce education panel. Treat as survey context only; not employer payroll, job postings, school performance, business-license data, or monthly unemployment.'
+  },
+  {
+    name: 'Census Reporter ACS age-sex table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B01001&geo_ids=16000US1380984',
+    dataType: 'ACS age profile / population-by-age estimates with margins of error',
+    geography: 'Waynesboro city, Georgia (16000US1380984)',
+    accessMethod: 'Public no-key Census Reporter API; low-volume B01001 request cached in src/data/ageProfileSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024 release.',
+    difficulty: 'Low',
+    status: 'Public API seed ready',
+    notes: 'Runtime query returned Waynesboro age groups for under 18, 18–24, 25–44, 45–64, and 65+ with MOE. Added an executive service-demand age profile panel. Treat as ACS survey context only; not school enrollment, EMS demand, voter records, program participation, or department workload data.'
   }
 ];
 
 export const readinessStrip = [
-  { lane: 'Demographics', status: 'Live snapshot', source: 'Data Commons API', tone: 'good' },
+  { lane: 'Demographics', status: 'Live snapshot + age profile', source: 'Data Commons API / Census Reporter B01001', tone: 'good' },
   { lane: 'City documents', status: 'Index-ready', source: 'Agenda Center / Archive Center', tone: 'good' },
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
   { lane: 'Map base', status: 'Boundary seed ready', source: 'OSM + TIGERweb + Census Reporter GeoJSON', tone: 'good' },

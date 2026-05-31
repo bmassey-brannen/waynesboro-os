@@ -52,6 +52,7 @@ import { commuteProfileSeed } from '../data/commuteProfileSeed.js';
 import { workforceEducationSeed } from '../data/workforceEducationSeed.js';
 import { foodAccessSeed } from '../data/foodAccessSeed.js';
 import { internetSubscriptionSeed } from '../data/internetSubscriptionSeed.js';
+import { ageProfileSeed } from '../data/ageProfileSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -290,6 +291,34 @@ function BaselineComparisonPanel() {
   );
 }
 
+function AgeProfilePanel() {
+  const peakGroup = ageProfileSeed.groups.reduce((leader, group) => group.share > leader.share ? group : leader, ageProfileSeed.groups[0]);
+  return (
+    <section className="age-profile-panel" aria-label="ACS age profile and service demand context">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">SERVICE DEMAND CONTEXT</span>
+          <h2>Age profile adds a human-services lens to the baseline</h2>
+        </div>
+        <span className="terminal-badge live">ACS B01001</span>
+      </div>
+      <div className="age-profile-grid">
+        {ageProfileSeed.groups.map((group) => (
+          <article key={group.id}>
+            <div>
+              <span>{group.label}</span>
+              <b>{group.displayShare}</b>
+            </div>
+            <div className="age-share-bar"><span style={{ width: group.displayShare }} /></div>
+            <small>{group.displayValue} people · MOE ±{group.moe.toLocaleString()} · {group.planningUse}</small>
+          </article>
+        ))}
+      </div>
+      <p className="baseline-brief"><b>Council read:</b> ACS estimates show {peakGroup.label.toLowerCase()} as the largest age band in the cached profile ({peakGroup.displayShare}). Use this as service-demand framing only: school, EMS, recreation, housing, health, and workforce records still gate any department-level recommendation.</p>
+    </section>
+  );
+}
+
 function ExecutiveDashboard() {
   const executiveKpis = buildExecutiveKpis();
   return (
@@ -302,6 +331,7 @@ function ExecutiveDashboard() {
       <SourceStatusStrip />
       <div className="kpi-grid">{executiveKpis.map((item) => <KpiCard key={item.label} item={item} />)}</div>
       <BaselineComparisonPanel />
+      <AgeProfilePanel />
     </section>
   );
 }

@@ -255,12 +255,22 @@ tr:hover td { background: rgba(31,93,66,.045); }
 
 .source-readiness { display: grid; grid-template-columns: minmax(0, .95fr) minmax(440px, 1.05fr) 300px; gap: 14px; align-items: start; }
 .baseline-panel { margin-top: 14px; padding: 14px; border: 1px solid rgba(38,116,79,.22); background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(236,244,238,.97)); box-shadow: var(--shadow); }
+.age-profile-panel { margin-top: 12px; padding: 14px; border: 1px solid rgba(165,128,49,.22); border-left: 4px solid var(--gold-soft); background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,244,232,.96)); box-shadow: var(--shadow); }
 .comparison-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
 .comparison-grid article { min-width: 0; padding: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.78); }
 .comparison-grid span, .comparison-grid b, .comparison-grid small { display: block; }
 .comparison-grid span { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .09em; font-weight: 850; }
 .comparison-grid b { margin-top: 5px; color: var(--forest-2); font-size: 24px; letter-spacing: -.04em; }
 .comparison-grid small { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.age-profile-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.age-profile-grid article { min-width: 0; padding: 10px; border: 1px solid rgba(165,128,49,.2); background: rgba(255,255,255,.78); }
+.age-profile-grid article > div:first-child { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.age-profile-grid span, .age-profile-grid b, .age-profile-grid small { overflow-wrap: anywhere; }
+.age-profile-grid span { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; font-weight: 850; }
+.age-profile-grid b { color: var(--forest-2); font-size: 22px; letter-spacing: -.04em; }
+.age-profile-grid small { display: block; margin-top: 7px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.age-share-bar { height: 8px; margin-top: 8px; border: 1px solid rgba(31,93,66,.16); background: #eef1ec; overflow: hidden; }
+.age-share-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--forest-2), var(--gold-soft)); }
 .baseline-brief { margin: 12px 0 0; padding: 10px 12px; border-left: 3px solid var(--gold-soft); background: rgba(165,128,49,.07); color: #35433b; font-size: 13px; line-height: 1.5; }
 .baseline-brief b { color: var(--forest-2); }
 .source-summary { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,238,.98)); }
@@ -683,7 +693,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .hazard-source-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .storm-event-snapshot { grid-template-columns: 1fr; }
   .active-alert-snapshot { grid-template-columns: 1fr; }
-  .comparison-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .comparison-grid, .age-profile-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .evidence-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .civic-asset-list, .city-map-source-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .official-docs-panel, .community-development-panel { grid-column: auto; }
@@ -700,7 +710,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .trust-ribbon { grid-template-columns: 1fr; }
   .briefing-cards { grid-template-columns: 1fr; }
   .kpi-grid, .source-status-strip, .source-stats, .source-maturity-strip, .doc-source-grid, .doc-link-list { grid-template-columns: 1fr; }
-  .dc-meta-grid, .dc-metric-grid, .comparison-grid, .cbp-query-grid, .business-source-grid, .education-route-grid, .lehd-route-grid, .commute-route-grid, .commute-profile-grid, .housing-tenure-grid, .housing-derived-strip, .labor-force-grid, .funding-summary-grid, .funding-quarter-grid, .sales-tax-source-grid, .permit-route-grid, .community-route-grid, .community-next-steps, .census-crosscheck-grid, .tax-digest-grid { grid-template-columns: 1fr; }
+  .dc-meta-grid, .dc-metric-grid, .comparison-grid, .age-profile-grid, .cbp-query-grid, .business-source-grid, .education-route-grid, .lehd-route-grid, .commute-route-grid, .commute-profile-grid, .housing-tenure-grid, .housing-derived-strip, .labor-force-grid, .funding-summary-grid, .funding-quarter-grid, .sales-tax-source-grid, .permit-route-grid, .community-route-grid, .community-next-steps, .census-crosscheck-grid, .tax-digest-grid { grid-template-columns: 1fr; }
   .map-source-bar { grid-template-columns: 1fr; }
   .civic-asset-head { display: block; }
   .civic-asset-list, .city-map-source-list { grid-template-columns: 1fr; }
