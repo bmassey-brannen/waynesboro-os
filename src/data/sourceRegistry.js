@@ -77,6 +77,17 @@ export const sourceRegistry = [
     notes: 'Runtime query returned Waynesboro C16001 context: 5,227 residents age 5+, 379 / 7.3% speaking a language other than English at home, 319 Spanish at home, and 240 / 4.6% speaking English less than very well. Treat as ACS survey planning context only; not school enrollment, translation-demand proof, immigration status, emergency communications performance, or municipal service telemetry.'
   },
   {
+    name: 'Census Reporter ACS health insurance coverage table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B27010&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS B27010 health insurance coverage by age: uninsured and insured planning-context estimates with margins of error',
+    geography: 'Waynesboro city, Burke County, and Georgia comparison rows; civilian noninstitutionalized population universe',
+    accessMethod: 'Public no-key Census Reporter API; low-volume request cached in src/data/healthInsuranceSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Runtime query returned Waynesboro B27010 context: 5,569 table-universe residents, 1,102 / 19.8% estimated uninsured with approximate MOE ±274, concentrated in age 19-64 cells. Treat as ACS survey planning context only; not Medicaid enrollment, clinical records, provider capacity, household eligibility, EMS demand, or municipal health telemetry.'
+  },
+  {
     name: 'Census QuickFacts',
     url: 'https://www.census.gov/quickfacts/fact/table/waynesborocitygeorgia,burkecountygeorgia/PST045223',
     dataType: 'Public demographic and economic quick facts for city/county context',
@@ -804,6 +815,7 @@ export const readinessStrip = [
   { lane: 'Civic participation', status: 'Reference routes', source: 'Burke Elections / Georgia SOS MVP', tone: 'watch' },
   { lane: 'Policy / zoning', status: 'Route index', source: 'City Community Development / DocumentCenter', tone: 'watch' },
   { lane: 'Transportation', status: 'GeoPI route verified', source: 'GDOT GeoPI Project Information', tone: 'watch' },
+  { lane: 'Health access', status: 'ACS insurance seed', source: 'Census Reporter B27010', tone: 'good' },
   { lane: 'Health equity', status: 'PLACES + food access', source: 'CDC PLACES / USDA ERS Food Access Atlas', tone: 'watch' }
 ];
 

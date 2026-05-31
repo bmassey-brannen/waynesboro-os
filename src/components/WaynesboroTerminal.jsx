@@ -62,6 +62,7 @@ import { incomeDistributionSeed } from '../data/incomeDistributionSeed.js';
 import { mapboxReadinessSeed } from '../data/mapboxReadinessSeed.js';
 import { householdCompositionSeed } from '../data/householdCompositionSeed.js';
 import { languageAccessSeed } from '../data/languageAccessSeed.js';
+import { healthInsuranceSeed } from '../data/healthInsuranceSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -2087,6 +2088,54 @@ function LanguageAccessPanel() {
   );
 }
 
+function HealthInsuranceAccessPanel() {
+  const uninsuredMetric = healthInsuranceSeed.metrics.find((metric) => metric.id === 'uninsured-total');
+  const detailMetrics = healthInsuranceSeed.metrics.filter((metric) => ['insured-total', 'age-19-34-uninsured', 'age-35-64-uninsured'].includes(metric.id));
+
+  return (
+    <section className="panel health-insurance-panel" aria-label="ACS health insurance access planning context">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">HEALTH ACCESS · ACS CONTEXT</span>
+          <h2>Insurance-coverage seed before health-service claims</h2>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="health-insurance-hero">
+        <article>
+          <span>Waynesboro uninsured estimate</span>
+          <b>{uninsuredMetric?.displayShare || 'N/A'}</b>
+          <small>{uninsuredMetric?.displayValue || 'N/A'} residents · {uninsuredMetric?.displayMoe || 'MOE pending'} · {healthInsuranceSeed.release}</small>
+        </article>
+        <div>
+          <h3>Planning context, not clinical or eligibility data</h3>
+          <p>{healthInsuranceSeed.posture}</p>
+          <a href={healthInsuranceSeed.sourceUrl} target="_blank" rel="noreferrer">Open Census Reporter B27010 query</a>
+        </div>
+      </div>
+      <div className="health-insurance-grid">
+        {detailMetrics.map((metric) => (
+          <article key={metric.id}>
+            <span>{metric.label}</span>
+            <b>{metric.displayShare || metric.displayValue}</b>
+            <small>{metric.displayValue} people · {metric.displayMoe}</small>
+          </article>
+        ))}
+      </div>
+      <div className="health-insurance-comparison">
+        {healthInsuranceSeed.comparison.map((item) => (
+          <article key={item.geography}>
+            <span>{item.geography}</span>
+            <b>{item.uninsuredShare}</b>
+            <small>{item.uninsuredEstimate.toLocaleString()} uninsured · {item.uninsuredMoe} · universe {item.tableUniverse.toLocaleString()}</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{healthInsuranceSeed.caveat} Next: {healthInsuranceSeed.nextActions[1]}</p>
+    </section>
+  );
+}
+
 function AffordableHousingSourcePanel() {
   return (
     <section className="panel affordable-housing-panel">
@@ -2265,6 +2314,7 @@ function InfrastructureSafetyHousing() {
       <TransportationProjectSourcePanel />
       <PublicSafetySourcePanel />
       <HealthEquitySourcePanel />
+      <HealthInsuranceAccessPanel />
       <DisabilityAccessPanel />
       <LanguageAccessPanel />
       <FoodAccessSourcePanel />
@@ -2589,6 +2639,7 @@ function PageBriefStrip({ page }) {
       { label: 'Telemetry guardrail', value: 'Reference layer', detail: 'No live dispatch, utility, or emergency claims.' },
       { label: 'Mobility', value: noVehicleMetric?.displayShare || 'ACS seeded', detail: 'Zero-vehicle context with MOE caveats.' },
       { label: 'Accessibility', value: disabledMetric?.displayShare || 'ACS seeded', detail: 'Disability context added for planning only.' },
+      { label: 'Health access', value: healthInsuranceSeed.metrics.find((metric) => metric.id === 'uninsured-total')?.displayShare || 'ACS seeded', detail: 'B27010 insurance-coverage context; not enrollment, clinical, or service-demand data.' },
       { label: 'Language access', value: languageAccessSeed.metrics.find((metric) => metric.id === 'language-other-than-english')?.displayShare || 'ACS seeded', detail: 'C16001 communication-planning context; not a service workload claim.' },
       { label: 'Affordability', value: housingCostBurdenSeed.metrics.find((metric) => metric.id === 'renter-cost-burden')?.displayShare || 'ACS seeded', detail: 'Renter cost-burden survey context with MOE caveats.' }
     ],
