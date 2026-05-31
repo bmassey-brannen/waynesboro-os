@@ -45,6 +45,7 @@ import { transportationProjectSeed } from '../data/transportationProjectSeed.js'
 import { educationWorkforceSeed } from '../data/educationWorkforceSeed.js';
 import { affordableHousingSeed } from '../data/affordableHousingSeed.js';
 import { usgsHydrologySeed } from '../data/usgsHydrologySeed.js';
+import { hydrologyObservationsSeed } from '../data/hydrologyObservationsSeed.js';
 import { lehdCommutingSeed } from '../data/lehdCommutingSeed.js';
 import './WaynesboroTerminal.css';
 
@@ -1312,6 +1313,48 @@ function HydrologySourcePanel() {
   );
 }
 
+function HydrologyObservationsPanel() {
+  const streamflowRows = hydrologyObservationsSeed.latestObservations.filter((observation) => observation.parameterCd === '00060');
+  const primaryObservation = hydrologyObservationsSeed.latestObservations.find((observation) => observation.siteNo === '02197830' && observation.parameterCd === '00065') || hydrologyObservationsSeed.latestObservations[0];
+
+  return (
+    <section className="panel hydrology-observations-panel" aria-label="USGS latest hydrology observations">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">HYDROLOGY OBSERVATION SEED</span>
+          <h2>Latest USGS point readings added with strict caveats</h2>
+        </div>
+        <span className="terminal-badge live">PUBLIC IV SNAPSHOT</span>
+      </div>
+      <div className="hydrology-observation-hero">
+        <article>
+          <span>Primary local gage</span>
+          <b>{primaryObservation.value} {primaryObservation.unit}</b>
+          <small>{primaryObservation.stationName} · {primaryObservation.parameterName} · provisional {primaryObservation.qualifiers.join(', ')}</small>
+        </article>
+        <div>
+          <span className="eyebrow">Connector shape</span>
+          <h3>{hydrologyObservationsSeed.observedShape.returnedSeries} public observation series across {hydrologyObservationsSeed.observedShape.requestedSites} stations</h3>
+          <p>{hydrologyObservationsSeed.geography}</p>
+        </div>
+      </div>
+      <div className="hydrology-observation-grid">
+        {streamflowRows.map((row) => (
+          <a key={`${row.siteNo}-${row.parameterCd}`} href={row.siteUrl} target="_blank" rel="noreferrer">
+            <span>{row.siteNo}</span>
+            <b>{row.value} {row.unit}</b>
+            <small>{row.stationName} · {new Date(row.dateTime).toLocaleString()} · provisional {row.qualifiers.join(', ')}</small>
+          </a>
+        ))}
+      </div>
+      <div className="hydrology-observation-actions">
+        {hydrologyObservationsSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p className="source-note">{hydrologyObservationsSeed.caveat} Retrieved {new Date(hydrologyObservationsSeed.retrievedAt).toLocaleString()} from the USGS NWIS Instantaneous Values Service.</p>
+    </section>
+  );
+}
+
 function HealthEquitySourcePanel() {
   return (
     <section className="panel health-equity-panel">
@@ -1414,7 +1457,7 @@ function OperationsConfidenceStrip() {
     {
       label: 'Hydrology',
       status: `${usgsHydrologySeed.query.returnedRows} USGS sites`,
-      detail: 'Active stream-gage inventory is source-routed for stormwater/resilience, not promoted as flood telemetry.',
+      detail: `${hydrologyObservationsSeed.observedShape.returnedSeries} provisional IV series cached; still not flood telemetry or drainage performance.`,
       tone: 'good'
     }
   ];
@@ -1532,6 +1575,7 @@ function InfrastructureSafetyHousing() {
       <BroadbandAccessPanel />
       <CleanWaterPermitPanel />
       <HydrologySourcePanel />
+      <HydrologyObservationsPanel />
       <HazardResiliencePanel />
       <section className="panel ops-source-ledger">
         <div className="panel-head">

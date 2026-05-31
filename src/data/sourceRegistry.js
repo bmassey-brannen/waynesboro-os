@@ -495,6 +495,17 @@ export const sourceRegistry = [
     notes: 'Low-volume query returned three active Burke County stream sites: Savannah River near Waynesboro, Brier Creek near Waynesboro, and Ogeechee River at Midville. Added an Operations hydrology source panel; do not present as flood status, drainage performance, water quality, utility service, or emergency telemetry.'
   },
   {
+    name: 'USGS NWIS Instantaneous Values Service',
+    url: 'https://waterservices.usgs.gov/nwis/iv/?format=json&sites=02197830,021973269,02201230&parameterCd=00060,00065&siteStatus=all',
+    dataType: 'Current/provisional streamflow and gage-height observations for selected USGS stations',
+    geography: 'Three Burke County stream stations near Waynesboro: Brier Creek, Savannah River, and Ogeechee River at Midville',
+    accessMethod: 'Public USGS waterservices JSON endpoint; low-volume point observation snapshot cached in src/data/hydrologyObservationsSeed.js.',
+    cadence: 'Instantaneous values update frequently; refresh and display retrieval timestamp before presentation use',
+    difficulty: 'Low',
+    status: 'Observation seed ready',
+    notes: 'Low-volume IV query returned six provisional series for streamflow and gage height at three stations. Use as public works / resilience context only; not a flood alert, drainage-performance score, water-quality record, or official emergency feed.'
+  },
+  {
     name: 'FEMA NFHL + NOAA Storm Events hazard source stack',
     url: 'https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer',
     dataType: 'Flood hazard map service references, FEMA Flood Map Service Center verification path, and NOAA/NCEI historical storm-event CSV source routing',
@@ -630,7 +641,7 @@ export const readinessStrip = [
   { lane: 'Broadband', status: 'FCC route scoped', source: 'FCC Broadband Map / BDC downloads', tone: 'watch' },
   { lane: 'Housing', status: 'LIHTC route indexed', source: 'City DocumentCenter / Georgia DCA', tone: 'watch' },
   { lane: 'Environmental', status: 'CWA seed ready', source: 'EPA ECHO Clean Water Act', tone: 'good' },
-  { lane: 'Hydrology', status: 'USGS stream-site seed', source: 'USGS NWIS Site Service', tone: 'good' },
+  { lane: 'Hydrology', status: 'USGS IV snapshot', source: 'USGS NWIS Site + Instantaneous Values', tone: 'good' },
   { lane: 'Resilience', status: 'Hazard source stack', source: 'FEMA NFHL / NOAA Storm Events', tone: 'watch' },
   { lane: 'Ordinances', status: 'Reference-ready', source: 'Municode Library', tone: 'good' },
   { lane: 'Public safety', status: 'Crime source routing', source: 'GBI Crime Statistics / FBI CDE / E-911', tone: 'watch' },
