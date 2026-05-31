@@ -20,6 +20,7 @@ import { regionalDevelopmentSeed } from '../data/regionalDevelopmentSeed.js';
 import { operationsSourceSeed } from '../data/operationsSourceSeed.js';
 import { osmCivicAssetsSeed } from '../data/osmCivicAssetsSeed.js';
 import { weatherReadinessSeed } from '../data/weatherReadinessSeed.js';
+import { weatherAlertsSnapshot } from '../data/weatherAlertsSnapshot.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -621,7 +622,19 @@ function WeatherReadinessPanel() {
           </a>
         ))}
       </div>
-      <p className="source-note">{weatherReadinessSeed.caveat}</p>
+      <div className="active-alert-snapshot" aria-label="cached NWS active alert snapshot">
+        <div>
+          <span className="eyebrow">CACHED ACTIVE ALERT SNAPSHOT</span>
+          <h3>{weatherAlertsSnapshot.featureCount === 0 ? 'No active NWS alerts in cached Burke County snapshot' : `${weatherAlertsSnapshot.featureCount} active NWS alert(s) cached`}</h3>
+          <p>{weatherAlertsSnapshot.summary}</p>
+        </div>
+        <div className="alert-meta">
+          <b>{new Date(weatherAlertsSnapshot.fetchedAt).toLocaleString()}</b>
+          <small>{weatherAlertsSnapshot.geography}</small>
+          <a href={weatherAlertsSnapshot.sourceUrl} target="_blank" rel="noreferrer">Open NWS alert endpoint</a>
+        </div>
+      </div>
+      <p className="source-note">{weatherReadinessSeed.caveat} {weatherAlertsSnapshot.caveat}</p>
     </section>
   );
 }
@@ -748,7 +761,7 @@ function PublicTrustRibbon() {
       <article>
         <span>Live baseline</span>
         <b>{liveConnectors} public connector active</b>
-        <small>Data Commons snapshot is server-side and source-labeled.</small>
+        <small>Data Commons baseline and NWS alert snapshot are source-labeled.</small>
       </article>
       <article>
         <span>Evidence trail</span>

@@ -310,13 +310,13 @@ export const sourceRegistry = [
   {
     name: 'National Weather Service API / api.weather.gov',
     url: 'https://api.weather.gov/points/33.0898731,-82.0156736',
-    dataType: 'Public forecast office routing, county/forecast/fire-weather zone metadata, forecast endpoints, and active alert endpoint paths',
+    dataType: 'Public forecast office routing, county/forecast/fire-weather zone metadata, forecast endpoints, active alert endpoint paths, and cached active-alert feature snapshots',
     geography: 'Waynesboro, Georgia point routed to Burke County zone GAC033 / forecast zone GAZ077',
     accessMethod: 'Public NWS API with required User-Agent header; low-volume cached metadata and timestamped forecast/alert pulls only.',
     cadence: 'Forecasts/alerts update continuously; point metadata changes rarely',
     difficulty: 'Low',
-    status: 'Seed connector ready',
-    notes: 'Low-volume point request returned grid office CAE, grid 32/17, county zone GAC033, forecast/fire zone GAZ077, and radar station KCLX. Added src/data/weatherReadinessSeed.js as a source-routing stub for operations/public-safety readiness; not live emergency telemetry.'
+    status: 'Live connector active',
+    notes: 'Low-volume point request returned grid office CAE, grid 32/17, county zone GAC033, forecast/fire zone GAZ077, and radar station KCLX. Active-alert snapshot for GAC033 returned zero features at 2026-05-31T01:18:07+00:00 and is cached in src/data/weatherAlertsSnapshot.js; not dispatch telemetry.'
   },
   {
     name: 'Georgia DCA Developments of Regional Impact Submissions',
@@ -402,10 +402,10 @@ export const sourcePriorities = [
   },
   {
     lane: 'Weather / readiness',
-    target: 'Promote NWS point routing into a timestamped forecast/alert connector',
+    target: 'Keep NWS active-alert snapshot fresh before presentations',
     source: 'National Weather Service API / api.weather.gov',
     value: 'Adds a legitimate public alert and forecast path for public works, events, emergency-preparedness, and Council weather-risk briefs.',
-    nextStep: 'Fetch active alerts for county zone GAC033 and forecast periods for grid CAE 32/17 with retrieval timestamps and NWS attribution.',
+    nextStep: 'Schedule/trigger a low-volume refresh of active alerts for county zone GAC033 and gridpoint forecast periods for CAE 32/17 with retrieval timestamps and NWS attribution.',
     difficulty: 'Low'
   },
   {
