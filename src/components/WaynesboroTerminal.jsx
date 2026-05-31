@@ -21,6 +21,7 @@ import { operationsSourceSeed } from '../data/operationsSourceSeed.js';
 import { osmCivicAssetsSeed } from '../data/osmCivicAssetsSeed.js';
 import { weatherReadinessSeed } from '../data/weatherReadinessSeed.js';
 import { weatherAlertsSnapshot } from '../data/weatherAlertsSnapshot.js';
+import { waterSystemsSeed } from '../data/waterSystemsSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -639,6 +640,50 @@ function WeatherReadinessPanel() {
   );
 }
 
+function WaterSystemsPanel() {
+  const primarySystem = waterSystemsSeed.systemsServingWaynesboro.find((system) => system.pwsName === 'WAYNESBORO');
+  const smallSystems = waterSystemsSeed.systemsServingWaynesboro.filter((system) => system.pwsName !== 'WAYNESBORO').slice(0, 5);
+
+  return (
+    <section className="panel water-system-panel">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">DRINKING WATER SOURCE SNAPSHOT</span>
+          <h2>EPA ECHO / SDWIS public water-system identity</h2>
+        </div>
+        <span className="terminal-badge live">PWSID SEED</span>
+      </div>
+      <div className="water-system-primary">
+        <article>
+          <span>Primary community system</span>
+          <b>{primarySystem?.pwsName || 'Waynesboro system pending'}</b>
+          <small>{primarySystem?.pwsId || 'PWSID pending'} · {primarySystem?.pwsType || 'type pending'} · {primarySystem?.primarySource || 'source pending'}</small>
+        </article>
+        <article>
+          <span>Population served</span>
+          <b>{primarySystem ? primarySystem.populationServed.toLocaleString() : 'N/A'}</b>
+          <small>EPA ECHO/SDWIS field, not a live city utility count.</small>
+        </article>
+        <article>
+          <span>Query scope</span>
+          <b>{waterSystemsSeed.query.returnedRows} active Burke systems</b>
+          <small>Filtered display: systems listing Waynesboro as served city.</small>
+        </article>
+      </div>
+      <div className="water-system-list">
+        {smallSystems.map((system) => (
+          <article key={system.pwsId}>
+            <span>{system.pwsId}</span>
+            <b>{system.pwsName}</b>
+            <small>{system.pwsType} · pop. {system.populationServed.toLocaleString()}</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{waterSystemsSeed.caveat} Retrieved {new Date(waterSystemsSeed.retrievedAt).toLocaleString()} from a public EPA ECHO SDWIS REST query.</p>
+    </section>
+  );
+}
+
 function InfrastructureSafetyHousing() {
   return (
     <section id="operations" className="module operations-module">
@@ -658,6 +703,7 @@ function InfrastructureSafetyHousing() {
         </section>
       </div>
       <WeatherReadinessPanel />
+      <WaterSystemsPanel />
       <section className="panel ops-source-ledger">
         <div className="panel-head">
           <div>
@@ -799,8 +845,8 @@ function CivicBriefingStrip() {
     },
     {
       label: 'Operations source watch',
-      value: waterSource ? 'EPA SDWIS scoped' : 'Water source pending',
-      detail: 'Use public water-system reports as evidence, not live utility telemetry.'
+      value: waterSource ? `${waterSystemsSeed.systemsServingWaynesboro[0]?.pwsId || 'PWSID'} scoped` : 'Water source pending',
+      detail: 'EPA ECHO/SDWIS public water-system identity is cached as evidence, not live utility telemetry.'
     }
   ];
 

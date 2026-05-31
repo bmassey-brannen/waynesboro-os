@@ -275,6 +275,17 @@ export const sourceRegistry = [
     notes: 'Useful operations-lane source for water-system identity and compliance context. Treat as evidence/reference, not live utility telemetry; confirm PWSID and Georgia primacy-source details before binding metrics.'
   },
   {
+    name: 'EPA ECHO SDWIS REST Services',
+    url: 'https://echodata.epa.gov/echo/sdw_rest_services.get_systems?output=JSON&p_co=Burke&p_st=GA&p_act=Y',
+    dataType: 'Public Safe Drinking Water Act system identity fields, PWSIDs, system type, primary source, served geography, activity status, and related compliance row counts',
+    geography: 'Active Burke County public water systems, with a display subset for systems listing Waynesboro as served city',
+    accessMethod: 'Public EPA ECHO REST endpoint; low-volume county query followed by get_qid pagination. Cache only public system identity fields and retrieval timestamp.',
+    cadence: 'EPA ECHO/SDWIS refresh cadence varies by source table; snapshot should be refreshed before public presentations.',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Low-volume query returned 23 active Burke County systems; display seed identifies WAYNESBORO PWSID GA0330004 as a community water system using ground water with population served 5,900, plus five smaller systems listing Waynesboro as served city. Added src/data/waterSystemsSeed.js.'
+  },
+  {
     name: 'City of Waynesboro Sewer & Wastewater',
     url: 'https://www.waynesboroga.com/123/Sewer-Wastewater',
     dataType: 'Official sewer/wastewater department reference surface',
@@ -410,11 +421,11 @@ export const sourcePriorities = [
   },
   {
     lane: 'Operations / water',
-    target: 'Confirm Waynesboro public-water system identity in EPA SDWIS',
-    source: 'EPA SDWIS Federal Reporting Services',
-    value: 'Adds a federal public reporting path for water-system inventory/compliance context while city utility widgets remain labeled placeholders.',
-    nextStep: 'Manually search SDWIS for Waynesboro/Burke County, confirm the exact PWSID, then cache only permitted public report metadata with EPA attribution.',
-    difficulty: 'Medium'
+    target: 'Refresh EPA ECHO SDWIS water-system seed before presentation use',
+    source: 'EPA ECHO SDWIS REST Services',
+    value: 'Adds a public, timestamped water-system identity layer with Waynesboro PWSID GA0330004 while keeping utility health scores clearly separate from live telemetry.',
+    nextStep: 'Build a small refresh script around get_systems + get_qid, then add manual QA against the EPA SDWIS Federal Reporting Services web view before citing compliance details.',
+    difficulty: 'Low'
   },
   {
     lane: 'Civic assets / map',
