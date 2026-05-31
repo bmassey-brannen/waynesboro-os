@@ -336,6 +336,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .baseline-panel { margin-top: 14px; padding: 14px; border: 1px solid rgba(38,116,79,.22); background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(236,244,238,.97)); box-shadow: var(--shadow); }
 .age-profile-panel { margin-top: 12px; padding: 14px; border: 1px solid rgba(165,128,49,.22); border-left: 4px solid var(--gold-soft); background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,244,232,.96)); box-shadow: var(--shadow); }
 .poverty-status-panel { margin-top: 12px; padding: 14px; border: 1px solid rgba(31,93,66,.22); border-left: 4px solid var(--forest-2); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,245,241,.97)); box-shadow: var(--shadow); }
+.snap-assistance-panel { border-left-color: var(--gold-soft); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(250,247,238,.97)); }
 .poverty-status-hero { display: grid; grid-template-columns: minmax(220px, .32fr) minmax(0, .68fr); gap: 9px; margin-top: 12px; align-items: stretch; }
 .poverty-status-hero article, .poverty-status-hero > div { min-width: 0; padding: 11px; border: 1px solid var(--line); background: rgba(255,255,255,.82); }
 .poverty-status-hero article { border-left: 4px solid var(--gold-soft); }

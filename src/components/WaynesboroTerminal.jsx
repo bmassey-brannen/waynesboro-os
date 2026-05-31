@@ -66,6 +66,7 @@ import { languageAccessSeed } from '../data/languageAccessSeed.js';
 import { healthInsuranceSeed } from '../data/healthInsuranceSeed.js';
 import { povertyStatusSeed } from '../data/povertyStatusSeed.js';
 import { youthProfileSeed } from '../data/youthProfileSeed.js';
+import { snapAssistanceSeed } from '../data/snapAssistanceSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -497,6 +498,59 @@ function PovertyStatusPanel() {
   );
 }
 
+function SnapAssistancePanel() {
+  const headline = snapAssistanceSeed.metrics.find((metric) => metric.id === 'snap-households');
+  const nonSnap = snapAssistanceSeed.metrics.find((metric) => metric.id === 'non-snap-households');
+
+  return (
+    <section className="poverty-status-panel snap-assistance-panel" aria-label="ACS food assistance and household economic mobility context">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">FOOD SECURITY · ACS CONTEXT</span>
+          <h2>SNAP receipt seed gives the need lens a food-access cross-check</h2>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="poverty-status-hero">
+        <article>
+          <span>{headline.label}</span>
+          <b>{headline.displayShare}</b>
+          <small>{headline.displayValue} households · MOE {headline.displayMoe} · universe {headline.denominator.toLocaleString()}</small>
+        </article>
+        <div>
+          <h3>Public-facing guardrail</h3>
+          <p>This is survey context for food-security planning and grant framing. It is not a benefits file, eligibility screen, school-meal count, pantry demand ledger, or department workload metric.</p>
+          <a href={snapAssistanceSeed.sourceUrl} target="_blank" rel="noreferrer">Census Reporter B22001 source query</a>
+        </div>
+      </div>
+      <div className="poverty-context-grid">
+        {snapAssistanceSeed.metrics.map((metric) => (
+          <article key={metric.id}>
+            <span>{metric.label}</span>
+            <b>{metric.displayShare}</b>
+            <small>{metric.displayValue} estimate · MOE {metric.displayMoe} · {metric.note}</small>
+          </article>
+        ))}
+        <article>
+          <span>Use with</span>
+          <b>Food access</b>
+          <small>Pair with USDA ERS tract extraction, poverty status, vehicle access, and local service-location maps before any Council recommendation.</small>
+        </article>
+      </div>
+      <div className="poverty-comparison-strip">
+        {snapAssistanceSeed.comparison.map((row) => (
+          <article key={row.geography}>
+            <span>{row.geography}</span>
+            <b>{row.snapShare}</b>
+            <small>{row.snapHouseholds.toLocaleString()} households receiving SNAP · MOE {row.snapMoe} · total households {row.totalHouseholds.toLocaleString()}</small>
+          </article>
+        ))}
+      </div>
+      <p>{snapAssistanceSeed.caveat} Non-SNAP household estimate shown as {nonSnap?.displayValue || 'N/A'} with MOE {nonSnap?.displayMoe || 'pending'}; release {snapAssistanceSeed.release.name} ({snapAssistanceSeed.release.years}).</p>
+    </section>
+  );
+}
+
 function ExecutiveDashboard() {
   const executiveKpis = buildExecutiveKpis();
   return (
@@ -510,6 +564,7 @@ function ExecutiveDashboard() {
       <div className="kpi-grid">{executiveKpis.map((item) => <KpiCard key={item.label} item={item} />)}</div>
       <BaselineComparisonPanel />
       <PovertyStatusPanel />
+      <SnapAssistancePanel />
       <AgeProfilePanel />
       <YouthProfilePanel />
       <HouseholdCompositionPanel />
@@ -2797,12 +2852,13 @@ function PageBriefStrip({ page }) {
       { label: 'Baseline', value: metricById['waynesboro-population']?.displayValue || 'N/A', detail: 'Verified city population connector.' },
       { label: 'Claim posture', value: 'Hybrid mode', detail: 'Real baselines first; operating placeholders labeled.' },
       { label: 'Need lens', value: povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-total')?.displayShare || 'ACS seeded', detail: 'B17001 context visible with MOE and strict eligibility guardrails.' },
+      { label: 'Food security', value: snapAssistanceSeed.metrics.find((metric) => metric.id === 'snap-households')?.displayShare || 'ACS seeded', detail: 'B22001 SNAP receipt context; not eligibility, benefits files, pantry demand, or service workload.' },
       { label: 'Youth lens', value: youthProfileSeed.totalUnder18.displayShareOfPopulation, detail: 'B09001 splits under-18 cohorts for family-service planning only.' }
     ],
     sources: [
       { label: 'Registry', value: `${sourceRegistry.length} sources`, detail: 'Source routes, seeds, and manual lanes tracked.' },
       { label: 'Queue', value: `${sourcePriorities.length} tasks`, detail: 'Top 8 rendered to avoid backlog sprawl.' },
-      { label: 'Latest seed', value: 'Youth profile', detail: 'ACS B09001 under-18 cohort context.' }
+      { label: 'Latest seed', value: 'SNAP context', detail: 'ACS B22001 household food-assistance survey context.' }
     ],
     economic: [
       { label: 'Workforce', value: 'ACS + BLS', detail: 'City survey context plus county LAUS.' },

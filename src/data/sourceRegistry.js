@@ -823,12 +823,23 @@ export const sourceRegistry = [
     difficulty: 'Low',
     status: 'Public API seed ready',
     notes: 'Runtime query returned Waynesboro under-18 context: 1,374 residents / 24.3% of population with MOE ±308, plus age bands from under 3 through 15–17 and county/state comparisons. Added an executive Youth / Family Service Context panel. Treat as ACS survey planning context only; not school enrollment, childcare slots, youth-program demand, juvenile justice data, household records, or department workload.'
+  },
+  {
+    name: 'Census Reporter ACS food stamp / SNAP receipt table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B22001&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS B22001 household Food Stamps/SNAP receipt estimates with margins of error and city/county/state comparison context',
+    geography: 'Waynesboro city, Georgia (16000US1380984), Burke County (05000US13033), and Georgia (04000US13)',
+    accessMethod: 'Public no-key Census Reporter API; low-volume B22001 request cached in src/data/snapAssistanceSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024 release.',
+    difficulty: 'Low',
+    status: 'Public API seed ready',
+    notes: 'Runtime query returned Waynesboro SNAP receipt context: 731 households / 33.2% receiving Food Stamps/SNAP in the past 12 months with MOE ±231, plus Burke County and Georgia comparisons. Added an Executive food-security panel. Treat as ACS survey planning context only; not benefits enrollment administration, eligibility, school-meal participation, pantry demand, agency caseload, household-level records, or municipal telemetry.'
   }
 ];
 
 export const readinessStrip = [
   { lane: 'Demographics', status: 'Live snapshot + age + household + youth mix', source: 'Data Commons API / Census Reporter B01001/B09001/B11001', tone: 'good' },
-  { lane: 'Economic mobility', status: 'ACS poverty seed', source: 'Census Reporter B17001', tone: 'good' },
+  { lane: 'Economic mobility', status: 'ACS poverty + SNAP seeds', source: 'Census Reporter B17001/B22001', tone: 'good' },
   { lane: 'Language access', status: 'ACS communication seed', source: 'Census Reporter C16001', tone: 'good' },
   { lane: 'City documents', status: 'Index-ready', source: 'Agenda Center / Archive Center', tone: 'good' },
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
