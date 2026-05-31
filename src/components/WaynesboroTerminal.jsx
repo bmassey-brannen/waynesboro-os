@@ -41,6 +41,7 @@ import { civicParticipationSeed } from '../data/civicParticipationSeed.js';
 import { communityDevelopmentSeed } from '../data/communityDevelopmentSeed.js';
 import { broadbandAccessSeed } from '../data/broadbandAccessSeed.js';
 import { stateDrinkingWaterSeed } from '../data/stateDrinkingWaterSeed.js';
+import { transportationProjectSeed } from '../data/transportationProjectSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -927,6 +928,38 @@ function ProjectTracker() {
   );
 }
 
+function TransportationProjectSourcePanel() {
+  return (
+    <section className="panel transportation-project-panel" aria-label="transportation project source routing">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">TRANSPORTATION PROJECT SOURCE</span>
+          <h2>GDOT GeoPI queued before road-project claims</h2>
+        </div>
+        <span className="terminal-badge gold">FILTER PENDING</span>
+      </div>
+      <div className="transport-project-grid">
+        {transportationProjectSeed.routes.map((route) => (
+          <a key={route.label} href={route.url} target="_blank" rel="noreferrer">
+            <span>{route.label}</span>
+            <b>{route.dataType}</b>
+            <small>{route.integrationUse}</small>
+          </a>
+        ))}
+        <article>
+          <span>Observed public shape</span>
+          <b>{transportationProjectSeed.observedShape.pageTitle}</b>
+          <small>{transportationProjectSeed.observedShape.dashboardStatus} · map surface also reached.</small>
+        </article>
+      </div>
+      <div className="transport-project-actions">
+        {transportationProjectSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p className="source-note">{transportationProjectSeed.caveat} Retrieved {new Date(transportationProjectSeed.retrievedAt).toLocaleDateString()} from public GDOT surfaces.</p>
+    </section>
+  );
+}
+
 function WeatherReadinessPanel() {
   const forecastPeriods = weatherForecastSnapshot.periods.slice(0, 4);
 
@@ -1338,6 +1371,7 @@ function InfrastructureSafetyHousing() {
           {housing.map((zone) => <div key={zone.zone} className="heat-row"><b>{zone.zone}</b><div className="heat"><span style={{ width: `${zone.heat}%` }} /></div><em>{zone.note}</em></div>)}
         </section>
       </div>
+      <TransportationProjectSourcePanel />
       <PublicSafetySourcePanel />
       <HealthEquitySourcePanel />
       <WeatherReadinessPanel />

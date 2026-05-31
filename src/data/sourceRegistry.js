@@ -539,6 +539,17 @@ export const sourceRegistry = [
     notes: 'Low-volume check returned the public map application. This can support downtown foot-traffic, corridor-priority, and infrastructure modules once station export rules/endpoints are confirmed.'
   },
   {
+    name: 'Georgia DOT GeoPI Project Information',
+    url: 'https://www.dot.ga.gov/applications/geopi/Pages/Dashboard.aspx',
+    dataType: 'State transportation project information, project search surface, and public project map route',
+    geography: 'Georgia statewide; manually filter to Burke County / Waynesboro before local project claims',
+    accessMethod: 'Public GDOT web application and public ArcGIS map surface; low-volume route check only, then manual filter/export review before row caching.',
+    cadence: 'GDOT project data updates as the application is maintained; project-specific cadence not yet confirmed',
+    difficulty: 'Medium',
+    status: 'Source route verified',
+    notes: 'Runtime reached GeoPI Dashboard and the public ArcGIS Project Search map with HTTP 200. Added src/data/transportationProjectSeed.js and an Operations source panel; this is not a confirmed Waynesboro project list until specific rows are filtered, timestamped, and manually verified.'
+  },
+  {
     name: 'FCC Broadband Data Collection / National Broadband Map',
     url: 'https://broadbandmap.fcc.gov/data-download',
     dataType: 'Broadband availability, provider, technology, speed-tier, location/fabric, and challenge-process source route after export terms and geography are verified',
@@ -578,6 +589,7 @@ export const readinessStrip = [
   { lane: 'Public safety', status: 'Crime source routing', source: 'GBI Crime Statistics / FBI CDE / E-911', tone: 'watch' },
   { lane: 'Civic participation', status: 'Reference routes', source: 'Burke Elections / Georgia SOS MVP', tone: 'watch' },
   { lane: 'Policy / zoning', status: 'Route index', source: 'City Community Development / DocumentCenter', tone: 'watch' },
+  { lane: 'Transportation', status: 'GeoPI route verified', source: 'GDOT GeoPI Project Information', tone: 'watch' },
   { lane: 'Health equity', status: 'PLACES seed ready', source: 'CDC PLACES census tract estimates', tone: 'watch' }
 ];
 
@@ -668,6 +680,14 @@ export const sourcePriorities = [
     source: 'Georgia DOT Traffic Analysis & Data Application (TADA)',
     value: 'Adds defensible roadway-volume context to downtown foot-traffic assumptions, corridor prioritization, and infrastructure planning.',
     nextStep: 'Use the public map/report interface manually first, then cache only permitted station metadata/AADT exports with GDOT attribution.',
+    difficulty: 'Medium'
+  },
+  {
+    lane: 'Transportation projects',
+    target: 'Filter GDOT GeoPI for Burke County / Waynesboro project rows',
+    source: 'Georgia DOT GeoPI Project Information',
+    value: 'Gives the project and operations lanes a real state transportation source route before synthetic road-project status or funding claims are promoted.',
+    nextStep: 'Open GeoPI manually, test county/city filters, verify share/export permissions, and cache only source-labeled project identity rows with retrieval dates.',
     difficulty: 'Medium'
   },
   {
