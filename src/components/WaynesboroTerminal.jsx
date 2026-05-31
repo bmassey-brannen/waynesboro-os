@@ -54,6 +54,7 @@ import { foodAccessSeed } from '../data/foodAccessSeed.js';
 import { internetSubscriptionSeed } from '../data/internetSubscriptionSeed.js';
 import { ageProfileSeed } from '../data/ageProfileSeed.js';
 import { vehicleAccessSeed } from '../data/vehicleAccessSeed.js';
+import { hazardousWasteSeed } from '../data/hazardousWasteSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -928,7 +929,7 @@ function CityPermittingIntakePanel() {
 function EconomicDevelopment() {
   const driRecord = regionalDevelopmentSeed.records[0];
   return (
-    <section id="economic" className="module two-col">
+    <section id="economic" className="module economic-module">
       <DataTable
         title="Ranked Development Pipeline"
         eyebrow="ECONOMIC DEVELOPMENT"
@@ -1348,6 +1349,42 @@ function CleanWaterPermitPanel() {
   );
 }
 
+function HazardousWasteSourcePanel() {
+  const waynesboroRows = hazardousWasteSeed.facilities.filter((facility) => facility.address.includes('Waynesboro'));
+  return (
+    <section className="panel hazardous-waste-panel" aria-label="EPA RCRA hazardous waste source routing">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">RCRA / HAZARDOUS WASTE SOURCE</span>
+          <h2>EPA ECHO handler identity seed for environmental context</h2>
+        </div>
+        <span className="terminal-badge live">PUBLIC REST SEED</span>
+      </div>
+      <div className="hazardous-waste-summary">
+        <article><span>County query rows</span><b>{hazardousWasteSeed.query.queryRows}</b><small>Active Burke County RCRA handler query</small></article>
+        <article><span>Waynesboro sample</span><b>{waynesboroRows.length}</b><small>Cached public identity rows, not a complete inventory</small></article>
+        <article><span>Violation rows</span><b>{hazardousWasteSeed.query.currentViolationRows}</b><small>Summary metadata only; profile QA required before citing</small></article>
+      </div>
+      <div className="hazardous-waste-list">
+        {hazardousWasteSeed.facilities.map((facility) => (
+          <article key={facility.sourceId}>
+            <div>
+              <span>{facility.sourceId} · {facility.universe}</span>
+              <b>{facility.name}</b>
+              <small>{facility.address} · {facility.complianceStatus}</small>
+            </div>
+            <em>{facility.significantNoncomplier === 'No' ? 'No SNC' : 'Review'}</em>
+          </article>
+        ))}
+      </div>
+      <div className="hazardous-waste-actions">
+        {hazardousWasteSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p className="source-note">{hazardousWasteSeed.caveat} Retrieved {new Date(hazardousWasteSeed.retrievedAt).toLocaleString()} from EPA ECHO RCRA REST Services.</p>
+    </section>
+  );
+}
+
 function HazardResiliencePanel() {
   const sampleEvent = stormEventsSeed.sampleEvents[0];
   return (
@@ -1612,6 +1649,12 @@ function OperationsConfidenceStrip() {
       status: `${usgsHydrologySeed.query.returnedRows} USGS sites`,
       detail: `${hydrologyObservationsSeed.observedShape.returnedSeries} provisional IV series cached; still not flood telemetry or drainage performance.`,
       tone: 'good'
+    },
+    {
+      label: 'Environmental permits',
+      status: `${hazardousWasteSeed.query.queryRows} RCRA rows`,
+      detail: 'EPA ECHO handler identity is source context only; no city inspection, zoning, or violation claim promoted.',
+      tone: 'neutral'
     }
   ];
 
@@ -1827,6 +1870,7 @@ function InfrastructureSafetyHousing() {
       <BroadbandAccessPanel />
       <VehicleAccessPanel />
       <CleanWaterPermitPanel />
+      <HazardousWasteSourcePanel />
       <HydrologySourcePanel />
       <HydrologyObservationsPanel />
       <HazardResiliencePanel />

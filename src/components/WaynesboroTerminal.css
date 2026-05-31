@@ -180,10 +180,10 @@ a { color: inherit; }
 .spark-good { stroke: var(--good); }
 .spark-bad { stroke: var(--bad); }
 
-.two-col { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr); gap: 14px; }
-.three-col { display: grid; grid-template-columns: minmax(420px, .85fr) minmax(0, 1.15fr); gap: 14px; }
-.three-stack { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-.compact { grid-template-columns: 360px minmax(0, 1fr); }
+.two-col { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr); gap: 14px; align-items: start; }
+.three-col { display: grid; grid-template-columns: minmax(420px, .85fr) minmax(0, 1.15fr); gap: 14px; align-items: start; }
+.three-stack { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; align-items: start; }
+.compact { grid-template-columns: 360px minmax(0, 1fr); align-items: start; }
 .panel { padding: 14px; min-width: 0; }
 .panel h2 { margin: 3px 0 0; font-size: 18px; letter-spacing: -.02em; color: #111b16; }
 .terminal-badge { display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border: 1px solid rgba(38,116,79,.26); color: var(--good); background: rgba(38,116,79,.07); font-size: 10px; letter-spacing: .12em; font-weight: 800; }
@@ -202,6 +202,20 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .score-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--forest-2), var(--gold-soft)); opacity: .9; }
 .score-bar b { position: absolute; right: 5px; top: 1px; font-size: 10px; color: #102018; }
 .metric-stack { display: grid; gap: 10px; margin-top: 14px; }
+.economic-module { display: grid; gap: 14px; align-items: start; }
+.economic-module > .table-panel { grid-column: 1 / -1; }
+.economic-module > .intelligence-card {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+.economic-module > .intelligence-card > .eyebrow,
+.economic-module > .intelligence-card > h2,
+.economic-module > .intelligence-card > .metric-stack { grid-column: 1 / -1; }
+.economic-module .metric-stack { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 0; }
+.economic-module .dri-watch-card,
+.economic-module .economic-source-bridge { margin-top: 0; }
 .metric-stack div { border-left: 3px solid var(--gold-soft); padding: 8px 10px; background: rgba(31,93,66,.045); }
 .metric-stack b, .metric-stack span { display: block; }
 .metric-stack span { color: var(--muted); font-size: 12px; margin-top: 3px; }
@@ -360,6 +374,8 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .source-difficulty, .source-status { justify-self: end; border: 1px solid var(--line); padding: 4px 6px; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; font-weight: 850; color: var(--forest-2); background: #f6f7f3; white-space: nowrap; }
 .source-status { color: var(--gold); }
 .priority-list { display: grid; gap: 8px; margin-top: 12px; }
+.source-queue-card { grid-column: 1 / -1; }
+.source-queue-card .priority-list { grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: start; }
 .priority-list article { padding: 10px; border: 1px solid var(--line); background: linear-gradient(180deg, rgba(255,255,255,.8), rgba(240,244,239,.9)); }
 .priority-top { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
 .priority-top span, .priority-top b { color: var(--forest-2); font-size: 10px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
@@ -432,7 +448,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
 }
 .operations-confidence-strip > div:first-child { min-width: 0; display: flex; flex-direction: column; justify-content: center; }
 .operations-confidence-strip h2 { margin: 4px 0 0; color: #13251b; font-size: 18px; line-height: 1.12; letter-spacing: -.03em; }
-.operations-confidence-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.operations-confidence-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
 .operations-confidence-grid article { min-width: 0; padding: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.78); }
 .operations-confidence-grid article.good { border-left: 3px solid var(--good); }
 .operations-confidence-grid article.watch { border-left: 3px solid var(--gold-soft); }
@@ -449,7 +465,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .ops-source-grid article { min-width: 0; padding: 11px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
 .ops-source-grid a { display: block; margin-top: 8px; color: #13251b; font-size: 13px; font-weight: 900; text-decoration: none; overflow-wrap: anywhere; }
 .ops-source-grid p { margin: 6px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
-.weather-readiness-panel, .water-system-panel, .state-water-panel, .utility-rate-panel, .broadband-access-panel, .affordable-housing-panel, .clean-water-panel, .hydrology-source-panel, .hydrology-observations-panel, .hazard-resilience-panel, .public-safety-source-panel, .health-equity-panel, .food-access-panel, .transportation-project-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,238,.97)); border-color: rgba(38,116,79,.24); }
+.weather-readiness-panel, .water-system-panel, .state-water-panel, .utility-rate-panel, .broadband-access-panel, .affordable-housing-panel, .clean-water-panel, .hazardous-waste-panel, .hydrology-source-panel, .hydrology-observations-panel, .hazard-resilience-panel, .public-safety-source-panel, .health-equity-panel, .food-access-panel, .transportation-project-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,238,.97)); border-color: rgba(38,116,79,.24); }
 .transportation-project-panel { border-color: rgba(165,128,49,.24); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(248,244,232,.96)); }
 .transport-project-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
 .transport-project-grid a, .transport-project-grid article { min-width: 0; display: block; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--gold-soft); background: rgba(255,255,255,.78); text-decoration: none; }
@@ -591,17 +607,22 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .state-water-shape span { padding: 5px 7px; border: 1px solid rgba(31,93,66,.18); background: rgba(31,93,66,.06); color: var(--forest-2); }
 .state-water-next { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin-top: 10px; }
 .state-water-next span { padding: 8px; border: 1px solid rgba(165,128,49,.22); background: rgba(165,128,49,.07); color: #3f3b2d; font-size: 10px; line-height: 1.35; font-weight: 750; }
-.clean-water-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
-.clean-water-summary article { min-width: 0; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
+.clean-water-summary, .hazardous-waste-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.clean-water-summary article, .hazardous-waste-summary article { min-width: 0; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
 .clean-water-summary span, .clean-water-summary b, .clean-water-summary small,
-.clean-water-list span, .clean-water-list b, .clean-water-list small { display: block; overflow-wrap: anywhere; }
-.clean-water-summary span, .clean-water-list span { color: var(--gold); font-size: 10px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
-.clean-water-summary b { margin-top: 4px; color: var(--forest-2); font-size: 24px; letter-spacing: -.04em; }
-.clean-water-summary small, .clean-water-list small { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.35; }
-.clean-water-list { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
-.clean-water-list article { min-width: 0; display: flex; justify-content: space-between; gap: 8px; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
-.clean-water-list b { margin-top: 4px; color: #13251b; font-size: 12px; line-height: 1.25; }
-.clean-water-list em { flex: 0 0 auto; align-self: start; padding: 3px 6px; color: var(--forest-2); border: 1px solid rgba(38,116,79,.24); background: rgba(38,116,79,.07); font-size: 10px; font-style: normal; font-weight: 900; }
+.clean-water-list span, .clean-water-list b, .clean-water-list small,
+.hazardous-waste-summary span, .hazardous-waste-summary b, .hazardous-waste-summary small,
+.hazardous-waste-list span, .hazardous-waste-list b, .hazardous-waste-list small,
+.hazardous-waste-actions span { display: block; overflow-wrap: anywhere; }
+.clean-water-summary span, .clean-water-list span, .hazardous-waste-summary span, .hazardous-waste-list span { color: var(--gold); font-size: 10px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
+.clean-water-summary b, .hazardous-waste-summary b { margin-top: 4px; color: var(--forest-2); font-size: 24px; letter-spacing: -.04em; }
+.clean-water-summary small, .clean-water-list small, .hazardous-waste-summary small, .hazardous-waste-list small { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.clean-water-list, .hazardous-waste-list { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.clean-water-list article, .hazardous-waste-list article { min-width: 0; display: flex; justify-content: space-between; gap: 8px; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
+.clean-water-list b, .hazardous-waste-list b { margin-top: 4px; color: #13251b; font-size: 12px; line-height: 1.25; }
+.clean-water-list em, .hazardous-waste-list em { flex: 0 0 auto; align-self: start; padding: 3px 6px; color: var(--forest-2); border: 1px solid rgba(38,116,79,.24); background: rgba(38,116,79,.07); font-size: 10px; font-style: normal; font-weight: 900; }
+.hazardous-waste-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin-top: 10px; }
+.hazardous-waste-actions span { padding: 8px; border: 1px solid rgba(165,128,49,.22); background: rgba(165,128,49,.07); color: #3f3b2d; font-size: 10px; line-height: 1.35; font-weight: 750; }
 .weather-meta-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; margin-top: 12px; }
 .weather-meta-grid article { min-width: 0; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
 .water-system-primary { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(180px, .45fr) minmax(220px, .65fr); gap: 9px; margin-top: 12px; }
@@ -692,9 +713,11 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .kpi-grid, .source-status-strip { grid-template-columns: repeat(3, minmax(150px, 1fr)); }
   .two-col, .three-col, .three-stack, .council-panel, .source-readiness, .civic-briefing-strip, .operations-confidence-strip { grid-template-columns: 1fr; }
   .briefing-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .source-queue-card .priority-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .economic-module > .intelligence-card, .economic-module .metric-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .operations-confidence-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ops-source-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .weather-meta-grid, .weather-endpoint-list, .public-safety-source-grid, .health-equity-samples, .food-access-grid, .food-access-actions, .education-route-grid, .lehd-route-grid, .commute-route-grid, .commute-profile-grid, .housing-tenure-grid, .housing-derived-strip, .funding-summary-grid, .funding-quarter-grid, .sales-tax-source-grid, .permit-route-grid, .community-route-grid, .community-next-steps, .internet-subscription-grid, .digital-next-actions, .broadband-source-grid, .housing-source-grid, .vehicle-access-grid, .vehicle-comparison-strip, .state-water-grid, .state-water-next, .transport-project-grid, .transport-project-actions, .hydrology-summary-grid, .hydrology-site-list, .hydrology-next-actions, .hydrology-observation-grid, .hydrology-observation-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .weather-meta-grid, .weather-endpoint-list, .public-safety-source-grid, .health-equity-samples, .food-access-grid, .food-access-actions, .education-route-grid, .lehd-route-grid, .commute-route-grid, .commute-profile-grid, .housing-tenure-grid, .housing-derived-strip, .funding-summary-grid, .funding-quarter-grid, .sales-tax-source-grid, .permit-route-grid, .community-route-grid, .community-next-steps, .internet-subscription-grid, .digital-next-actions, .broadband-source-grid, .housing-source-grid, .vehicle-access-grid, .vehicle-comparison-strip, .state-water-grid, .state-water-next, .transport-project-grid, .transport-project-actions, .hydrology-summary-grid, .hydrology-site-list, .hydrology-next-actions, .hydrology-observation-grid, .hydrology-observation-actions, .hazardous-waste-list, .hazardous-waste-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .vehicle-access-hero { grid-template-columns: 1fr; }
   .hydrology-observation-hero { grid-template-columns: 1fr; }
   .state-water-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -707,8 +730,8 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .water-system-primary { grid-template-columns: 1fr; }
   .water-system-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .utility-reference-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .clean-water-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .clean-water-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .clean-water-summary, .hazardous-waste-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .clean-water-list, .hazardous-waste-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hazard-source-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .storm-event-snapshot { grid-template-columns: 1fr; }
   .active-alert-snapshot { grid-template-columns: 1fr; }
@@ -728,6 +751,8 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .civic-mode-card { min-width: 0; margin-top: 12px; text-align: left; }
   .trust-ribbon { grid-template-columns: 1fr; }
   .briefing-cards { grid-template-columns: 1fr; }
+  .source-queue-card .priority-list { grid-template-columns: 1fr; }
+  .economic-module > .intelligence-card, .economic-module .metric-stack { grid-template-columns: 1fr; }
   .kpi-grid, .source-status-strip, .source-stats, .source-maturity-strip, .doc-source-grid, .doc-link-list { grid-template-columns: 1fr; }
   .dc-meta-grid, .dc-metric-grid, .comparison-grid, .age-profile-grid, .cbp-query-grid, .business-source-grid, .education-route-grid, .lehd-route-grid, .commute-route-grid, .commute-profile-grid, .housing-tenure-grid, .housing-derived-strip, .labor-force-grid, .funding-summary-grid, .funding-quarter-grid, .sales-tax-source-grid, .permit-route-grid, .community-route-grid, .community-next-steps, .census-crosscheck-grid, .tax-digest-grid { grid-template-columns: 1fr; }
   .map-source-bar { grid-template-columns: 1fr; }
@@ -735,7 +760,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .civic-asset-list, .city-map-source-list { grid-template-columns: 1fr; }
   .ops-source-grid, .public-safety-source-grid, .public-safety-questions, .operations-confidence-grid, .health-equity-summary, .health-equity-samples, .food-access-grid, .food-access-actions { grid-template-columns: 1fr; }
   .weather-meta-grid, .weather-endpoint-list { grid-template-columns: 1fr; }
-  .internet-subscription-grid, .digital-next-actions, .broadband-source-grid, .broadband-shape-strip, .housing-source-grid, .housing-shape-strip, .vehicle-access-grid, .vehicle-comparison-strip, .state-water-grid, .state-water-next, .meeting-readiness-strip, .transport-project-grid, .transport-project-actions { grid-template-columns: 1fr; }
+  .internet-subscription-grid, .digital-next-actions, .broadband-source-grid, .broadband-shape-strip, .housing-source-grid, .housing-shape-strip, .vehicle-access-grid, .vehicle-comparison-strip, .state-water-grid, .state-water-next, .meeting-readiness-strip, .transport-project-grid, .transport-project-actions, .hazardous-waste-summary, .hazardous-waste-list, .hazardous-waste-actions { grid-template-columns: 1fr; }
   .vehicle-access-hero { grid-template-columns: 1fr; }
   .forecast-period-grid { grid-template-columns: 1fr; }
   .water-system-list { grid-template-columns: 1fr; }

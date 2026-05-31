@@ -539,6 +539,17 @@ export const sourceRegistry = [
     notes: 'Low-volume query returned 10 active Burke County CWA facility rows and summary counts; added src/data/cleanWaterPermitSeed.js with five Waynesboro-addressed sample rows. Use as environmental/source-routing context only, not a violation finding or live utility telemetry.'
   },
   {
+    name: 'EPA ECHO RCRA REST Services',
+    url: 'https://echodata.epa.gov/echo/rcra_rest_services.get_facilities?output=JSON&p_st=GA&p_co=Burke&p_act=Y',
+    dataType: 'Public Resource Conservation and Recovery Act handler identity rows, generator categories, summary violation/enforcement counts, and query pagination metadata',
+    geography: 'Active Burke County, Georgia RCRA handlers; cached UI sample emphasizes Waynesboro-addressed rows returned by EPA ECHO',
+    accessMethod: 'Public EPA ECHO REST endpoint; low-volume county query followed by get_qid pagination. Cache public identity fields only until each ECHO profile is manually reviewed.',
+    cadence: 'EPA ECHO/RCRA refresh cadence varies by source table; refresh before presentation use and verify facility profiles before detailed claims.',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Low-volume query returned 11 active Burke County RCRA handler rows with summary counts and no current-violation rows in the query metadata; added src/data/hazardousWasteSeed.js and an Operations environmental source panel. This is not a complete business inventory, zoning finding, city inspection record, hazard finding, or standalone compliance conclusion.'
+  },
+  {
     name: 'CDC PLACES Local Data for Better Health - Census Tract Data',
     url: 'https://data.cdc.gov/resource/cwsq-ngmh.json',
     dataType: 'Model-based public health estimates by census tract: prevention, health outcomes, disability, and risk-factor measures with confidence intervals',
@@ -718,7 +729,7 @@ export const readinessStrip = [
   { lane: 'Digital access', status: 'ACS context + FCC route', source: 'Census Reporter B28002 / FCC BDC', tone: 'good' },
   { lane: 'Mobility access', status: 'ACS vehicle seed', source: 'Census Reporter B08201', tone: 'good' },
   { lane: 'Housing', status: 'ACS tenure + LIHTC route', source: 'Census Reporter / City DocumentCenter / Georgia DCA', tone: 'good' },
-  { lane: 'Environmental', status: 'CWA seed ready', source: 'EPA ECHO Clean Water Act', tone: 'good' },
+  { lane: 'Environmental', status: 'CWA + RCRA seeds ready', source: 'EPA ECHO Clean Water Act / RCRA', tone: 'good' },
   { lane: 'Hydrology', status: 'USGS IV snapshot', source: 'USGS NWIS Site + Instantaneous Values', tone: 'good' },
   { lane: 'Resilience', status: 'Hazard source stack', source: 'FEMA NFHL / NOAA Storm Events', tone: 'watch' },
   { lane: 'Ordinances', status: 'Reference-ready', source: 'Municode Library', tone: 'good' },
