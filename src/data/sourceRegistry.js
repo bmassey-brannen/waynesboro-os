@@ -603,6 +603,17 @@ export const sourceRegistry = [
     difficulty: 'Medium',
     status: 'Official local PDF route verified',
     notes: 'Added src/data/affordableHousingSeed.js and a Housing Affordability source panel in Operations. This is a source route only: do not present affordable-housing unit counts, LIHTC awards, eligibility, applicant status, or development-pipeline facts until the PDF and Georgia DCA records are manually reviewed and source-labeled.'
+  },
+  {
+    name: 'U.S. Census LEHD LODES workforce and commuting downloads',
+    url: 'https://lehd.ces.census.gov/data/lodes/LODES8/ga/',
+    dataType: 'Public block-level workplace area, residence area, origin-destination commute-flow, and block-geography crosswalk CSV/GZIP files',
+    geography: 'Georgia statewide block-level files; aggregate to Waynesboro place GEOID 1380984 and Burke County only after crosswalk QA',
+    accessMethod: 'Public Census LEHD static file downloads; low-volume HEAD checks verified WAC, RAC, OD, crosswalk, and technical documentation routes.',
+    cadence: 'Annual LODES vintage releases; file modified dates vary by table and should be stored with every cached snapshot.',
+    difficulty: 'Medium',
+    status: 'Source route verified',
+    notes: 'HEAD checks returned HTTP 200 for Georgia WAC, RAC, OD main jobs, Georgia crosswalk, and LODES technical documentation. Added src/data/lehdCommutingSeed.js and a compact economic workforce/commuting source panel. Do not present city job counts, commuter inflow/outflow, employer lists, or block-level claims until place aggregation and disclosure-safe summarization are complete.'
   }
 ];
 
@@ -611,7 +622,7 @@ export const readinessStrip = [
   { lane: 'City documents', status: 'Index-ready', source: 'Agenda Center / Archive Center', tone: 'good' },
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
   { lane: 'Map base', status: 'Boundary seed ready', source: 'OSM + TIGERweb + Census Reporter GeoJSON', tone: 'good' },
-  { lane: 'Economy', status: 'Workforce + funding seeds', source: 'BLS LAUS + USAspending + Census CBP', tone: 'good' },
+  { lane: 'Economy', status: 'Workforce + commute routes', source: 'BLS LAUS + Census LEHD/LODES + CBP', tone: 'good' },
   { lane: 'Education', status: 'GaDOE routes indexed', source: 'Georgia Insights + Burke County Public Schools', tone: 'watch' },
   { lane: 'Finance', status: 'Sales-tax + digest routes', source: 'Georgia DOR Distributions / Digest Compliance', tone: 'good' },
   { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },
@@ -653,6 +664,14 @@ export const sourcePriorities = [
     value: 'Replaces vague workforce placeholders with source-labeled Burke County unemployment and labor-force context for economic-development briefs.',
     nextStep: 'Add a tiny refresh script for LAUCN13033 series, cache latest non-preliminary rows with revision flags, and keep labels county-only unless a city series is confirmed.',
     difficulty: 'Low'
+  },
+  {
+    lane: 'Jobs / commuting',
+    target: 'Aggregate Census LEHD/LODES block files into city-safe workforce counts',
+    source: 'U.S. Census LEHD LODES data downloads',
+    value: 'Adds a public route for jobs located in Waynesboro, resident-worker context, and commute-flow questions without inventing employer or license data.',
+    nextStep: 'Download the Georgia block crosswalk, filter blocks to place GEOID 1380984, then aggregate WAC/RAC/OD rows into disclosure-safe city and county summary cards.',
+    difficulty: 'Medium'
   },
   {
     lane: 'Education / talent pipeline',

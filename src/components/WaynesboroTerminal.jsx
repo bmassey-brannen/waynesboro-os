@@ -45,6 +45,7 @@ import { transportationProjectSeed } from '../data/transportationProjectSeed.js'
 import { educationWorkforceSeed } from '../data/educationWorkforceSeed.js';
 import { affordableHousingSeed } from '../data/affordableHousingSeed.js';
 import { usgsHydrologySeed } from '../data/usgsHydrologySeed.js';
+import { lehdCommutingSeed } from '../data/lehdCommutingSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -713,6 +714,36 @@ function EducationWorkforcePanel() {
   );
 }
 
+function LehdCommutingPanel() {
+  return (
+    <section className="lehd-commuting-panel" aria-label="LEHD commuting and jobs source routing panel">
+      <div className="bridge-head">
+        <div>
+          <span className="eyebrow">WORKFORCE / COMMUTING · SOURCE ROUTE</span>
+          <h3>Census LEHD can replace guesswork on jobs and commuter flows</h3>
+        </div>
+        <span className="terminal-badge gold">BLOCK AGGREGATION PENDING</span>
+      </div>
+      <div className="lehd-route-grid">
+        {lehdCommutingSeed.sourceRoutes.map((route) => (
+          <a key={route.table} href={route.url} target="_blank" rel="noreferrer">
+            <span>{route.table} · {route.observedStatus}</span>
+            <b>{route.label}</b>
+            <small>{route.observedSize} · modified {route.lastModified}</small>
+          </a>
+        ))}
+      </div>
+      <div className="lehd-shape-strip">
+        {lehdCommutingSeed.normalizedShape.slice(0, 8).map((field) => <span key={field}>{field}</span>)}
+      </div>
+      <div className="lehd-next-steps">
+        {lehdCommutingSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p>{lehdCommutingSeed.caveat} Retrieved {new Date(lehdCommutingSeed.retrievedAt).toLocaleString()} from public Census LEHD/LODES file routes.</p>
+    </section>
+  );
+}
+
 function FederalFundingPanel() {
   const money = (value) => `$${(value / 1000000).toFixed(value >= 10000000 ? 1 : 2)}M`;
   return (
@@ -805,6 +836,7 @@ function EconomicDevelopment() {
         <CityPermittingIntakePanel />
         <LaborForceSourcePanel />
         <EducationWorkforcePanel />
+        <LehdCommutingPanel />
         <FederalFundingPanel />
         <SalesTaxDistributionPanel />
         <div className="dri-watch-card">
@@ -1541,9 +1573,9 @@ function Council() {
     },
     {
       status: 'Source route added',
-      title: 'Georgia EPD drinking-water verification route now scoped',
-      note: 'Water-system identity can now be cross-checked against EPA ECHO/SDWIS and Georgia EPD Drinking Water Watch before any water-quality or compliance language appears.',
-      action: 'Manually verify GA0330004 / WAYNESBORO in Drinking Water Watch and the latest EPD annual report before The Council cites water-system facts beyond identity.'
+      title: 'Census LEHD jobs and commute-flow route now scoped',
+      note: 'The economic lane can now move from workforce placeholders toward public WAC/RAC/OD aggregation after block-to-place crosswalk QA.',
+      action: 'Use the Georgia crosswalk to confirm Waynesboro GEOID 1380984 block coverage before The Council cites city job counts, commuter inflow/outflow, or resident-worker summaries.'
     },
     {
       status: 'Still synthetic',
@@ -1657,7 +1689,8 @@ function MeetingReadinessStrip() {
     { label: 'First-screen posture', value: 'Public demo', detail: 'White/silver civic surface, forest-green identity, no affiliation or trading language.' },
     { label: 'Claims discipline', value: 'Source-gated', detail: 'Verified baseline first; synthetic operating scores stay visibly labeled.' },
     { label: 'Presentation packet', value: 'Print aware', detail: 'Dense panels remain readable for PDF/meeting screenshots and council-style review.' },
-    { label: 'Next evidence lane', value: 'Water + documents', detail: 'Cross-check EPD/SDWIS identity and official records before Council citations.' }
+    {
+      label: 'Next evidence lane', value: 'Jobs + commute flows', detail: 'LEHD/LODES route is scoped; aggregate blocks before any city workforce claim.' }
   ];
 
   return (
