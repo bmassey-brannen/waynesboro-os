@@ -605,6 +605,17 @@ export const sourceRegistry = [
     notes: 'Runtime reached FCC National Broadband Map data-download and nationwide-data pages with HTTP 200. Added src/data/broadbandAccessSeed.js and an Operations digital-infrastructure panel. No coverage, provider, subscription, affordability, or outage claim is displayed until export scope, vintage, geography, and aggregation method are confirmed.'
   },
   {
+    name: 'Census Reporter ACS internet subscription table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B28002&geo_ids=16000US1380984',
+    dataType: 'ACS household internet subscription and access estimates with margins of error',
+    geography: 'Waynesboro city, Georgia (16000US1380984)',
+    accessMethod: 'Public no-key Census Reporter API; low-volume B28002 request cached in src/data/internetSubscriptionSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024 release.',
+    difficulty: 'Low',
+    status: 'Public API seed ready',
+    notes: 'Runtime query returned Waynesboro household internet-subscription context, including with internet subscription, broadband of any type, cellular-only, cable/fiber/DSL, satellite, and no internet access estimates with MOE. Added a digital-access context grid inside the Operations broadband panel. Treat as ACS survey context only; not FCC availability, provider coverage, speed, affordability, outage, or municipal telemetry.'
+  },
+  {
     name: 'City of Waynesboro Community Development source stack',
     url: 'https://www.waynesboroga.com/118/Community-Development',
     dataType: 'Planning, zoning, sign ordinance, redevelopment powers, housing initiatives, applications, and DocumentCenter PDF routes',
@@ -682,7 +693,7 @@ export const readinessStrip = [
   { lane: 'Finance', status: 'Sales-tax + digest routes', source: 'Georgia DOR Distributions / Digest Compliance', tone: 'good' },
   { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },
   { lane: 'Utilities', status: 'State verification route', source: 'City Water Rates / EPA SDWIS / Georgia EPD DWW', tone: 'good' },
-  { lane: 'Broadband', status: 'FCC route scoped', source: 'FCC Broadband Map / BDC downloads', tone: 'watch' },
+  { lane: 'Digital access', status: 'ACS context + FCC route', source: 'Census Reporter B28002 / FCC BDC', tone: 'good' },
   { lane: 'Housing', status: 'ACS tenure + LIHTC route', source: 'Census Reporter / City DocumentCenter / Georgia DCA', tone: 'good' },
   { lane: 'Environmental', status: 'CWA seed ready', source: 'EPA ECHO Clean Water Act', tone: 'good' },
   { lane: 'Hydrology', status: 'USGS IV snapshot', source: 'USGS NWIS Site + Instantaneous Values', tone: 'good' },
@@ -750,6 +761,14 @@ export const sourcePriorities = [
     source: 'Georgia Insights / GaDOE Education Dashboards',
     value: 'Adds a public education and CTAE/workforce context route without inventing school-performance, student-level, or city-government metrics.',
     nextStep: 'Manually test Georgia Insights district/school filters for Burke County, confirm downloadable data terms, and cache only aggregate school-year rows with source URLs.',
+    difficulty: 'Medium'
+  },
+  {
+    lane: 'Digital inclusion',
+    target: 'Cross-check ACS internet-subscription context against FCC BDC availability exports',
+    source: 'Census Reporter ACS B28002 + FCC National Broadband Map / BDC',
+    value: 'Separates household subscription survey context from provider availability and speed claims before broadband, remote-work, or grant-readiness briefs are promoted.',
+    nextStep: 'Review FCC BDC export rules and vintage, cache permitted aggregate availability by geography/technology/speed tier, and keep ACS MOE visible beside subscription estimates.',
     difficulty: 'Medium'
   },
   {

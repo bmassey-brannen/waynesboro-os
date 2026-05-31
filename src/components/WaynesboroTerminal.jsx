@@ -51,6 +51,7 @@ import { housingTenureSeed } from '../data/housingTenureSeed.js';
 import { commuteProfileSeed } from '../data/commuteProfileSeed.js';
 import { workforceEducationSeed } from '../data/workforceEducationSeed.js';
 import { foodAccessSeed } from '../data/foodAccessSeed.js';
+import { internetSubscriptionSeed } from '../data/internetSubscriptionSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -1603,14 +1604,31 @@ function OperationsConfidenceStrip() {
 }
 
 function BroadbandAccessPanel() {
+  const digitalMetrics = internetSubscriptionSeed.metrics.filter((metric) => [
+    'with-internet-subscription',
+    'broadband-any-type',
+    'cellular-only',
+    'cable-fiber-dsl',
+    'no-internet-access'
+  ].includes(metric.id));
+
   return (
     <section className="panel broadband-access-panel">
       <div className="panel-head">
         <div>
           <span className="eyebrow">DIGITAL INFRASTRUCTURE SOURCE</span>
-          <h2>FCC broadband route added before coverage claims</h2>
+          <h2>Digital access context separated from coverage claims</h2>
         </div>
-        <span className="terminal-badge gold">EXPORT SCOPE PENDING</span>
+        <span className="terminal-badge live">ACS CONTEXT + FCC ROUTE</span>
+      </div>
+      <div className="internet-subscription-grid" aria-label="ACS internet subscription context">
+        {digitalMetrics.map((metric) => (
+          <article key={metric.id}>
+            <span>{metric.label}</span>
+            <b>{metric.displayShare}</b>
+            <small>{metric.displayValue} households · MOE ±{metric.moe.toLocaleString()} · {metric.code}</small>
+          </article>
+        ))}
       </div>
       <div className="broadband-source-grid">
         {broadbandAccessSeed.sourceRoutes.map((route) => (
@@ -1629,7 +1647,10 @@ function BroadbandAccessPanel() {
           </article>
         ))}
       </div>
-      <p className="source-note">{broadbandAccessSeed.caveat} {broadbandAccessSeed.verification}</p>
+      <div className="digital-next-actions">
+        {internetSubscriptionSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p className="source-note">{internetSubscriptionSeed.caveat} Source: {internetSubscriptionSeed.name} {internetSubscriptionSeed.release.name} ({internetSubscriptionSeed.release.years}). {broadbandAccessSeed.caveat} {broadbandAccessSeed.verification}</p>
     </section>
   );
 }
@@ -1769,10 +1790,10 @@ function Council() {
       action: 'Turn the next Council brief into a document-backed decision log, not a generic chatbot summary.'
     },
     {
-      status: 'Source route added',
-      title: 'ACS housing tenure and vacancy context now scoped',
-      note: 'The operations lane now shows source-labeled Census Reporter/ACS housing estimates with margins of error before any parcel-level vacancy or affordability claim is made.',
-      action: 'Use qPublic/parcel exports, city housing documents, and DCA materials before The Council treats ACS vacancy, rent, or tenure as a downtown property finding.'
+      status: 'Digital inclusion context',
+      title: `${internetSubscriptionSeed.metrics.find((metric) => metric.id === 'no-internet-access')?.displayShare || 'N/A'} ACS households report no internet access`,
+      note: 'The operations lane now separates ACS household subscription context from FCC availability/source-routing so coverage, provider, affordability, and outage claims do not get mixed together.',
+      action: 'Cross-check ACS B28002 against FCC BDC exports, library/school sources, and workforce needs before The Council recommends connectivity interventions.'
     },
     {
       status: 'Still synthetic',
