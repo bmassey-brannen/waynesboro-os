@@ -550,6 +550,17 @@ export const sourceRegistry = [
     notes: 'Low-volume probe returned 280 Burke County tract-measure rows and sample modeled estimates. Added src/data/healthEquitySeed.js and an Operations health/resilience source panel. Treat as model-based context for grants/resilience, not municipal operations telemetry or clinical records.'
   },
   {
+    name: 'USDA ERS Food Access Research Atlas',
+    url: 'https://www.ers.usda.gov/data-products/food-access-research-atlas/download-the-data/',
+    dataType: 'Tract-level low-income / low-access food access indicators, downloadable national files, and state-level comparison pages',
+    geography: 'Census tracts; filter to Burke County / Waynesboro-area tracts only after dataset vintage and tract-city crosswalk are documented',
+    accessMethod: 'Public USDA ERS download page; manual or low-volume file download first, then cache only normalized aggregate tract rows with vintage/methodology labels.',
+    cadence: 'Publication-based Atlas releases; public page currently advertises 2019 data plus archived 2015, 2010, and 2006 files.',
+    difficulty: 'Medium',
+    status: 'Source route indexed',
+    notes: 'Low-volume page review found public XLSX and ZIP downloads for 2019 Food Access Research Atlas data. Added src/data/foodAccessSeed.js and an Operations food-access source panel; no food-desert or grocery-access claim is displayed until tract rows are extracted and geography is QA’d.'
+  },
+  {
     name: 'Georgia DCA Developments of Regional Impact Submissions',
     url: 'https://apps.dca.ga.gov/DRI/Submissions.aspx',
     dataType: 'Major development review submissions, project names, development type, county, jurisdiction, regional commission, status, and determination text',
@@ -670,7 +681,7 @@ export const readinessStrip = [
   { lane: 'Civic participation', status: 'Reference routes', source: 'Burke Elections / Georgia SOS MVP', tone: 'watch' },
   { lane: 'Policy / zoning', status: 'Route index', source: 'City Community Development / DocumentCenter', tone: 'watch' },
   { lane: 'Transportation', status: 'GeoPI route verified', source: 'GDOT GeoPI Project Information', tone: 'watch' },
-  { lane: 'Health equity', status: 'PLACES seed ready', source: 'CDC PLACES census tract estimates', tone: 'watch' }
+  { lane: 'Health equity', status: 'PLACES + food access', source: 'CDC PLACES / USDA ERS Food Access Atlas', tone: 'watch' }
 ];
 
 export const sourcePriorities = [
@@ -897,6 +908,14 @@ export const sourcePriorities = [
     value: 'Adds source-labeled quality-of-life and grant-writing context without pretending health estimates are municipal telemetry or individual records.',
     nextStep: 'Refresh selected measures, attach tract geometry and confidence intervals, then show only methodology-labeled aggregate context in Council briefs.',
     difficulty: 'Low'
+  },
+  {
+    lane: 'Food access / resilience',
+    target: 'Extract USDA ERS Food Access Research Atlas rows for Burke / Waynesboro-area tracts',
+    source: 'USDA ERS Food Access Research Atlas',
+    value: 'Adds a defensible public route for grocery-access, nutrition-access, and grant-readiness context without guessing from anecdotes or map impressions.',
+    nextStep: 'Download the smaller 2019 ZIP manually, inspect schema, filter Georgia/Burke tract rows, then crosswalk tracts to Waynesboro before any food-access card is promoted.',
+    difficulty: 'Medium'
   },
   {
     lane: 'Civic assets / map',

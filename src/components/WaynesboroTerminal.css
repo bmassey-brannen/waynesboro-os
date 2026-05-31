@@ -267,6 +267,12 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .source-stats b, .source-stats span { display: block; }
 .source-stats b { font-size: 27px; color: var(--forest-2); letter-spacing: -.04em; }
 .source-stats span { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; font-weight: 850; }
+.source-maturity-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 7px; margin-top: 9px; }
+.source-maturity-strip article { min-width: 0; padding: 8px 9px; border: 1px solid rgba(31,44,37,.13); border-top: 3px solid var(--gold-soft); background: rgba(255,255,255,.66); }
+.source-maturity-strip span, .source-maturity-strip b, .source-maturity-strip small { display: block; overflow-wrap: anywhere; }
+.source-maturity-strip span { color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .09em; font-weight: 900; }
+.source-maturity-strip b { margin-top: 3px; color: var(--forest-2); font-size: 21px; line-height: 1; }
+.source-maturity-strip small { margin-top: 4px; color: var(--muted); font-size: 9px; line-height: 1.25; }
 .source-note { margin: 12px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
 .source-map-card small { display: block; margin-top: 12px; color: var(--muted); font-size: 10px; line-height: 1.4; }
 .data-commons-panel { background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(235,243,237,.96)); border-color: rgba(38,116,79,.24); }
@@ -430,7 +436,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .ops-source-grid article { min-width: 0; padding: 11px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
 .ops-source-grid a { display: block; margin-top: 8px; color: #13251b; font-size: 13px; font-weight: 900; text-decoration: none; overflow-wrap: anywhere; }
 .ops-source-grid p { margin: 6px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
-.weather-readiness-panel, .water-system-panel, .state-water-panel, .utility-rate-panel, .broadband-access-panel, .affordable-housing-panel, .clean-water-panel, .hydrology-source-panel, .hydrology-observations-panel, .hazard-resilience-panel, .public-safety-source-panel, .health-equity-panel, .transportation-project-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,238,.97)); border-color: rgba(38,116,79,.24); }
+.weather-readiness-panel, .water-system-panel, .state-water-panel, .utility-rate-panel, .broadband-access-panel, .affordable-housing-panel, .clean-water-panel, .hydrology-source-panel, .hydrology-observations-panel, .hazard-resilience-panel, .public-safety-source-panel, .health-equity-panel, .food-access-panel, .transportation-project-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,238,.97)); border-color: rgba(38,116,79,.24); }
 .transportation-project-panel { border-color: rgba(165,128,49,.24); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(248,244,232,.96)); }
 .transport-project-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
 .transport-project-grid a, .transport-project-grid article { min-width: 0; display: block; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--gold-soft); background: rgba(255,255,255,.78); text-decoration: none; }
@@ -440,7 +446,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .transport-project-grid small { margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.35; }
 .transport-project-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
 .transport-project-actions span { padding: 8px; border: 1px solid rgba(165,128,49,.22); background: rgba(165,128,49,.06); color: #3b4031; font-size: 11px; line-height: 1.35; font-weight: 750; }
-.public-safety-source-panel, .health-equity-panel { border-color: rgba(165,128,49,.24); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(248,244,232,.96)); }
+.public-safety-source-panel, .health-equity-panel, .food-access-panel { border-color: rgba(165,128,49,.24); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(248,244,232,.96)); }
 .health-equity-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
 .health-equity-summary article, .health-equity-samples article { min-width: 0; padding: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.78); }
 .health-equity-summary article { border-left: 3px solid var(--forest-2); }
@@ -452,6 +458,14 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .health-equity-samples b { margin-top: 4px; color: #13251b; font-size: 13px; line-height: 1.25; }
 .health-equity-samples em { margin-top: 5px; color: var(--forest-2); font-style: normal; font-size: 11px; font-weight: 850; }
 .health-equity-samples small { margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.food-access-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.food-access-grid a { min-width: 0; display: block; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--gold-soft); background: rgba(255,255,255,.8); text-decoration: none; }
+.food-access-grid span, .food-access-grid b, .food-access-grid small { display: block; overflow-wrap: anywhere; }
+.food-access-grid span { color: var(--gold); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
+.food-access-grid b { margin-top: 5px; color: #13251b; font-size: 13px; line-height: 1.25; }
+.food-access-grid small { margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.food-access-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.food-access-actions span { min-width: 0; padding: 8px; border: 1px solid rgba(165,128,49,.22); background: rgba(165,128,49,.07); color: #3b4031; font-size: 11px; line-height: 1.35; font-weight: 750; overflow-wrap: anywhere; }
 .public-safety-source-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
 .public-safety-source-grid a { min-width: 0; display: block; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--gold-soft); background: rgba(255,255,255,.78); text-decoration: none; }
 .public-safety-source-grid span, .public-safety-source-grid b, .public-safety-source-grid small, .public-safety-questions span { display: block; overflow-wrap: anywhere; }
@@ -641,7 +655,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .briefing-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .operations-confidence-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ops-source-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .weather-meta-grid, .weather-endpoint-list, .public-safety-source-grid, .health-equity-samples, .education-route-grid, .lehd-route-grid, .commute-route-grid, .commute-profile-grid, .housing-tenure-grid, .housing-derived-strip, .funding-summary-grid, .funding-quarter-grid, .sales-tax-source-grid, .permit-route-grid, .community-route-grid, .community-next-steps, .broadband-source-grid, .housing-source-grid, .state-water-grid, .state-water-next, .transport-project-grid, .transport-project-actions, .hydrology-summary-grid, .hydrology-site-list, .hydrology-next-actions, .hydrology-observation-grid, .hydrology-observation-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .weather-meta-grid, .weather-endpoint-list, .public-safety-source-grid, .health-equity-samples, .food-access-grid, .food-access-actions, .education-route-grid, .lehd-route-grid, .commute-route-grid, .commute-profile-grid, .housing-tenure-grid, .housing-derived-strip, .funding-summary-grid, .funding-quarter-grid, .sales-tax-source-grid, .permit-route-grid, .community-route-grid, .community-next-steps, .broadband-source-grid, .housing-source-grid, .state-water-grid, .state-water-next, .transport-project-grid, .transport-project-actions, .hydrology-summary-grid, .hydrology-site-list, .hydrology-next-actions, .hydrology-observation-grid, .hydrology-observation-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hydrology-observation-hero { grid-template-columns: 1fr; }
   .state-water-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .meeting-readiness-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -674,12 +688,12 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .civic-mode-card { min-width: 0; margin-top: 12px; text-align: left; }
   .trust-ribbon { grid-template-columns: 1fr; }
   .briefing-cards { grid-template-columns: 1fr; }
-  .kpi-grid, .source-status-strip, .source-stats, .doc-source-grid, .doc-link-list { grid-template-columns: 1fr; }
+  .kpi-grid, .source-status-strip, .source-stats, .source-maturity-strip, .doc-source-grid, .doc-link-list { grid-template-columns: 1fr; }
   .dc-meta-grid, .dc-metric-grid, .comparison-grid, .cbp-query-grid, .business-source-grid, .education-route-grid, .lehd-route-grid, .commute-route-grid, .commute-profile-grid, .housing-tenure-grid, .housing-derived-strip, .labor-force-grid, .funding-summary-grid, .funding-quarter-grid, .sales-tax-source-grid, .permit-route-grid, .community-route-grid, .community-next-steps, .census-crosscheck-grid, .tax-digest-grid { grid-template-columns: 1fr; }
   .map-source-bar { grid-template-columns: 1fr; }
   .civic-asset-head { display: block; }
   .civic-asset-list, .city-map-source-list { grid-template-columns: 1fr; }
-  .ops-source-grid, .public-safety-source-grid, .public-safety-questions, .operations-confidence-grid, .health-equity-summary, .health-equity-samples { grid-template-columns: 1fr; }
+  .ops-source-grid, .public-safety-source-grid, .public-safety-questions, .operations-confidence-grid, .health-equity-summary, .health-equity-samples, .food-access-grid, .food-access-actions { grid-template-columns: 1fr; }
   .weather-meta-grid, .weather-endpoint-list { grid-template-columns: 1fr; }
   .broadband-source-grid, .broadband-shape-strip, .housing-source-grid, .housing-shape-strip, .state-water-grid, .state-water-next, .meeting-readiness-strip, .transport-project-grid, .transport-project-actions { grid-template-columns: 1fr; }
   .forecast-period-grid { grid-template-columns: 1fr; }

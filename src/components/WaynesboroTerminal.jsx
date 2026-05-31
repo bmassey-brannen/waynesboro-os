@@ -49,6 +49,7 @@ import { hydrologyObservationsSeed } from '../data/hydrologyObservationsSeed.js'
 import { lehdCommutingSeed } from '../data/lehdCommutingSeed.js';
 import { housingTenureSeed } from '../data/housingTenureSeed.js';
 import { commuteProfileSeed } from '../data/commuteProfileSeed.js';
+import { foodAccessSeed } from '../data/foodAccessSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -538,6 +539,15 @@ function SourceReadiness() {
           <article><b>{statusCounts['Reference ready'] || 0}</b><span>reference ready</span></article>
           <article><b>{statusCounts['Ready for document index'] || 0}</b><span>doc-index ready</span></article>
           <article><b>{statusCounts['Seed connector ready'] || 0}</b><span>seed connector</span></article>
+        </div>
+        <div className="source-maturity-strip" aria-label="source maturity summary">
+          {['Live connector active', 'Seed connector ready', 'Source route indexed', 'Reference ready', 'Manual research'].map((status) => (
+            <article key={status}>
+              <span>{status}</span>
+              <b>{statusCounts[status] || 0}</b>
+              <small>{status === 'Live connector active' ? 'browser-safe snapshots only' : status === 'Source route indexed' ? 'identified, not parsed' : 'tracked in registry'}</small>
+            </article>
+          ))}
         </div>
         <p className="source-note">Every dashboard number remains synthetic until it carries a source, timestamp, geography, and connector status. Data Commons is now connected server-side for baseline demographics; city documents remain the next official local evidence lane.</p>
       </section>
@@ -1442,6 +1452,33 @@ function HealthEquitySourcePanel() {
   );
 }
 
+function FoodAccessSourcePanel() {
+  return (
+    <section className="panel food-access-panel" aria-label="USDA food access source routing">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">FOOD ACCESS / GRANT READINESS</span>
+          <h2>USDA ERS tract dataset route indexed before grocery-access claims</h2>
+        </div>
+        <span className="terminal-badge gold">EXTRACT PENDING</span>
+      </div>
+      <div className="food-access-grid">
+        {foodAccessSeed.observedDownloads.map((source) => (
+          <a key={`${source.label}-${source.format}`} href={source.url} target="_blank" rel="noreferrer">
+            <span>{source.format} · {source.size}</span>
+            <b>{source.label}</b>
+            <small>{source.integrationUse}</small>
+          </a>
+        ))}
+      </div>
+      <div className="food-access-actions">
+        {foodAccessSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p className="source-note">{foodAccessSeed.caveat} Retrieved {new Date(foodAccessSeed.retrievedAt).toLocaleDateString()} from the USDA ERS download page.</p>
+    </section>
+  );
+}
+
 function PublicSafetySourcePanel() {
   return (
     <section className="panel public-safety-source-panel" aria-label="public safety source routing">
@@ -1642,6 +1679,7 @@ function InfrastructureSafetyHousing() {
       <TransportationProjectSourcePanel />
       <PublicSafetySourcePanel />
       <HealthEquitySourcePanel />
+      <FoodAccessSourcePanel />
       <HousingTenureSourcePanel />
       <AffordableHousingSourcePanel />
       <WeatherReadinessPanel />
