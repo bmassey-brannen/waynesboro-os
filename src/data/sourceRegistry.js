@@ -581,6 +581,17 @@ export const sourceRegistry = [
     difficulty: 'Medium',
     status: 'Source routes indexed',
     notes: 'Low-volume check reached the Community Development page and found zoning/sign ordinance PDFs, conditional-use/zoning/variance/subdivision/map-amendment forms, Special Event Application, Redevelopment Powers, and Housing Development/Initiatives routes. Added src/data/communityDevelopmentSeed.js and a Source Ledger policy panel; do not present legal/zoning summaries until PDFs/sections are manually verified.'
+  },
+  {
+    name: 'City of Waynesboro LIHTC submittal information',
+    url: 'https://www.waynesboroga.com/DocumentCenter/View/914/2026-LIHTC-submittal-info',
+    dataType: 'Official city-hosted Low Income Housing Tax Credit submittal PDF route and housing-affordability source path',
+    geography: 'City of Waynesboro, Georgia; Georgia DCA state-program context before award or compliance claims',
+    accessMethod: 'Public CivicPlus DocumentCenter PDF route; use low-volume manual PDF review and DCA cross-check before caching any unit, applicant, award, scoring, or project-status fields.',
+    cadence: 'Annual or application-cycle based as city/DCA publish notices and housing-credit materials; exact cadence must be verified per document.',
+    difficulty: 'Medium',
+    status: 'Official local PDF route verified',
+    notes: 'Added src/data/affordableHousingSeed.js and a Housing Affordability source panel in Operations. This is a source route only: do not present affordable-housing unit counts, LIHTC awards, eligibility, applicant status, or development-pipeline facts until the PDF and Georgia DCA records are manually reviewed and source-labeled.'
   }
 ];
 
@@ -595,6 +606,7 @@ export const readinessStrip = [
   { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },
   { lane: 'Utilities', status: 'State verification route', source: 'City Water Rates / EPA SDWIS / Georgia EPD DWW', tone: 'good' },
   { lane: 'Broadband', status: 'FCC route scoped', source: 'FCC Broadband Map / BDC downloads', tone: 'watch' },
+  { lane: 'Housing', status: 'LIHTC route indexed', source: 'City DocumentCenter / Georgia DCA', tone: 'watch' },
   { lane: 'Environmental', status: 'CWA seed ready', source: 'EPA ECHO Clean Water Act', tone: 'good' },
   { lane: 'Resilience', status: 'Hazard source stack', source: 'FEMA NFHL / NOAA Storm Events', tone: 'watch' },
   { lane: 'Ordinances', status: 'Reference-ready', source: 'Municode Library', tone: 'good' },
@@ -716,6 +728,14 @@ export const sourcePriorities = [
     source: 'FCC Broadband Data Collection / National Broadband Map',
     value: 'Adds a public federal route for broadband availability and digital-infrastructure planning without guessing provider coverage or outage status.',
     nextStep: 'Manually review FCC download/export rules and current filing vintage; cache only permitted aggregate availability counts by geography/technology/speed tier with source URL and vintage.',
+    difficulty: 'Medium'
+  },
+  {
+    lane: 'Housing affordability',
+    target: 'Manually review city LIHTC submittal PDF and DCA housing-credit context',
+    source: 'City DocumentCenter LIHTC PDF / Georgia DCA',
+    value: 'Gives the synthetic housing-development heat map a legitimate policy/source route before affordable-housing, unit-count, or pipeline claims are shown.',
+    nextStep: 'Open the city PDF, record title/date/required fields, cross-check DCA cycle materials and award lists, then cache only public, source-labeled observations.',
     difficulty: 'Medium'
   },
   {

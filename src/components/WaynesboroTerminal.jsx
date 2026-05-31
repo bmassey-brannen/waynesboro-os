@@ -43,6 +43,7 @@ import { broadbandAccessSeed } from '../data/broadbandAccessSeed.js';
 import { stateDrinkingWaterSeed } from '../data/stateDrinkingWaterSeed.js';
 import { transportationProjectSeed } from '../data/transportationProjectSeed.js';
 import { educationWorkforceSeed } from '../data/educationWorkforceSeed.js';
+import { affordableHousingSeed } from '../data/affordableHousingSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -1381,6 +1382,38 @@ function BroadbandAccessPanel() {
   );
 }
 
+function AffordableHousingSourcePanel() {
+  return (
+    <section className="panel affordable-housing-panel">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">HOUSING AFFORDABILITY SOURCE</span>
+          <h2>LIHTC route indexed before housing pipeline claims</h2>
+        </div>
+        <span className="terminal-badge gold">PDF REVIEW PENDING</span>
+      </div>
+      <div className="housing-source-grid">
+        {affordableHousingSeed.routes.map((route) => (
+          <a key={route.label} href={route.url} target="_blank" rel="noreferrer">
+            <span>{route.label}</span>
+            <b>{route.dataType}</b>
+            <small>{route.integrationUse}</small>
+          </a>
+        ))}
+      </div>
+      <div className="housing-shape-strip">
+        {affordableHousingSeed.normalizedShape.map((field) => (
+          <article key={field.field}>
+            <span>{field.field}</span>
+            <small>{field.meaning}</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{affordableHousingSeed.caveat} Source route checked as public DocumentCenter access; no unit-count, award, or project-status claim is promoted.</p>
+    </section>
+  );
+}
+
 function InfrastructureSafetyHousing() {
   return (
     <section id="operations" className="module operations-module">
@@ -1403,6 +1436,7 @@ function InfrastructureSafetyHousing() {
       <TransportationProjectSourcePanel />
       <PublicSafetySourcePanel />
       <HealthEquitySourcePanel />
+      <AffordableHousingSourcePanel />
       <WeatherReadinessPanel />
       <WaterSystemsPanel />
       <StateDrinkingWaterPanel />
