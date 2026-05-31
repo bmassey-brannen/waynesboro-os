@@ -1,0 +1,81 @@
+export const weatherForecastSnapshot = {
+  "provider": "National Weather Service API / api.weather.gov",
+  "sourceName": "NWS gridpoint forecast endpoint for Waynesboro point routing",
+  "sourceUrl": "https://api.weather.gov/gridpoints/CAE/32,17/forecast",
+  "geography": "Waynesboro, Georgia point forecast routed to WFO CAE grid 32,17",
+  "accessMethod": "Public NWS API with required User-Agent header; cached low-volume forecast periods only.",
+  "fetchedAt": "2026-05-31T03:29:33+00:00",
+  "generatedAt": "2026-05-31T03:29:16+00:00",
+  "updated": null,
+  "status": "verified_public_snapshot",
+  "periodCount": 5,
+  "periods": [
+    {
+      "number": 1,
+      "name": "Tonight",
+      "startTime": "2026-05-30T23:00:00-04:00",
+      "endTime": "2026-05-31T06:00:00-04:00",
+      "temperature": 65,
+      "temperatureUnit": "F",
+      "windSpeed": "1 mph",
+      "windDirection": "NE",
+      "shortForecast": "Chance Showers And Thunderstorms",
+      "probabilityOfPrecipitation": 43,
+      "isDaytime": false
+    },
+    {
+      "number": 2,
+      "name": "Sunday",
+      "startTime": "2026-05-31T06:00:00-04:00",
+      "endTime": "2026-05-31T18:00:00-04:00",
+      "temperature": 77,
+      "temperatureUnit": "F",
+      "windSpeed": "3 to 10 mph",
+      "windDirection": "E",
+      "shortForecast": "Chance Rain Showers then Chance Showers And Thunderstorms",
+      "probabilityOfPrecipitation": 53,
+      "isDaytime": true
+    },
+    {
+      "number": 3,
+      "name": "Sunday Night",
+      "startTime": "2026-05-31T18:00:00-04:00",
+      "endTime": "2026-06-01T06:00:00-04:00",
+      "temperature": 62,
+      "temperatureUnit": "F",
+      "windSpeed": "1 to 8 mph",
+      "windDirection": "E",
+      "shortForecast": "Chance Showers And Thunderstorms then Showers And Thunderstorms Likely",
+      "probabilityOfPrecipitation": 66,
+      "isDaytime": false
+    },
+    {
+      "number": 4,
+      "name": "Monday",
+      "startTime": "2026-06-01T06:00:00-04:00",
+      "endTime": "2026-06-01T18:00:00-04:00",
+      "temperature": 83,
+      "temperatureUnit": "F",
+      "windSpeed": "2 to 7 mph",
+      "windDirection": "N",
+      "shortForecast": "Chance Rain Showers then Chance Showers And Thunderstorms",
+      "probabilityOfPrecipitation": 47,
+      "isDaytime": true
+    },
+    {
+      "number": 5,
+      "name": "Monday Night",
+      "startTime": "2026-06-01T18:00:00-04:00",
+      "endTime": "2026-06-02T06:00:00-04:00",
+      "temperature": 64,
+      "temperatureUnit": "F",
+      "windSpeed": "0 to 3 mph",
+      "windDirection": "NW",
+      "shortForecast": "Chance Showers And Thunderstorms",
+      "probabilityOfPrecipitation": 38,
+      "isDaytime": false
+    }
+  ],
+  "summary": "Cached 5 NWS forecast periods for the Waynesboro point-routed grid. Use for public works/event-readiness context only after checking the timestamp.",
+  "caveat": "This is a cached public forecast snapshot, not an official emergency command feed, dispatch system, or live outage/incident monitor. Refresh before presentation or operational use."
+};

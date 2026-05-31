@@ -21,6 +21,7 @@ import { operationsSourceSeed } from '../data/operationsSourceSeed.js';
 import { osmCivicAssetsSeed } from '../data/osmCivicAssetsSeed.js';
 import { weatherReadinessSeed } from '../data/weatherReadinessSeed.js';
 import { weatherAlertsSnapshot } from '../data/weatherAlertsSnapshot.js';
+import { weatherForecastSnapshot } from '../data/weatherForecastSnapshot.js';
 import { waterSystemsSeed } from '../data/waterSystemsSeed.js';
 import { economicSourceSeed } from '../data/economicSourceSeed.js';
 import { censusReporterSeed } from '../data/censusReporterSeed.js';
@@ -688,6 +689,8 @@ function ProjectTracker() {
 }
 
 function WeatherReadinessPanel() {
+  const forecastPeriods = weatherForecastSnapshot.periods.slice(0, 4);
+
   return (
     <section className="panel weather-readiness-panel">
       <div className="panel-head">
@@ -710,6 +713,30 @@ function WeatherReadinessPanel() {
             <span>{endpoint.use}</span>
           </a>
         ))}
+      </div>
+      <div className="forecast-snapshot" aria-label="cached NWS forecast snapshot">
+        <div className="forecast-snapshot-head">
+          <div>
+            <span className="eyebrow">CACHED GRIDPOINT FORECAST</span>
+            <h3>{weatherForecastSnapshot.periodCount} NWS periods cached for source-labeled public works / event readiness</h3>
+          </div>
+          <div className="forecast-meta">
+            <b>{new Date(weatherForecastSnapshot.generatedAt || weatherForecastSnapshot.fetchedAt).toLocaleString()}</b>
+            <small>{weatherForecastSnapshot.geography}</small>
+            <a href={weatherForecastSnapshot.sourceUrl} target="_blank" rel="noreferrer">Open NWS forecast endpoint</a>
+          </div>
+        </div>
+        <div className="forecast-period-grid">
+          {forecastPeriods.map((period) => (
+            <article key={period.number}>
+              <span>{period.name}</span>
+              <b>{period.temperature}°{period.temperatureUnit}</b>
+              <small>{period.shortForecast}</small>
+              <em>{period.windSpeed} {period.windDirection}{period.probabilityOfPrecipitation != null ? ` · ${period.probabilityOfPrecipitation}% precip.` : ''}</em>
+            </article>
+          ))}
+        </div>
+        <p>{weatherForecastSnapshot.caveat}</p>
       </div>
       <div className="active-alert-snapshot" aria-label="cached NWS active alert snapshot">
         <div>

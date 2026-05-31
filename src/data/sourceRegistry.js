@@ -343,13 +343,13 @@ export const sourceRegistry = [
   {
     name: 'National Weather Service API / api.weather.gov',
     url: 'https://api.weather.gov/points/33.0898731,-82.0156736',
-    dataType: 'Public forecast office routing, county/forecast/fire-weather zone metadata, forecast endpoints, active alert endpoint paths, and cached active-alert feature snapshots',
-    geography: 'Waynesboro, Georgia point routed to Burke County zone GAC033 / forecast zone GAZ077',
+    dataType: 'Public forecast office routing, county/forecast/fire-weather zone metadata, forecast endpoints, cached gridpoint forecast periods, and cached active-alert feature snapshots',
+    geography: 'Waynesboro, Georgia point routed to Burke County zone GAC033 / forecast zone GAZ077 / WFO CAE grid 32,17',
     accessMethod: 'Public NWS API with required User-Agent header; low-volume cached metadata and timestamped forecast/alert pulls only.',
     cadence: 'Forecasts/alerts update continuously; point metadata changes rarely',
     difficulty: 'Low',
     status: 'Live connector active',
-    notes: 'Low-volume point request returned grid office CAE, grid 32/17, county zone GAC033, forecast/fire zone GAZ077, and radar station KCLX. Active-alert snapshot for GAC033 returned zero features at 2026-05-31T01:18:07+00:00 and is cached in src/data/weatherAlertsSnapshot.js; not dispatch telemetry.'
+    notes: 'Low-volume point request returned grid office CAE, grid 32/17, county zone GAC033, forecast/fire zone GAZ077, and radar station KCLX. Active-alert snapshot for GAC033 returned zero features at 2026-05-31T01:18:07+00:00 and is cached in src/data/weatherAlertsSnapshot.js. Gridpoint forecast endpoint returned five periods at 2026-05-31T03:29:33+00:00 and is cached in src/data/weatherForecastSnapshot.js; not dispatch telemetry or an official emergency command feed.'
   },
   {
     name: 'Georgia DCA Developments of Regional Impact Submissions',
