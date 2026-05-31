@@ -440,6 +440,17 @@ export const sourceRegistry = [
     notes: 'Low-volume query returned 10 active Burke County CWA facility rows and summary counts; added src/data/cleanWaterPermitSeed.js with five Waynesboro-addressed sample rows. Use as environmental/source-routing context only, not a violation finding or live utility telemetry.'
   },
   {
+    name: 'CDC PLACES Local Data for Better Health - Census Tract Data',
+    url: 'https://data.cdc.gov/resource/cwsq-ngmh.json',
+    dataType: 'Model-based public health estimates by census tract: prevention, health outcomes, disability, and risk-factor measures with confidence intervals',
+    geography: 'Burke County census tracts including Waynesboro-area tracts; not a citywide aggregate until tract coverage is mapped',
+    accessMethod: 'Public Socrata JSON API; low-volume filtered county/tract queries with CDC attribution and methodology links.',
+    cadence: 'CDC PLACES annual releases; current endpoint metadata reports 2025 release with source years by measure.',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Low-volume probe returned 280 Burke County tract-measure rows and sample modeled estimates. Added src/data/healthEquitySeed.js and an Operations health/resilience source panel. Treat as model-based context for grants/resilience, not municipal operations telemetry or clinical records.'
+  },
+  {
     name: 'Georgia DCA Developments of Regional Impact Submissions',
     url: 'https://apps.dca.ga.gov/DRI/Submissions.aspx',
     dataType: 'Major development review submissions, project names, development type, county, jurisdiction, regional commission, status, and determination text',
@@ -474,7 +485,8 @@ export const readinessStrip = [
   { lane: 'Environmental', status: 'CWA seed ready', source: 'EPA ECHO Clean Water Act', tone: 'good' },
   { lane: 'Resilience', status: 'Hazard source stack', source: 'FEMA NFHL / NOAA Storm Events', tone: 'watch' },
   { lane: 'Ordinances', status: 'Reference-ready', source: 'Municode Library', tone: 'good' },
-  { lane: 'Public safety', status: 'Crime source routing', source: 'GBI Crime Statistics / FBI CDE / E-911', tone: 'watch' }
+  { lane: 'Public safety', status: 'Crime source routing', source: 'GBI Crime Statistics / FBI CDE / E-911', tone: 'watch' },
+  { lane: 'Health equity', status: 'PLACES seed ready', source: 'CDC PLACES census tract estimates', tone: 'watch' }
 ];
 
 export const sourcePriorities = [
@@ -581,6 +593,14 @@ export const sourcePriorities = [
     value: 'Gives the public-safety lane a credible source-routing plan while preventing demo incident cards from reading like official crime claims.',
     nextStep: 'Manually identify the reporting agency/ORI for Waynesboro, test GBI/FBI table availability, and request only aggregate call/incident fields if local reports are not posted.',
     difficulty: 'Medium'
+  },
+  {
+    lane: 'Health / resilience',
+    target: 'Turn CDC PLACES Burke tract rows into a mapped health-equity context layer',
+    source: 'CDC PLACES Local Data for Better Health',
+    value: 'Adds source-labeled quality-of-life and grant-writing context without pretending health estimates are municipal telemetry or individual records.',
+    nextStep: 'Refresh selected measures, attach tract geometry and confidence intervals, then show only methodology-labeled aggregate context in Council briefs.',
+    difficulty: 'Low'
   },
   {
     lane: 'Civic assets / map',

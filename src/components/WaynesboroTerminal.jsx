@@ -32,6 +32,7 @@ import { utilityRateSeed } from '../data/utilityRateSeed.js';
 import { cleanWaterPermitSeed } from '../data/cleanWaterPermitSeed.js';
 import { hazardResilienceSeed } from '../data/hazardResilienceSeed.js';
 import { publicSafetySourceSeed } from '../data/publicSafetySourceSeed.js';
+import { healthEquitySeed } from '../data/healthEquitySeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -929,6 +930,48 @@ function HazardResiliencePanel() {
   );
 }
 
+function HealthEquitySourcePanel() {
+  return (
+    <section className="panel health-equity-panel">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">HEALTH + RESILIENCE SOURCE</span>
+          <h2>CDC PLACES tract estimates scoped for Burke County</h2>
+        </div>
+        <span className="terminal-badge gold">PUBLIC MODEL DATA</span>
+      </div>
+      <div className="health-equity-summary">
+        <article>
+          <span>Observed public shape</span>
+          <b>{healthEquitySeed.observedShape.rowsForBurkeCountyObserved} tract-measure rows</b>
+          <small>{healthEquitySeed.sourceName}</small>
+        </article>
+        <article>
+          <span>Geography guardrail</span>
+          <b>Burke County census tracts</b>
+          <small>Not yet a Waynesboro citywide metric; needs tract boundary review.</small>
+        </article>
+        <article>
+          <span>Best use</span>
+          <b>Grant and resilience context</b>
+          <small>Pair with ACS, hazards, and local service records before Council recommendations.</small>
+        </article>
+      </div>
+      <div className="health-equity-samples">
+        {healthEquitySeed.sampleRows.map((row) => (
+          <article key={`${row.tract}-${row.measure}`}>
+            <span>{row.year} · tract {row.tract}</span>
+            <b>{row.measure}</b>
+            <em>{row.value} · CI {row.confidenceInterval}</em>
+            <small>{row.note}</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{healthEquitySeed.caveat}</p>
+    </section>
+  );
+}
+
 function PublicSafetySourcePanel() {
   return (
     <section className="panel public-safety-source-panel" aria-label="public safety source routing">
@@ -1027,6 +1070,7 @@ function InfrastructureSafetyHousing() {
         </section>
       </div>
       <PublicSafetySourcePanel />
+      <HealthEquitySourcePanel />
       <WeatherReadinessPanel />
       <WaterSystemsPanel />
       <UtilityRateReferencePanel />
