@@ -21,7 +21,7 @@ const metrics = await page.evaluate(() => ({
   bodyOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
   kpis: document.querySelectorAll('.kpi-card').length,
   tables: document.querySelectorAll('table').length,
-  disclaimer: document.body.innerText.includes('synthetic mock data'),
+  disclaimer: document.body.innerText.includes('synthetic operating placeholders') || document.body.innerText.includes('synthetic mock data'),
   topbarHeight: Math.round(document.querySelector('.topbar')?.getBoundingClientRect().height || 0),
   firstPanelTop: Math.round(document.querySelector('#executive')?.getBoundingClientRect().top || 0)
 }));

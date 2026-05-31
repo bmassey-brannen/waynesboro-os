@@ -18,6 +18,7 @@ import { officialDocumentsSnapshot } from '../data/officialDocumentsSnapshot.js'
 import { waynesboroGeographySeed } from '../data/geographySeed.js';
 import { regionalDevelopmentSeed } from '../data/regionalDevelopmentSeed.js';
 import { operationsSourceSeed } from '../data/operationsSourceSeed.js';
+import { osmCivicAssetsSeed } from '../data/osmCivicAssetsSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -479,6 +480,8 @@ function EconomicDevelopment() {
 }
 
 function DowntownCommandCenter() {
+  const civicAssets = osmCivicAssetsSeed.assets.slice(0, 5);
+
   return (
     <section id="downtown" className="module three-col">
       <section className="panel map-panel">
@@ -509,6 +512,22 @@ function DowntownCommandCenter() {
           <div className="map-disclaimer">Schematic mock parcel layer · centered from OSM seed, not a live GIS boundary</div>
         </div>
         <div className="layer-strip">{mapLayers.map((layer) => <span key={layer}>{layer}</span>)}</div>
+        <div className="civic-asset-seed" aria-label="OpenStreetMap civic asset seed">
+          <div className="civic-asset-head">
+            <span className="eyebrow">OSM CIVIC ASSET SEED</span>
+            <b>{civicAssets.length} public map anchors · verify before official use</b>
+          </div>
+          <div className="civic-asset-list">
+            {civicAssets.map((asset) => (
+              <article key={asset.id}>
+                <span>{asset.type}</span>
+                <b>{asset.name}</b>
+                <small>{asset.osmElement} · {asset.lat.toFixed(4)}, {asset.lon.toFixed(4)}</small>
+              </article>
+            ))}
+          </div>
+          <p>{osmCivicAssetsSeed.caveat}</p>
+        </div>
       </section>
       <DataTable
         title="Storefront Intelligence"

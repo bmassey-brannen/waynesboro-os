@@ -143,6 +143,17 @@ export const sourceRegistry = [
     notes: 'Test call returned Waynesboro relation with lat/lon; suitable for normalizing the map center and attribution.'
   },
   {
+    name: 'OpenStreetMap Overpass API Civic Assets',
+    url: 'https://overpass-api.de/api/interpreter',
+    dataType: 'Community-maintained civic asset points/ways: hospital, library, police/sheriff, schools, fire/townhall where tagged',
+    geography: '7km radius around Waynesboro, Georgia OSM/Nominatim center point',
+    accessMethod: 'Public Overpass API; low-volume cached query only with OSM attribution and verification caveat.',
+    cadence: 'Community updated; no official municipal publication cadence',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Low-volume query returned 12 civic asset elements around Waynesboro. Added src/data/osmCivicAssetsSeed.js with a 5-record normalized seed for map orientation only; verify against official city/county/school/health sources before treating as authoritative.'
+  },
+  {
     name: 'City of Waynesboro official website',
     url: 'https://www.waynesboroga.com/',
     dataType: 'City departments, public notices, official local links, tax/GIS references',
@@ -366,6 +377,14 @@ export const sourcePriorities = [
     value: 'Adds defensible roadway-volume context to downtown foot-traffic assumptions, corridor prioritization, and infrastructure planning.',
     nextStep: 'Use the public map/report interface manually first, then cache only permitted station metadata/AADT exports with GDOT attribution.',
     difficulty: 'Medium'
+  },
+  {
+    lane: 'Civic assets / map',
+    target: 'Verify OSM civic asset seed against official facility pages',
+    source: 'OpenStreetMap Overpass API Civic Assets',
+    value: 'Gives the downtown/map module real public map anchors without pretending the schematic parcel layer is live GIS.',
+    nextStep: 'Cross-check hospital, library, sheriff/police, school, fire, and city-hall assets against official department pages before exposing as authoritative facility inventory.',
+    difficulty: 'Low'
   }
 ];
 
