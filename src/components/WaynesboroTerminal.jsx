@@ -61,6 +61,7 @@ import { hazardousWasteSeed } from '../data/hazardousWasteSeed.js';
 import { incomeDistributionSeed } from '../data/incomeDistributionSeed.js';
 import { mapboxReadinessSeed } from '../data/mapboxReadinessSeed.js';
 import { householdCompositionSeed } from '../data/householdCompositionSeed.js';
+import { languageAccessSeed } from '../data/languageAccessSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -1848,6 +1849,12 @@ function OperationsConfidenceStrip() {
       tone: 'neutral'
     },
     {
+      label: 'Language access',
+      status: `${languageAccessSeed.metrics.find((metric) => metric.id === 'language-other-than-english')?.displayShare || 'ACS seeded'} context`,
+      detail: 'Census Reporter C16001 supports public-communication planning only; no translation workload or service-demand claim promoted.',
+      tone: 'good'
+    },
+    {
       label: 'Hydrology',
       status: `${usgsHydrologySeed.query.returnedRows} USGS sites`,
       detail: `${hydrologyObservationsSeed.observedShape.returnedSeries} provisional IV series cached; still not flood telemetry or drainage performance.`,
@@ -2031,6 +2038,55 @@ function DisabilityAccessPanel() {
   );
 }
 
+function LanguageAccessPanel() {
+  const nonEnglishMetric = languageAccessSeed.metrics.find((metric) => metric.id === 'language-other-than-english');
+  const limitedEnglishMetric = languageAccessSeed.metrics.find((metric) => metric.id === 'english-less-than-very-well');
+  const detailMetrics = languageAccessSeed.metrics.filter((metric) => ['english-only', 'spanish', 'english-less-than-very-well'].includes(metric.id));
+
+  return (
+    <section className="panel language-access-panel" aria-label="ACS language access planning context">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">LANGUAGE ACCESS · ACS CONTEXT</span>
+          <h2>Public communications seed before translation-demand claims</h2>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="language-access-hero">
+        <article>
+          <span>Language other than English at home</span>
+          <b>{nonEnglishMetric?.displayShare || 'N/A'}</b>
+          <small>{nonEnglishMetric?.displayValue || 'N/A'} residents age 5+ · {nonEnglishMetric?.displayMoe || 'MOE pending'} · {languageAccessSeed.release}</small>
+        </article>
+        <div>
+          <h3>Communication planning context, not a municipal workload claim</h3>
+          <p>{languageAccessSeed.posture}</p>
+          <a href={languageAccessSeed.sourceUrl} target="_blank" rel="noreferrer">Open Census Reporter C16001 query</a>
+        </div>
+      </div>
+      <div className="language-access-grid">
+        {detailMetrics.map((metric) => (
+          <article key={metric.id}>
+            <span>{metric.label}</span>
+            <b>{metric.displayShare || metric.displayValue}</b>
+            <small>{metric.displayValue} people · {metric.displayMoe}</small>
+          </article>
+        ))}
+      </div>
+      <div className="language-comparison-strip">
+        {languageAccessSeed.comparison.map((item) => (
+          <article key={item.geography}>
+            <span>{item.geography}</span>
+            <b>{item.nonEnglishShare}</b>
+            <small>{item.nonEnglishEstimate.toLocaleString()} non-English at home · {item.lessThanVeryWellShare} less than very well</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{languageAccessSeed.caveat} Waynesboro limited-English ACS seed: {limitedEnglishMetric?.displayShare || 'N/A'} ({limitedEnglishMetric?.displayValue || 'N/A'} residents age 5+), with derived MOE still pending.</p>
+    </section>
+  );
+}
+
 function AffordableHousingSourcePanel() {
   return (
     <section className="panel affordable-housing-panel">
@@ -2210,6 +2266,7 @@ function InfrastructureSafetyHousing() {
       <PublicSafetySourcePanel />
       <HealthEquitySourcePanel />
       <DisabilityAccessPanel />
+      <LanguageAccessPanel />
       <FoodAccessSourcePanel />
       <HousingTenureSourcePanel />
       <HousingCostBurdenPanel />
@@ -2532,6 +2589,7 @@ function PageBriefStrip({ page }) {
       { label: 'Telemetry guardrail', value: 'Reference layer', detail: 'No live dispatch, utility, or emergency claims.' },
       { label: 'Mobility', value: noVehicleMetric?.displayShare || 'ACS seeded', detail: 'Zero-vehicle context with MOE caveats.' },
       { label: 'Accessibility', value: disabledMetric?.displayShare || 'ACS seeded', detail: 'Disability context added for planning only.' },
+      { label: 'Language access', value: languageAccessSeed.metrics.find((metric) => metric.id === 'language-other-than-english')?.displayShare || 'ACS seeded', detail: 'C16001 communication-planning context; not a service workload claim.' },
       { label: 'Affordability', value: housingCostBurdenSeed.metrics.find((metric) => metric.id === 'renter-cost-burden')?.displayShare || 'ACS seeded', detail: 'Renter cost-burden survey context with MOE caveats.' }
     ],
     council: [

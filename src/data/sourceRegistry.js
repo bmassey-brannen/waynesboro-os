@@ -66,6 +66,17 @@ export const sourceRegistry = [
     notes: 'Runtime query returned Waynesboro B11001 context including 2,204 households, 66.7% family households, 28.3% householders living alone, and 33.2% female householder/no spouse family households. Added an executive household-composition panel. Treat as ACS survey planning context only; not household-level records, benefits eligibility, school enrollment, homelessness, or municipal service telemetry.'
   },
   {
+    name: 'Census Reporter ACS language spoken at home table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=C16001&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS C16001 language spoken at home / English ability estimates for public communication and language-access planning context',
+    geography: 'Waynesboro city, Burke County, and Georgia comparison rows; population age 5 years and over',
+    accessMethod: 'Public no-key Census Reporter API; low-volume request cached in src/data/languageAccessSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Runtime query returned Waynesboro C16001 context: 5,227 residents age 5+, 379 / 7.3% speaking a language other than English at home, 319 Spanish at home, and 240 / 4.6% speaking English less than very well. Treat as ACS survey planning context only; not school enrollment, translation-demand proof, immigration status, emergency communications performance, or municipal service telemetry.'
+  },
+  {
     name: 'Census QuickFacts',
     url: 'https://www.census.gov/quickfacts/fact/table/waynesborocitygeorgia,burkecountygeorgia/PST045223',
     dataType: 'Public demographic and economic quick facts for city/county context',
@@ -773,6 +784,7 @@ export const sourceRegistry = [
 
 export const readinessStrip = [
   { lane: 'Demographics', status: 'Live snapshot + age + household mix', source: 'Data Commons API / Census Reporter B01001/B11001', tone: 'good' },
+  { lane: 'Language access', status: 'ACS communication seed', source: 'Census Reporter C16001', tone: 'good' },
   { lane: 'City documents', status: 'Index-ready', source: 'Agenda Center / Archive Center', tone: 'good' },
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
   { lane: 'Map base', status: 'Boundary seed ready', source: 'OSM + TIGERweb + Census Reporter GeoJSON', tone: 'good' },
