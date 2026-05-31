@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import {
   beautificationFactors,
   downtownProperties,
@@ -55,6 +55,7 @@ import { internetSubscriptionSeed } from '../data/internetSubscriptionSeed.js';
 import { ageProfileSeed } from '../data/ageProfileSeed.js';
 import { vehicleAccessSeed } from '../data/vehicleAccessSeed.js';
 import { hazardousWasteSeed } from '../data/hazardousWasteSeed.js';
+import { incomeDistributionSeed } from '../data/incomeDistributionSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -708,6 +709,56 @@ function LaborForceSourcePanel() {
   );
 }
 
+function IncomeDistributionPanel() {
+  const under50 = incomeDistributionSeed.rollups.find((item) => item.id === 'under-50k');
+  const over100 = incomeDistributionSeed.rollups.find((item) => item.id === '100k-plus');
+
+  return (
+    <section className="income-distribution-panel" aria-label="ACS household income distribution context">
+      <div className="bridge-head">
+        <div>
+          <span className="eyebrow">HOUSEHOLD INCOME DISTRIBUTION · ACS CONTEXT</span>
+          <h3>B19001 bracket seed adds affordability context without tax-record claims</h3>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="income-rollup-grid">
+        <article>
+          <span>{under50?.label}</span>
+          <b>{under50?.displayShare}</b>
+          <small>{under50?.estimate.toLocaleString()} households · MOE ±{under50?.moe.toLocaleString()}</small>
+        </article>
+        <article>
+          <span>{over100?.label}</span>
+          <b>{over100?.displayShare}</b>
+          <small>{over100?.estimate.toLocaleString()} households · MOE ±{over100?.moe.toLocaleString()}</small>
+        </article>
+        <article>
+          <span>Total households</span>
+          <b>{incomeDistributionSeed.totals.households.toLocaleString()}</b>
+          <small>MOE ±{incomeDistributionSeed.totals.householdMoe.toLocaleString()} · {incomeDistributionSeed.release.name}</small>
+        </article>
+      </div>
+      <div className="income-bracket-grid">
+        {incomeDistributionSeed.brackets.map((bracket) => (
+          <article key={bracket.id}>
+            <div>
+              <span>{bracket.label}</span>
+              <b>{bracket.displayShare}</b>
+            </div>
+            <div className="income-share-bar"><span style={{ width: bracket.displayShare }} /></div>
+            <small>{bracket.estimate.toLocaleString()} households · MOE ±{bracket.moe.toLocaleString()} · {bracket.planningUse}</small>
+          </article>
+        ))}
+      </div>
+      <div className="income-next-actions">
+        {incomeDistributionSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p>{incomeDistributionSeed.caveat} Retrieved {new Date(incomeDistributionSeed.retrievedAt).toLocaleDateString()} from Census Reporter table {incomeDistributionSeed.table}.</p>
+    </section>
+  );
+}
+
 function SalesTaxDistributionPanel() {
   return (
     <section className="sales-tax-panel" aria-label="Georgia DOR sales tax distribution source panel">
@@ -959,6 +1010,7 @@ function EconomicDevelopment() {
         <BusinessSurfacePanel />
         <CityPermittingIntakePanel />
         <LaborForceSourcePanel />
+        <IncomeDistributionPanel />
         <EducationWorkforcePanel />
         <WorkforceEducationPanel />
         <LehdCommutingPanel />
@@ -2098,39 +2150,80 @@ function CivicBriefingStrip() {
   );
 }
 
-export default function WaynesboroTerminal() {
-  const [active, setActive] = useState('executive');
-  const nav = [
-    ['executive', 'Executive'], ['sources', 'Sources'], ['economic', 'Economic'], ['downtown', 'Downtown'], ['beautification', 'Beautification'],
-    ['projects', 'Projects'], ['operations', 'Operations'], ['council', 'Council']
-  ];
+const pageMeta = {
+  executive: {
+    eyebrow: 'WAYNESBORO, GEORGIA · EXECUTIVE HOME',
+    title: 'Municipal Operating Picture for Waynesboro.',
+    description: 'First-meeting dashboard with verified baseline facts, public trust status, and source-gated civic brief cards.'
+  },
+  sources: {
+    eyebrow: 'WAYNESBORO, GEORGIA · SOURCE CONFIDENCE',
+    title: 'Source ledger and evidence intake.',
+    description: 'Public connectors, official document routes, source maturity, and next actions grouped away from the executive home.'
+  },
+  economic: {
+    eyebrow: 'WAYNESBORO, GEORGIA · ECONOMIC DEVELOPMENT',
+    title: 'Economic development and workforce picture.',
+    description: 'Development pipeline placeholders, business source routes, workforce context, commute data, and revenue-source routing.'
+  },
+  downtown: {
+    eyebrow: 'WAYNESBORO, GEORGIA · DOWNTOWN + PROJECTS',
+    title: 'Downtown, beautification, and project control.',
+    description: 'Map/source stack, storefront intelligence, beautification score, and project tracker grouped as a physical-city workbench.'
+  },
+  operations: {
+    eyebrow: 'WAYNESBORO, GEORGIA · OPERATIONS',
+    title: 'Infrastructure, safety, housing, and resilience.',
+    description: 'Operations source confidence, public works references, weather, water, housing, environmental, mobility, and hazard context.'
+  },
+  council: {
+    eyebrow: 'WAYNESBORO, GEORGIA · THE COUNCIL',
+    title: 'AI advisor and source-gated brief.',
+    description: 'Council-style decision framing that separates verified baseline, official record trails, seed evidence, and placeholders.'
+  }
+};
+
+const nav = [
+  { id: 'executive', label: 'Executive', href: '/' },
+  { id: 'sources', label: 'Sources', href: '/sources/' },
+  { id: 'economic', label: 'Economic', href: '/economic/' },
+  { id: 'downtown', label: 'Downtown + Projects', href: '/downtown/' },
+  { id: 'operations', label: 'Operations', href: '/operations/' },
+  { id: 'council', label: 'Council', href: '/council/' }
+];
+
+function PageContent({ page }) {
+  if (page === 'sources') return <SourceReadiness />;
+  if (page === 'economic') return <EconomicDevelopment />;
+  if (page === 'downtown') return <><DowntownCommandCenter /><BeautificationIndex /><ProjectTracker /></>;
+  if (page === 'operations') return <InfrastructureSafetyHousing />;
+  if (page === 'council') return <Council />;
+  return <><PublicTrustRibbon /><CivicBriefingStrip /><MeetingReadinessStrip /><ExecutiveDashboard /></>;
+}
+
+export default function WaynesboroTerminal({ page = 'executive' }) {
+  const activePage = pageMeta[page] ? page : 'executive';
+  const meta = pageMeta[activePage];
   return (
-    <main className="terminal-shell">
+    <main className={`terminal-shell terminal-page-${activePage}`}>
       <aside className="sidebar">
         <div className="brand-mark"><span>W</span><div><b>Waynesboro OS</b><small>Municipal Intelligence Terminal</small></div></div>
-        <nav>{nav.map(([id, label]) => <a key={id} onClick={() => setActive(id)} href={`#${id}`} className={active === id ? 'active' : ''}>{label}</a>)}</nav>
+        <nav>{nav.map((item) => <a key={item.id} href={item.href} className={activePage === item.id ? 'active' : ''}>{item.label}</a>)}</nav>
         <div className="sidebar-note"><b>Core question</b><span>If I became Mayor tomorrow morning, what do I need before my first meeting?</span></div>
       </aside>
-      <section className="workspace">
+      <section className="workspace paged-workspace">
         <header className="topbar">
           <div>
-            <span className="eyebrow">WAYNESBORO, GEORGIA · CITY OPERATING PICTURE</span>
-            <h1>Municipal Operating Picture for Waynesboro.</h1>
-            <p className="public-disclaimer">Public-presentable demo interface with verified Data Commons baselines, official document links, and clearly labeled synthetic operating placeholders for lanes not yet connected.</p>
+            <span className="eyebrow">{meta.eyebrow}</span>
+            <h1>{meta.title}</h1>
+            <p className="public-disclaimer">{meta.description}</p>
           </div>
           <div className="civic-mode-card"><b>CIVIC DEMO MODE</b><span>Verified baselines · source routes · placeholders labeled</span></div>
         </header>
-        <PublicTrustRibbon />
-        <CivicBriefingStrip />
-        <MeetingReadinessStrip />
-        <ExecutiveDashboard />
-        <SourceReadiness />
-        <EconomicDevelopment />
-        <DowntownCommandCenter />
-        <BeautificationIndex />
-        <ProjectTracker />
-        <InfrastructureSafetyHousing />
-        <Council />
+        <section className="page-switcher" aria-label="Waynesboro OS page groups">
+          {nav.map((item) => <a key={item.id} href={item.href} className={activePage === item.id ? 'active' : ''}>{item.label}</a>)}
+        </section>
+        <PageContent page={activePage} />
       </section>
     </main>
   );

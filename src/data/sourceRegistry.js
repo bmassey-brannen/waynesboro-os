@@ -44,6 +44,17 @@ export const sourceRegistry = [
     notes: 'Low-volume test returned population, median household income, poverty fields, margins of error, and a GeoJSON boundary endpoint. Use as a redundant ACS source path and map-boundary seed; keep Data Commons/official Census labels visible before using in KPI cards.'
   },
   {
+    name: 'Census Reporter ACS household income distribution table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B19001&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS B19001 household income bracket estimates and margins of error for affordability and economic-mobility context',
+    geography: 'Waynesboro city with Burke County / Georgia comparison rows available',
+    accessMethod: 'Public no-key Census Reporter API; low-volume request cached in src/data/incomeDistributionSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Runtime query returned Waynesboro B19001 income brackets; the UI shows under-$50K and $100K+ rollups plus bracket bars with MOE. Treat as ACS survey context only, not tax records, payroll data, poverty eligibility, local revenue, or household-level data.'
+  },
+  {
     name: 'Census QuickFacts',
     url: 'https://www.census.gov/quickfacts/fact/table/waynesborocitygeorgia,burkecountygeorgia/PST045223',
     dataType: 'Public demographic and economic quick facts for city/county context',
@@ -721,7 +732,7 @@ export const readinessStrip = [
   { lane: 'City documents', status: 'Index-ready', source: 'Agenda Center / Archive Center', tone: 'good' },
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
   { lane: 'Map base', status: 'Boundary seed ready', source: 'OSM + TIGERweb + Census Reporter GeoJSON', tone: 'good' },
-  { lane: 'Economy', status: 'Workforce + commute routes', source: 'BLS LAUS + ACS workforce/attainment + LEHD/LODES + CBP', tone: 'good' },
+  { lane: 'Economy', status: 'Workforce + income + commute', source: 'BLS LAUS + ACS B19001/B15003/B23025 + LEHD/LODES + CBP', tone: 'good' },
   { lane: 'Education', status: 'GaDOE routes indexed', source: 'Georgia Insights + Burke County Public Schools', tone: 'watch' },
   { lane: 'Finance', status: 'Sales-tax + digest routes', source: 'Georgia DOR Distributions / Digest Compliance', tone: 'good' },
   { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },
