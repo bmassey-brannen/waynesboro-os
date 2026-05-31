@@ -187,6 +187,17 @@ export const sourceRegistry = [
     notes: 'City page links to Georgia DOR and Burke County Tax Assessors/qPublic; city Agenda Center and Archive Center paths are now separately tracked.'
   },
   {
+    name: 'City of Waynesboro City Maps / DocumentCenter map PDFs',
+    url: 'https://www.waynesboroga.com/94/City-Maps',
+    dataType: 'Official city map hub with ArcGIS web map links plus PDF references for downtown development area, ward boundaries, historic district, corporate limits, and unofficial zoning',
+    geography: 'City of Waynesboro',
+    accessMethod: 'Public city web page and DocumentCenter PDF links; index links only until ArcGIS service permissions and PDF contents are manually reviewed.',
+    cadence: 'As posted by city; exact map update cadence not stated',
+    difficulty: 'Medium',
+    status: 'Seed connector ready',
+    notes: 'Low-volume public check found City Maps, SmallMaps/ArcGIS app links, and DocumentCenter map PDFs. Added src/data/cityMapSourceSeed.js and a downtown map source stack. This improves map credibility but does not replace qPublic parcels or live GIS geometry.'
+  },
+  {
     name: 'City of Waynesboro Agenda Center',
     url: 'https://www.waynesboroga.com/AgendaCenter',
     dataType: 'City council agendas, agenda packets, meeting notices, RSS/list views',

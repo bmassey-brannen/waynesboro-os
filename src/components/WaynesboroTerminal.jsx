@@ -26,6 +26,7 @@ import { waterSystemsSeed } from '../data/waterSystemsSeed.js';
 import { economicSourceSeed } from '../data/economicSourceSeed.js';
 import { censusReporterSeed } from '../data/censusReporterSeed.js';
 import { taxDigestSeed } from '../data/taxDigestSeed.js';
+import { cityMapSourceSeed } from '../data/cityMapSourceSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -573,6 +574,7 @@ function EconomicDevelopment() {
 
 function DowntownCommandCenter() {
   const civicAssets = osmCivicAssetsSeed.assets.slice(0, 5);
+  const mapSources = cityMapSourceSeed.links.slice(0, 5);
 
   return (
     <section id="downtown" className="module three-col">
@@ -619,6 +621,22 @@ function DowntownCommandCenter() {
             ))}
           </div>
           <p>{osmCivicAssetsSeed.caveat}</p>
+        </div>
+        <div className="city-map-source-stack" aria-label="official city map source stack">
+          <div className="civic-asset-head">
+            <span className="eyebrow">OFFICIAL CITY MAP SOURCE STACK</span>
+            <b>{cityMapSourceSeed.links.length} public map references indexed from City Maps</b>
+          </div>
+          <div className="city-map-source-list">
+            {mapSources.map((source) => (
+              <a key={source.label} href={source.url} target="_blank" rel="noreferrer">
+                <span>{source.type}</span>
+                <b>{source.label}</b>
+                <small>{source.integrationUse}</small>
+              </a>
+            ))}
+          </div>
+          <p>{cityMapSourceSeed.caveat}</p>
         </div>
       </section>
       <DataTable
