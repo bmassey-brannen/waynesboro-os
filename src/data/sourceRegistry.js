@@ -526,6 +526,17 @@ export const sourceRegistry = [
     difficulty: 'Medium',
     status: 'Source hub identified',
     notes: 'Low-volume check returned the public map application. This can support downtown foot-traffic, corridor-priority, and infrastructure modules once station export rules/endpoints are confirmed.'
+  },
+  {
+    name: 'City of Waynesboro Community Development source stack',
+    url: 'https://www.waynesboroga.com/118/Community-Development',
+    dataType: 'Planning, zoning, sign ordinance, redevelopment powers, housing initiatives, applications, and DocumentCenter PDF routes',
+    geography: 'City of Waynesboro, Georgia',
+    accessMethod: 'Public CivicPlus page and DocumentCenter links; low-volume link index only until documents are manually reviewed.',
+    cadence: 'As city staff update pages/documents; exact ordinance/document cadence not stated',
+    difficulty: 'Medium',
+    status: 'Source routes indexed',
+    notes: 'Low-volume check reached the Community Development page and found zoning/sign ordinance PDFs, conditional-use/zoning/variance/subdivision/map-amendment forms, Special Event Application, Redevelopment Powers, and Housing Development/Initiatives routes. Added src/data/communityDevelopmentSeed.js and a Source Ledger policy panel; do not present legal/zoning summaries until PDFs/sections are manually verified.'
   }
 ];
 
@@ -543,6 +554,7 @@ export const readinessStrip = [
   { lane: 'Ordinances', status: 'Reference-ready', source: 'Municode Library', tone: 'good' },
   { lane: 'Public safety', status: 'Crime source routing', source: 'GBI Crime Statistics / FBI CDE / E-911', tone: 'watch' },
   { lane: 'Civic participation', status: 'Reference routes', source: 'Burke Elections / Georgia SOS MVP', tone: 'watch' },
+  { lane: 'Policy / zoning', status: 'Route index', source: 'City Community Development / DocumentCenter', tone: 'watch' },
   { lane: 'Health equity', status: 'PLACES seed ready', source: 'CDC PLACES census tract estimates', tone: 'watch' }
 ];
 
@@ -617,6 +629,14 @@ export const sourcePriorities = [
     source: 'City of Waynesboro Code of Ordinances / Municode Library',
     value: 'Gives The Council and code/blight modules an official regulatory baseline without inventing policy claims.',
     nextStep: 'Create a curated index of relevant ordinance sections after manual verification; cite Municode URLs and retrieval dates.',
+    difficulty: 'Medium'
+  },
+  {
+    lane: 'Planning / zoning',
+    target: 'Crosswalk Community Development PDFs with Municode and map references',
+    source: 'City of Waynesboro Community Development source stack',
+    value: 'Separates official zoning/sign/redevelopment source routes from synthetic development assumptions before Council or parcel modules cite policy.',
+    nextStep: 'Open the zoning/sign ordinance PDFs, index only section titles/effective dates first, then reconcile against Municode and City Maps zoning references.',
     difficulty: 'Medium'
   },
   {

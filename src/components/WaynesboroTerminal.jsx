@@ -37,6 +37,7 @@ import { salesTaxDistributionSeed } from '../data/salesTaxDistributionSeed.js';
 import { cityPermittingSeed } from '../data/cityPermittingSeed.js';
 import { federalSpendingSeed } from '../data/federalSpendingSeed.js';
 import { civicParticipationSeed } from '../data/civicParticipationSeed.js';
+import { communityDevelopmentSeed } from '../data/communityDevelopmentSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -469,6 +470,38 @@ function CivicParticipationSourcePanel() {
   );
 }
 
+function CommunityDevelopmentPolicyPanel() {
+  const featuredRoutes = communityDevelopmentSeed.routes.slice(0, 6);
+
+  return (
+    <section className="panel community-development-panel" aria-label="Community development and zoning source routes">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">COMMUNITY DEVELOPMENT · POLICY SOURCES</span>
+          <h2>Zoning, signs, redevelopment, and housing routes now sit before claims</h2>
+        </div>
+        <span className="terminal-badge gold">CITATION ROUTES</span>
+      </div>
+      <div className="community-route-grid">
+        {featuredRoutes.map((route) => (
+          <a key={route.label} href={route.url} target="_blank" rel="noreferrer">
+            <span>{route.type}</span>
+            <b>{route.label}</b>
+            <small>{route.integrationUse}</small>
+          </a>
+        ))}
+      </div>
+      <div className="community-form-strip" aria-label="community development forms indexed">
+        {communityDevelopmentSeed.forms.map((form) => <span key={form}>{form}</span>)}
+      </div>
+      <div className="community-next-steps">
+        {communityDevelopmentSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p className="source-note">{communityDevelopmentSeed.caveat} Retrieved {new Date(communityDevelopmentSeed.retrievedAt).toLocaleDateString()} from the public City Community Development page.</p>
+    </section>
+  );
+}
+
 function SourceReadiness() {
   const statusCounts = sourceRegistry.reduce((counts, source) => {
     counts[source.status] = (counts[source.status] || 0) + 1;
@@ -500,6 +533,7 @@ function SourceReadiness() {
       <CensusReporterCrosscheckPanel />
       <TaxDigestSourcePanel />
       <OfficialDocumentsPanel />
+      <CommunityDevelopmentPolicyPanel />
       <CivicParticipationSourcePanel />
       <section className="panel source-queue-card">
         <div className="panel-head"><div><span className="eyebrow">CONNECTOR ACTION QUEUE</span><h2>Highest-trust next moves</h2></div></div>
