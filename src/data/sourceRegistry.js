@@ -528,6 +528,17 @@ export const sourceRegistry = [
     notes: 'Low-volume check returned the public map application. This can support downtown foot-traffic, corridor-priority, and infrastructure modules once station export rules/endpoints are confirmed.'
   },
   {
+    name: 'FCC Broadband Data Collection / National Broadband Map',
+    url: 'https://broadbandmap.fcc.gov/data-download',
+    dataType: 'Broadband availability, provider, technology, speed-tier, location/fabric, and challenge-process source route after export terms and geography are verified',
+    geography: 'Waynesboro / Burke County, Georgia; aggregate only until location-level display rules are reviewed',
+    accessMethod: 'Public FCC National Broadband Map and data-download pages; use manual export review first, then cache only permitted aggregate availability records with vintage and FCC attribution.',
+    cadence: 'Published by FCC Broadband Data Collection filing cycle; attach vintage/date to every future observation.',
+    difficulty: 'Medium',
+    status: 'Source surface verified',
+    notes: 'Runtime reached FCC National Broadband Map data-download and nationwide-data pages with HTTP 200. Added src/data/broadbandAccessSeed.js and an Operations digital-infrastructure panel. No coverage, provider, subscription, affordability, or outage claim is displayed until export scope, vintage, geography, and aggregation method are confirmed.'
+  },
+  {
     name: 'City of Waynesboro Community Development source stack',
     url: 'https://www.waynesboroga.com/118/Community-Development',
     dataType: 'Planning, zoning, sign ordinance, redevelopment powers, housing initiatives, applications, and DocumentCenter PDF routes',
@@ -549,6 +560,7 @@ export const readinessStrip = [
   { lane: 'Finance', status: 'Sales-tax + digest routes', source: 'Georgia DOR Distributions / Digest Compliance', tone: 'good' },
   { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },
   { lane: 'Utilities', status: 'Rate refs indexed', source: 'City Water Rates / DocumentCenter', tone: 'good' },
+  { lane: 'Broadband', status: 'FCC route scoped', source: 'FCC Broadband Map / BDC downloads', tone: 'watch' },
   { lane: 'Environmental', status: 'CWA seed ready', source: 'EPA ECHO Clean Water Act', tone: 'good' },
   { lane: 'Resilience', status: 'Hazard source stack', source: 'FEMA NFHL / NOAA Storm Events', tone: 'watch' },
   { lane: 'Ordinances', status: 'Reference-ready', source: 'Municode Library', tone: 'good' },
@@ -645,6 +657,14 @@ export const sourcePriorities = [
     source: 'Georgia DOT Traffic Analysis & Data Application (TADA)',
     value: 'Adds defensible roadway-volume context to downtown foot-traffic assumptions, corridor prioritization, and infrastructure planning.',
     nextStep: 'Use the public map/report interface manually first, then cache only permitted station metadata/AADT exports with GDOT attribution.',
+    difficulty: 'Medium'
+  },
+  {
+    lane: 'Digital infrastructure',
+    target: 'Scope FCC Broadband Map exports for Burke / Waynesboro aggregate coverage context',
+    source: 'FCC Broadband Data Collection / National Broadband Map',
+    value: 'Adds a public federal route for broadband availability and digital-infrastructure planning without guessing provider coverage or outage status.',
+    nextStep: 'Manually review FCC download/export rules and current filing vintage; cache only permitted aggregate availability counts by geography/technology/speed tier with source URL and vintage.',
     difficulty: 'Medium'
   },
   {

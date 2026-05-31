@@ -74,9 +74,9 @@ a { color: inherit; }
 }
 .topbar h1, .module-title h1 { margin: 4px 0 0; font-size: clamp(24px, 2.4vw, 38px); letter-spacing: -.04em; line-height: .95; }
 .public-disclaimer { max-width: 760px; margin: 10px 0 0; color: rgba(255,253,244,.82); font-size: 13px; line-height: 1.45; }
-.market-clock { min-width: 270px; border: 1px solid rgba(255,255,255,.28); padding: 12px; text-align: right; background: rgba(255,255,255,.1); }
-.market-clock b { display: block; color: #f4e7b1; font-size: 12px; letter-spacing: .12em; }
-.market-clock span { color: rgba(255,253,244,.78); font-size: 12px; }
+.civic-mode-card { min-width: 270px; border: 1px solid rgba(255,255,255,.28); padding: 12px; text-align: right; background: rgba(255,255,255,.1); }
+.civic-mode-card b { display: block; color: #f4e7b1; font-size: 12px; letter-spacing: .12em; }
+.civic-mode-card span { color: rgba(255,253,244,.78); font-size: 12px; }
 .topbar .eyebrow { color: #f4e7b1; }
 .topbar > div { min-width: 0; }
 .topbar h1, .module-title h1, .public-disclaimer, .trust-ribbon b, .trust-ribbon small { overflow-wrap: anywhere; }
@@ -397,7 +397,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .ops-source-grid article { min-width: 0; padding: 11px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
 .ops-source-grid a { display: block; margin-top: 8px; color: #13251b; font-size: 13px; font-weight: 900; text-decoration: none; overflow-wrap: anywhere; }
 .ops-source-grid p { margin: 6px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
-.weather-readiness-panel, .water-system-panel, .utility-rate-panel, .clean-water-panel, .hazard-resilience-panel, .public-safety-source-panel, .health-equity-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,238,.97)); border-color: rgba(38,116,79,.24); }
+.weather-readiness-panel, .water-system-panel, .utility-rate-panel, .broadband-access-panel, .clean-water-panel, .hazard-resilience-panel, .public-safety-source-panel, .health-equity-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,238,.97)); border-color: rgba(38,116,79,.24); }
 .public-safety-source-panel, .health-equity-panel { border-color: rgba(165,128,49,.24); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(248,244,232,.96)); }
 .health-equity-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
 .health-equity-summary article, .health-equity-samples article { min-width: 0; padding: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.78); }
@@ -419,6 +419,15 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .public-safety-questions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
 .public-safety-questions span { padding: 8px; border: 1px solid rgba(165,128,49,.22); background: rgba(165,128,49,.06); color: #3b4031; font-size: 11px; line-height: 1.35; font-weight: 750; }
 .utility-rate-panel { border-color: rgba(165,128,49,.25); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(248,244,232,.96)); }
+.broadband-access-panel { border-color: rgba(31,93,66,.24); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(235,243,238,.96)); }
+.broadband-source-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.broadband-source-grid a { min-width: 0; display: block; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.78); text-decoration: none; }
+.broadband-source-grid span, .broadband-source-grid b, .broadband-source-grid small, .broadband-shape-strip span, .broadband-shape-strip small { display: block; overflow-wrap: anywhere; }
+.broadband-source-grid span, .broadband-shape-strip span { color: var(--gold); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
+.broadband-source-grid b { margin-top: 4px; color: #13251b; font-size: 12px; line-height: 1.25; }
+.broadband-source-grid small, .broadband-shape-strip small { margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.broadband-shape-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 7px; margin-top: 10px; }
+.broadband-shape-strip article { min-width: 0; padding: 8px; border: 1px solid rgba(165,128,49,.18); background: rgba(165,128,49,.06); }
 .clean-water-panel { border-color: rgba(31,93,66,.26); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(238,244,239,.97)); }
 .hazard-resilience-panel { border-color: rgba(165,128,49,.25); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(248,244,232,.96)); }
 .hazard-source-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
@@ -536,7 +545,8 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .briefing-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .operations-confidence-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ops-source-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .weather-meta-grid, .weather-endpoint-list, .public-safety-source-grid, .health-equity-samples, .funding-summary-grid, .funding-quarter-grid, .sales-tax-source-grid, .permit-route-grid, .community-route-grid, .community-next-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .weather-meta-grid, .weather-endpoint-list, .public-safety-source-grid, .health-equity-samples, .funding-summary-grid, .funding-quarter-grid, .sales-tax-source-grid, .permit-route-grid, .community-route-grid, .community-next-steps, .broadband-source-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .broadband-shape-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .health-equity-summary { grid-template-columns: 1fr; }
   .public-safety-questions { grid-template-columns: 1fr; }
   .forecast-snapshot-head { grid-template-columns: 1fr; }
@@ -561,7 +571,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .sidebar-note { position: static; margin-top: 16px; }
   .workspace { padding: 10px; }
   .topbar, .module-title { display: block; }
-  .market-clock { min-width: 0; margin-top: 12px; text-align: left; }
+  .civic-mode-card { min-width: 0; margin-top: 12px; text-align: left; }
   .trust-ribbon { grid-template-columns: 1fr; }
   .briefing-cards { grid-template-columns: 1fr; }
   .kpi-grid, .source-status-strip, .source-stats, .doc-source-grid, .doc-link-list { grid-template-columns: 1fr; }
@@ -571,6 +581,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .civic-asset-list, .city-map-source-list { grid-template-columns: 1fr; }
   .ops-source-grid, .public-safety-source-grid, .public-safety-questions, .operations-confidence-grid, .health-equity-summary, .health-equity-samples { grid-template-columns: 1fr; }
   .weather-meta-grid, .weather-endpoint-list { grid-template-columns: 1fr; }
+  .broadband-source-grid, .broadband-shape-strip { grid-template-columns: 1fr; }
   .forecast-period-grid { grid-template-columns: 1fr; }
   .water-system-list { grid-template-columns: 1fr; }
   .utility-reference-grid { grid-template-columns: 1fr; }

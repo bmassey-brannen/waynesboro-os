@@ -38,6 +38,7 @@ import { cityPermittingSeed } from '../data/cityPermittingSeed.js';
 import { federalSpendingSeed } from '../data/federalSpendingSeed.js';
 import { civicParticipationSeed } from '../data/civicParticipationSeed.js';
 import { communityDevelopmentSeed } from '../data/communityDevelopmentSeed.js';
+import { broadbandAccessSeed } from '../data/broadbandAccessSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -1236,6 +1237,38 @@ function OperationsConfidenceStrip() {
   );
 }
 
+function BroadbandAccessPanel() {
+  return (
+    <section className="panel broadband-access-panel">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">DIGITAL INFRASTRUCTURE SOURCE</span>
+          <h2>FCC broadband route added before coverage claims</h2>
+        </div>
+        <span className="terminal-badge gold">EXPORT SCOPE PENDING</span>
+      </div>
+      <div className="broadband-source-grid">
+        {broadbandAccessSeed.sourceRoutes.map((route) => (
+          <a key={route.label} href={route.url} target="_blank" rel="noreferrer">
+            <span>{route.label}</span>
+            <b>{route.dataType}</b>
+            <small>{route.integrationUse}</small>
+          </a>
+        ))}
+      </div>
+      <div className="broadband-shape-strip">
+        {broadbandAccessSeed.normalizedShape.map((field) => (
+          <article key={field.field}>
+            <span>{field.field}</span>
+            <small>{field.meaning}</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{broadbandAccessSeed.caveat} {broadbandAccessSeed.verification}</p>
+    </section>
+  );
+}
+
 function InfrastructureSafetyHousing() {
   return (
     <section id="operations" className="module operations-module">
@@ -1260,6 +1293,7 @@ function InfrastructureSafetyHousing() {
       <WeatherReadinessPanel />
       <WaterSystemsPanel />
       <UtilityRateReferencePanel />
+      <BroadbandAccessPanel />
       <CleanWaterPermitPanel />
       <HazardResiliencePanel />
       <section className="panel ops-source-ledger">
@@ -1302,9 +1336,9 @@ function Council() {
     },
     {
       status: 'Source route added',
-      title: 'USAspending funding context now visible',
-      note: 'Burke County place-of-performance obligations can guide grant/award review, but they are not city revenue or proof of local receipt.',
-      action: 'Drill into award-level recipient and agency records before The Council cites any project, grant, or local-government funding claim.'
+      title: 'FCC broadband data route now scoped',
+      note: 'Digital-infrastructure coverage can become a source-labeled operations layer after FCC export scope, vintage, and geography are verified.',
+      action: 'Review FCC data-download terms and cache only permitted Burke/Waynesboro aggregate availability records before The Council mentions coverage gaps.'
     },
     {
       status: 'Still synthetic',
@@ -1484,7 +1518,7 @@ export default function WaynesboroTerminal() {
             <h1>Municipal Operating Picture for Waynesboro.</h1>
             <p className="public-disclaimer">Public-presentable demo interface with verified Data Commons baselines, official document links, and clearly labeled synthetic operating placeholders for lanes not yet connected.</p>
           </div>
-          <div className="market-clock"><b>HYBRID DATA MODE</b><span>Data Commons live · local ops placeholders labeled</span></div>
+          <div className="civic-mode-card"><b>CIVIC DEMO MODE</b><span>Verified baselines · source routes · placeholders labeled</span></div>
         </header>
         <PublicTrustRibbon />
         <CivicBriefingStrip />
