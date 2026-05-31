@@ -30,6 +30,7 @@ import { cityMapSourceSeed } from '../data/cityMapSourceSeed.js';
 import { businessSurfaceSeed } from '../data/businessSurfaceSeed.js';
 import { utilityRateSeed } from '../data/utilityRateSeed.js';
 import { cleanWaterPermitSeed } from '../data/cleanWaterPermitSeed.js';
+import { hazardResilienceSeed } from '../data/hazardResilienceSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -903,6 +904,30 @@ function CleanWaterPermitPanel() {
   );
 }
 
+function HazardResiliencePanel() {
+  return (
+    <section className="panel hazard-resilience-panel">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">HAZARD / RESILIENCE SOURCE ROUTING</span>
+          <h2>Flood and storm-history sources queued before map claims</h2>
+        </div>
+        <span className="terminal-badge gold">SOURCE STUB</span>
+      </div>
+      <div className="hazard-source-grid">
+        {hazardResilienceSeed.sources.map((source) => (
+          <a key={source.label} href={source.url} target="_blank" rel="noreferrer">
+            <span>{source.shortLabel}</span>
+            <b>{source.status}</b>
+            <small>{source.integrationUse}</small>
+          </a>
+        ))}
+      </div>
+      <p className="source-note">{hazardResilienceSeed.caveat}</p>
+    </section>
+  );
+}
+
 function InfrastructureSafetyHousing() {
   return (
     <section id="operations" className="module operations-module">
@@ -925,6 +950,7 @@ function InfrastructureSafetyHousing() {
       <WaterSystemsPanel />
       <UtilityRateReferencePanel />
       <CleanWaterPermitPanel />
+      <HazardResiliencePanel />
       <section className="panel ops-source-ledger">
         <div className="panel-head">
           <div>

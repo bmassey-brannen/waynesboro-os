@@ -374,6 +374,17 @@ export const sourceRegistry = [
     notes: 'Sitemap exposes Police and Fire pages. Public-safety KPIs must stay synthetic until aggregate incident/response records are officially published or obtained.'
   },
   {
+    name: 'FEMA NFHL + NOAA Storm Events hazard source stack',
+    url: 'https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer',
+    dataType: 'Flood hazard map service references, FEMA Flood Map Service Center verification path, and NOAA/NCEI historical storm-event CSV source routing',
+    geography: 'Waynesboro / Burke County, Georgia; parcel-specific flood claims require exact geometry and official source QA',
+    accessMethod: 'Public FEMA/NOAA surfaces; use low-volume metadata/annual extracts only, and manually verify map products before presenting flood-zone or loss facts.',
+    cadence: 'NFHL updates as FEMA map products are revised; NOAA Storm Events annual CSV files are updated as NCEI releases corrections.',
+    difficulty: 'Medium',
+    status: 'Source stack identified',
+    notes: 'Added src/data/hazardResilienceSeed.js as a source-routing stub. Runtime TLS checks to hazards.fema.gov failed from this environment, so do not build an automated NFHL connector until service access is confirmed; NOAA/NCEI annual extract strategy still needs implementation.'
+  },
+  {
     name: 'National Weather Service API / api.weather.gov',
     url: 'https://api.weather.gov/points/33.0898731,-82.0156736',
     dataType: 'Public forecast office routing, county/forecast/fire-weather zone metadata, forecast endpoints, cached gridpoint forecast periods, and cached active-alert feature snapshots',
@@ -428,6 +439,7 @@ export const readinessStrip = [
   { lane: 'Finance', status: 'Tax digest seed', source: 'Georgia DOR Digest Compliance', tone: 'good' },
   { lane: 'Utilities', status: 'Rate refs indexed', source: 'City Water Rates / DocumentCenter', tone: 'good' },
   { lane: 'Environmental', status: 'CWA seed ready', source: 'EPA ECHO Clean Water Act', tone: 'good' },
+  { lane: 'Resilience', status: 'Hazard source stack', source: 'FEMA NFHL / NOAA Storm Events', tone: 'watch' },
   { lane: 'Ordinances', status: 'Reference-ready', source: 'Municode Library', tone: 'good' },
   { lane: 'Public safety', status: 'Official aggregate needed', source: 'E-911 / records request path', tone: 'neutral' }
 ];
@@ -519,6 +531,14 @@ export const sourcePriorities = [
     source: 'City of Waynesboro Water Rates / DocumentCenter fee schedule',
     value: 'Creates a public, city-sourced bridge from the operations lane to utility-cost and water-use reference cards without inventing rate figures.',
     nextStep: 'Open the linked DocumentCenter fee schedule and watering-restrictions PDF, extract only clearly labeled fields with retrieval dates, then compare against adopted budget/ordinance sources.',
+    difficulty: 'Medium'
+  },
+  {
+    lane: 'Hazard / resilience',
+    target: 'Confirm FEMA NFHL runtime access and scope NOAA Storm Events annual extracts',
+    source: 'FEMA NFHL / FEMA MSC / NOAA NCEI Storm Events',
+    value: 'Adds defensible flood and historical severe-weather context for downtown, infrastructure, and Council planning without making unsupported parcel-risk claims.',
+    nextStep: 'Confirm NFHL ArcGIS REST access outside this runtime TLS issue, then build a low-volume county/point metadata cache and filter NOAA annual Storm Events CSVs to Georgia / Burke County.',
     difficulty: 'Medium'
   },
   {
