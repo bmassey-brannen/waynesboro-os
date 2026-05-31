@@ -53,6 +53,7 @@ import { workforceEducationSeed } from '../data/workforceEducationSeed.js';
 import { foodAccessSeed } from '../data/foodAccessSeed.js';
 import { internetSubscriptionSeed } from '../data/internetSubscriptionSeed.js';
 import { ageProfileSeed } from '../data/ageProfileSeed.js';
+import { vehicleAccessSeed } from '../data/vehicleAccessSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -1685,6 +1686,53 @@ function BroadbandAccessPanel() {
   );
 }
 
+function VehicleAccessPanel() {
+  const noVehicleMetric = vehicleAccessSeed.metrics.find((metric) => metric.id === 'no-vehicle');
+
+  return (
+    <section className="panel vehicle-access-panel">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">MOBILITY ACCESS · ACS CONTEXT</span>
+          <h2>Household vehicle availability seed</h2>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="vehicle-access-hero">
+        <article>
+          <span>Zero-vehicle households</span>
+          <b>{noVehicleMetric?.displayShare || 'N/A'}</b>
+          <small>{noVehicleMetric?.displayValue || 'N/A'} households · {noVehicleMetric?.displayMoe || 'MOE pending'} · {vehicleAccessSeed.release}</small>
+        </article>
+        <div>
+          <h3>Service-access context, not a transportation conclusion</h3>
+          <p>{vehicleAccessSeed.posture}</p>
+          <a href={vehicleAccessSeed.sourceUrl} target="_blank" rel="noreferrer">Open Census Reporter B08201 query</a>
+        </div>
+      </div>
+      <div className="vehicle-access-grid">
+        {vehicleAccessSeed.metrics.slice(1).map((metric) => (
+          <article key={metric.id}>
+            <span>{metric.label}</span>
+            <b>{metric.displayShare || metric.displayValue}</b>
+            <small>{metric.displayValue} households · {metric.displayMoe}</small>
+          </article>
+        ))}
+      </div>
+      <div className="vehicle-comparison-strip">
+        {vehicleAccessSeed.comparison.map((item) => (
+          <article key={item.geography}>
+            <span>{item.geography}</span>
+            <b>{item.noVehicleShare}</b>
+            <small>{item.noVehicleEstimate.toLocaleString()} of {item.totalHouseholds.toLocaleString()} households</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{vehicleAccessSeed.householdSizeCaveat} Pair this with commute, GDOT, transit/nonprofit, school, and service-location sources before any Council recommendation.</p>
+    </section>
+  );
+}
+
 function AffordableHousingSourcePanel() {
   return (
     <section className="panel affordable-housing-panel">
@@ -1777,6 +1825,7 @@ function InfrastructureSafetyHousing() {
       <StateDrinkingWaterPanel />
       <UtilityRateReferencePanel />
       <BroadbandAccessPanel />
+      <VehicleAccessPanel />
       <CleanWaterPermitPanel />
       <HydrologySourcePanel />
       <HydrologyObservationsPanel />
@@ -1820,10 +1869,10 @@ function Council() {
       action: 'Turn the next Council brief into a document-backed decision log, not a generic chatbot summary.'
     },
     {
-      status: 'Digital inclusion context',
-      title: `${internetSubscriptionSeed.metrics.find((metric) => metric.id === 'no-internet-access')?.displayShare || 'N/A'} ACS households report no internet access`,
-      note: 'The operations lane now separates ACS household subscription context from FCC availability/source-routing so coverage, provider, affordability, and outage claims do not get mixed together.',
-      action: 'Cross-check ACS B28002 against FCC BDC exports, library/school sources, and workforce needs before The Council recommends connectivity interventions.'
+      status: 'Mobility access context',
+      title: `${vehicleAccessSeed.metrics.find((metric) => metric.id === 'no-vehicle')?.displayShare || 'N/A'} ACS households report no vehicle available`,
+      note: 'The operations lane now has a source-labeled B08201 vehicle-availability seed with MOE and city/county/state comparison, but it is still survey context only.',
+      action: 'Pair with commute tables, LEHD/LODES, GDOT, service locations, and local transportation programs before The Council recommends mobility interventions.'
     },
     {
       status: 'Still synthetic',
@@ -1938,7 +1987,7 @@ function MeetingReadinessStrip() {
     { label: 'Claims discipline', value: 'Source-gated', detail: 'Verified baseline first; synthetic operating scores stay visibly labeled.' },
     { label: 'Presentation packet', value: 'Print aware', detail: 'Dense panels remain readable for PDF/meeting screenshots and council-style review.' },
     {
-      label: 'Next evidence lane', value: 'Commute + corridors', detail: 'ACS journey-to-work context is seeded; LEHD and GDOT station evidence still gate corridor conclusions.' }
+      label: 'Next evidence lane', value: 'Mobility access', detail: `${vehicleAccessSeed.metrics.find((metric) => metric.id === 'no-vehicle')?.displayShare || 'N/A'} ACS zero-vehicle household context is seeded; do not turn it into transit, hardship, or service-demand claims yet.` }
   ];
 
   return (

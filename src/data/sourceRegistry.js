@@ -691,6 +691,17 @@ export const sourceRegistry = [
     difficulty: 'Low',
     status: 'Public API seed ready',
     notes: 'Runtime query returned Waynesboro age groups for under 18, 18–24, 25–44, 45–64, and 65+ with MOE. Added an executive service-demand age profile panel. Treat as ACS survey context only; not school enrollment, EMS demand, voter records, program participation, or department workload data.'
+  },
+  {
+    name: 'Census Reporter ACS household vehicle availability table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B08201&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS household vehicle availability estimates with margins of error and city/county/state comparison context',
+    geography: 'Waynesboro city, Georgia (16000US1380984), Burke County (05000US13033), and Georgia (04000US13)',
+    accessMethod: 'Public no-key Census Reporter API; low-volume B08201 request cached in src/data/vehicleAccessSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024 release.',
+    difficulty: 'Low',
+    status: 'Public API seed ready',
+    notes: 'Runtime query returned household vehicle-availability context for Waynesboro, Burke County, and Georgia, including zero-vehicle households. Added an Operations mobility-access panel. Treat as ACS survey context only; not live traffic, transit ridership, hardship, service demand, school transportation, emergency response, or municipal telemetry.'
   }
 ];
 
@@ -705,6 +716,7 @@ export const readinessStrip = [
   { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },
   { lane: 'Utilities', status: 'State verification route', source: 'City Water Rates / EPA SDWIS / Georgia EPD DWW', tone: 'good' },
   { lane: 'Digital access', status: 'ACS context + FCC route', source: 'Census Reporter B28002 / FCC BDC', tone: 'good' },
+  { lane: 'Mobility access', status: 'ACS vehicle seed', source: 'Census Reporter B08201', tone: 'good' },
   { lane: 'Housing', status: 'ACS tenure + LIHTC route', source: 'Census Reporter / City DocumentCenter / Georgia DCA', tone: 'good' },
   { lane: 'Environmental', status: 'CWA seed ready', source: 'EPA ECHO Clean Water Act', tone: 'good' },
   { lane: 'Hydrology', status: 'USGS IV snapshot', source: 'USGS NWIS Site + Instantaneous Values', tone: 'good' },
@@ -764,6 +776,14 @@ export const sourcePriorities = [
     source: 'Census Reporter ACS B08301/B08303 journey-to-work tables',
     value: 'Gives the economic lane a city-level commute-mode and travel-time context without pretending to know live traffic, employers, or downtown foot traffic.',
     nextStep: 'Keep the ACS commute seed visible with MOE, then cross-check against LEHD place aggregation and permitted GDOT TADA station exports before producing corridor recommendations.',
+    difficulty: 'Low'
+  },
+  {
+    lane: 'Mobility access',
+    target: 'Reconcile ACS vehicle availability with service-location and transportation evidence',
+    source: 'Census Reporter ACS B08201 household vehicle availability table',
+    value: 'Adds city/county/state zero-vehicle household context without inventing transit ridership, hardship, or service-demand claims.',
+    nextStep: 'Propagate derived MOE, pair with commute tables, LEHD/LODES, GDOT, nonprofit/transit routes, school transportation sources, and service-location maps before Council recommendations.',
     difficulty: 'Low'
   },
   {
