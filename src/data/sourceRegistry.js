@@ -121,6 +121,17 @@ export const sourceRegistry = [
     notes: 'Legacy DOL pages timed out from this environment; keep as a research target before coding ingestion.'
   },
   {
+    name: 'U.S. Census County Business Patterns API',
+    url: 'https://api.census.gov/data/2022/cbp',
+    dataType: 'County-level establishments, employment, and annual payroll by NAICS sector',
+    geography: 'Burke County, Georgia; local Waynesboro business-license data still requires city/county source access',
+    accessMethod: 'Public Census API; this environment returned a Census Missing Key page, so scheduled ingestion should use a Census API key and cache normalized observations.',
+    cadence: 'Annual County Business Patterns release',
+    difficulty: 'Medium',
+    status: 'Connector scoped',
+    notes: 'Query templates for all industries, retail, food/accommodation, and construction are captured in src/data/economicSourceSeed.js. Useful as county economic context, not a substitute for city license, downtown occupancy, or permit records.'
+  },
+  {
     name: 'U.S. Census TIGERweb Incorporated Places',
     url: 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/4',
     dataType: 'Official Census incorporated-place boundary metadata, GEOID, place code, center/interior points, land and water area',
@@ -358,6 +369,7 @@ export const readinessStrip = [
   { lane: 'City documents', status: 'Index-ready', source: 'Agenda Center / Archive Center', tone: 'good' },
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
   { lane: 'Map base', status: 'Seed ready', source: 'OSM + Census TIGERweb', tone: 'good' },
+  { lane: 'Economy', status: 'CBP scoped', source: 'Census County Business Patterns', tone: 'watch' },
   { lane: 'Ordinances', status: 'Reference-ready', source: 'Municode Library', tone: 'good' },
   { lane: 'Public safety', status: 'Official aggregate needed', source: 'E-911 / records request path', tone: 'neutral' }
 ];

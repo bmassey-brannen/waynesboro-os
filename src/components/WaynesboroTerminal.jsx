@@ -22,6 +22,7 @@ import { osmCivicAssetsSeed } from '../data/osmCivicAssetsSeed.js';
 import { weatherReadinessSeed } from '../data/weatherReadinessSeed.js';
 import { weatherAlertsSnapshot } from '../data/weatherAlertsSnapshot.js';
 import { waterSystemsSeed } from '../data/waterSystemsSeed.js';
+import { economicSourceSeed } from '../data/economicSourceSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -437,6 +438,30 @@ function SourceReadiness() {
   );
 }
 
+function EconomicSourceBridge() {
+  return (
+    <section className="economic-source-bridge" aria-label="economic data source bridge">
+      <div className="bridge-head">
+        <div>
+          <span className="eyebrow">ECONOMIC DATA BRIDGE</span>
+          <h3>Census CBP connector scoped for county business baselines</h3>
+        </div>
+        <span className="terminal-badge gold">KEY REQUIRED</span>
+      </div>
+      <div className="cbp-query-grid">
+        {economicSourceSeed.queryTemplates.map((query) => (
+          <a key={query.naics} href={query.url} target="_blank" rel="noreferrer">
+            <span>NAICS {query.naics}</span>
+            <b>{query.label}</b>
+            <small>{query.use}</small>
+          </a>
+        ))}
+      </div>
+      <p>{economicSourceSeed.caveat}</p>
+    </section>
+  );
+}
+
 function EconomicDevelopment() {
   const driRecord = regionalDevelopmentSeed.records[0];
   return (
@@ -477,6 +502,7 @@ function EconomicDevelopment() {
           <p>DCA DRI record {driRecord.driId} gives the economic-development module a real public record shape for major development review tracking.</p>
           <a href={driRecord.detailUrl} target="_blank" rel="noreferrer">Open DCA application summary</a>
         </div>
+        <EconomicSourceBridge />
       </section>
     </section>
   );
