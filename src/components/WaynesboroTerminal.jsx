@@ -36,6 +36,7 @@ import { laborForceSeed } from '../data/laborForceSeed.js';
 import { salesTaxDistributionSeed } from '../data/salesTaxDistributionSeed.js';
 import { cityPermittingSeed } from '../data/cityPermittingSeed.js';
 import { federalSpendingSeed } from '../data/federalSpendingSeed.js';
+import { civicParticipationSeed } from '../data/civicParticipationSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -441,6 +442,33 @@ function OfficialDocumentsPanel() {
   );
 }
 
+function CivicParticipationSourcePanel() {
+  return (
+    <section className="panel civic-participation-panel" aria-label="Civic participation and elections source routing panel">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">CIVIC PARTICIPATION · SOURCE ROUTES</span>
+          <h2>Elections and voter-information lane is reference-only</h2>
+        </div>
+        <span className="terminal-badge gold">NO VOTER SCRAPING</span>
+      </div>
+      <div className="civic-route-grid">
+        {civicParticipationSeed.routes.map((route) => (
+          <a key={route.label} href={route.url} target="_blank" rel="noreferrer">
+            <span>{route.status}</span>
+            <b>{route.label}</b>
+            <small>{route.dataType}</small>
+          </a>
+        ))}
+      </div>
+      <div className="civic-next-steps">
+        {civicParticipationSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p className="source-note">{civicParticipationSeed.caveat} Retrieved {new Date(civicParticipationSeed.retrievedAt).toLocaleDateString()}.</p>
+    </section>
+  );
+}
+
 function SourceReadiness() {
   const statusCounts = sourceRegistry.reduce((counts, source) => {
     counts[source.status] = (counts[source.status] || 0) + 1;
@@ -472,6 +500,7 @@ function SourceReadiness() {
       <CensusReporterCrosscheckPanel />
       <TaxDigestSourcePanel />
       <OfficialDocumentsPanel />
+      <CivicParticipationSourcePanel />
       <section className="panel source-queue-card">
         <div className="panel-head"><div><span className="eyebrow">CONNECTOR ACTION QUEUE</span><h2>Highest-trust next moves</h2></div></div>
         <div className="priority-list">

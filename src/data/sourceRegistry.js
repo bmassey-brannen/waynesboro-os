@@ -319,6 +319,17 @@ export const sourceRegistry = [
     notes: 'Public safety dashboard needs aggregated, officially released incident/response data or records request results.'
   },
   {
+    name: 'Burke County Board of Elections and Registration / Georgia SOS MVP',
+    url: 'https://www.burkecounty-ga.gov/departments/board_of_elections_and_registration.php',
+    dataType: 'County elections office source route, voter-information links, and state voter/election portal reference path',
+    geography: 'Burke County / Waynesboro civic participation context',
+    accessMethod: 'Public county page and Georgia Secretary of State portal links; reference only, no private voter lookup automation or scraping.',
+    cadence: 'As posted by county/state; election calendars/results update by cycle',
+    difficulty: 'Medium',
+    status: 'Source routes identified',
+    notes: 'Low-volume public check reached the county Board of Elections and Registration page and Georgia MVP portal. Added src/data/civicParticipationSeed.js and a Source Ledger panel; use only aggregate official results/turnout exports before displaying civic engagement metrics.'
+  },
+  {
     name: 'City of Waynesboro Code of Ordinances / Municode Library',
     url: 'https://library.municode.com/ga/waynesboro/codes/code_of_ordinances',
     dataType: 'Municipal code, ordinances, zoning/code context and local regulatory baseline',
@@ -531,6 +542,7 @@ export const readinessStrip = [
   { lane: 'Resilience', status: 'Hazard source stack', source: 'FEMA NFHL / NOAA Storm Events', tone: 'watch' },
   { lane: 'Ordinances', status: 'Reference-ready', source: 'Municode Library', tone: 'good' },
   { lane: 'Public safety', status: 'Crime source routing', source: 'GBI Crime Statistics / FBI CDE / E-911', tone: 'watch' },
+  { lane: 'Civic participation', status: 'Reference routes', source: 'Burke Elections / Georgia SOS MVP', tone: 'watch' },
   { lane: 'Health equity', status: 'PLACES seed ready', source: 'CDC PLACES census tract estimates', tone: 'watch' }
 ];
 
@@ -669,6 +681,14 @@ export const sourcePriorities = [
     source: 'GBI Crime Statistics / FBI Crime Data Explorer / Burke County E-911',
     value: 'Gives the public-safety lane a credible source-routing plan while preventing demo incident cards from reading like official crime claims.',
     nextStep: 'Manually identify the reporting agency/ORI for Waynesboro, test GBI/FBI table availability, and request only aggregate call/incident fields if local reports are not posted.',
+    difficulty: 'Medium'
+  },
+  {
+    lane: 'Civic participation',
+    target: 'Find official aggregate election results / turnout exports',
+    source: 'Burke County Board of Elections and Registration / Georgia SOS MVP',
+    value: 'Adds a public civic-engagement source lane without touching voter-level records or private lookup workflows.',
+    nextStep: 'Use the county elections page and Georgia SOS surfaces manually first; only cache aggregate official results, precinct lists, calendars, or turnout exports with election name/date/source URL.',
     difficulty: 'Medium'
   },
   {

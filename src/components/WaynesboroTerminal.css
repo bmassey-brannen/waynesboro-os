@@ -239,6 +239,15 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .data-commons-panel { background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(235,243,237,.96)); border-color: rgba(38,116,79,.24); }
 .census-reporter-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(238,243,239,.96)); border-color: rgba(38,116,79,.22); }
 .official-docs-panel { grid-column: 1 / 3; background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(246,241,229,.96)); border-color: rgba(165,128,49,.24); }
+.civic-participation-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,240,.96)); border-color: rgba(38,116,79,.22); }
+.civic-route-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 12px; }
+.civic-route-grid a { display: block; min-width: 0; padding: 9px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); text-decoration: none; }
+.civic-route-grid span, .civic-route-grid b, .civic-route-grid small, .civic-next-steps span { display: block; overflow-wrap: anywhere; }
+.civic-route-grid span { color: var(--gold); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
+.civic-route-grid b { margin-top: 4px; color: var(--forest-2); font-size: 12px; line-height: 1.2; }
+.civic-route-grid small { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.civic-next-steps { display: grid; gap: 6px; margin-top: 10px; }
+.civic-next-steps span { padding: 7px 8px; border: 1px solid rgba(165,128,49,.22); background: rgba(165,128,49,.07); color: #3f3b2d; font-size: 10px; line-height: 1.35; font-weight: 750; }
 .dc-meta-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
 .dc-meta-grid div, .dc-metric-card { border: 1px solid var(--line); background: rgba(255,255,255,.78); padding: 9px; min-width: 0; }
 .dc-meta-grid span, .dc-metric-card span { display: block; color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .09em; font-weight: 850; }
