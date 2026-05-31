@@ -1,12 +1,13 @@
 ---
 import WaynesboroTerminal from '../components/WaynesboroTerminal.jsx';
+const base = import.meta.env.BASE_URL;
 ---
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <link rel="icon" href={`${base}favicon.ico`} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content="Waynesboro OS Council AI advisor view with source-gated civic brief and decision guardrails." />

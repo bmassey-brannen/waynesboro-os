@@ -54,6 +54,7 @@ import { foodAccessSeed } from '../data/foodAccessSeed.js';
 import { internetSubscriptionSeed } from '../data/internetSubscriptionSeed.js';
 import { ageProfileSeed } from '../data/ageProfileSeed.js';
 import { vehicleAccessSeed } from '../data/vehicleAccessSeed.js';
+import { disabilityAccessSeed } from '../data/disabilityAccessSeed.js';
 import { hazardousWasteSeed } from '../data/hazardousWasteSeed.js';
 import { incomeDistributionSeed } from '../data/incomeDistributionSeed.js';
 import './WaynesboroTerminal.css';
@@ -595,7 +596,7 @@ function SourceReadiness() {
       <section className="panel source-queue-card">
         <div className="panel-head"><div><span className="eyebrow">CONNECTOR ACTION QUEUE</span><h2>Highest-trust next moves</h2></div></div>
         <div className="priority-list">
-          {sourcePriorities.map((item) => (
+          {sourcePriorities.slice(0, 8).map((item) => (
             <article key={`${item.lane}-${item.target}`}>
               <div className="priority-top"><span>{item.lane}</span><b>{item.difficulty}</b></div>
               <h3>{item.target}</h3>
@@ -604,6 +605,7 @@ function SourceReadiness() {
             </article>
           ))}
         </div>
+        <p className="source-note">Showing the top 8 connector moves from {sourcePriorities.length} tracked source tasks. Keep this queue tight so the page stays operational instead of becoming a full backlog.</p>
       </section>
       <section className="panel source-map-card">
         <span className="eyebrow">MAP CREDIBILITY SEED</span>
@@ -1828,6 +1830,58 @@ function VehicleAccessPanel() {
   );
 }
 
+function DisabilityAccessPanel() {
+  const disabledMetric = disabilityAccessSeed.metrics.find((metric) => metric.id === 'with-disability');
+  const ageBreakout = disabilityAccessSeed.metrics.filter((metric) => [
+    'under-18-with-disability',
+    'age-18-64-with-disability',
+    'age-65-plus-with-disability'
+  ].includes(metric.id));
+
+  return (
+    <section className="panel disability-access-panel" aria-label="ACS disability access context">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">ACCESSIBILITY / SERVICE CONTEXT · ACS</span>
+          <h2>Disability-by-age seed before ADA or service-demand claims</h2>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="disability-access-hero">
+        <article>
+          <span>Waynesboro disability estimate</span>
+          <b>{disabledMetric?.displayShare || 'N/A'}</b>
+          <small>{disabledMetric?.displayValue || 'N/A'} people · {disabledMetric?.displayMoe || 'MOE pending'} · {disabilityAccessSeed.release}</small>
+        </article>
+        <div>
+          <h3>Planning context, not a finding</h3>
+          <p>{disabilityAccessSeed.posture}</p>
+          <a href={disabilityAccessSeed.sourceUrl} target="_blank" rel="noreferrer">Open Census Reporter B18101 query</a>
+        </div>
+      </div>
+      <div className="disability-age-grid">
+        {ageBreakout.map((metric) => (
+          <article key={metric.id}>
+            <span>{metric.label}</span>
+            <b>{metric.displayValue}</b>
+            <small>{metric.displayShare} · {metric.displayMoe}</small>
+          </article>
+        ))}
+      </div>
+      <div className="disability-comparison-strip">
+        {disabilityAccessSeed.comparison.map((item) => (
+          <article key={item.geography}>
+            <span>{item.geography}</span>
+            <b>{item.disabledShare}</b>
+            <small>{item.disabledEstimate.toLocaleString()} of {item.totalPopulation.toLocaleString()} residents in ACS universe</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{disabilityAccessSeed.caveat} Next: {disabilityAccessSeed.nextActions[0]}</p>
+    </section>
+  );
+}
+
 function AffordableHousingSourcePanel() {
   return (
     <section className="panel affordable-housing-panel">
@@ -1912,6 +1966,7 @@ function InfrastructureSafetyHousing() {
       <TransportationProjectSourcePanel />
       <PublicSafetySourcePanel />
       <HealthEquitySourcePanel />
+      <DisabilityAccessPanel />
       <FoodAccessSourcePanel />
       <HousingTenureSourcePanel />
       <AffordableHousingSourcePanel />
@@ -2183,13 +2238,16 @@ const pageMeta = {
   }
 };
 
+const appBase = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+const withBase = (path) => `${appBase}${path}` || '/';
+
 const nav = [
-  { id: 'executive', label: 'Executive', href: '/' },
-  { id: 'sources', label: 'Sources', href: '/sources/' },
-  { id: 'economic', label: 'Economic', href: '/economic/' },
-  { id: 'downtown', label: 'Downtown + Projects', href: '/downtown/' },
-  { id: 'operations', label: 'Operations', href: '/operations/' },
-  { id: 'council', label: 'Council', href: '/council/' }
+  { id: 'executive', label: 'Executive', href: withBase('/') },
+  { id: 'sources', label: 'Sources', href: withBase('/sources/') },
+  { id: 'economic', label: 'Economic', href: withBase('/economic/') },
+  { id: 'downtown', label: 'Downtown + Projects', href: withBase('/downtown/') },
+  { id: 'operations', label: 'Operations', href: withBase('/operations/') },
+  { id: 'council', label: 'Council', href: withBase('/council/') }
 ];
 
 function PageContent({ page }) {
@@ -2199,6 +2257,55 @@ function PageContent({ page }) {
   if (page === 'operations') return <InfrastructureSafetyHousing />;
   if (page === 'council') return <Council />;
   return <><PublicTrustRibbon /><CivicBriefingStrip /><MeetingReadinessStrip /><ExecutiveDashboard /></>;
+}
+
+function PageBriefStrip({ page }) {
+  const noVehicleMetric = vehicleAccessSeed.metrics.find((metric) => metric.id === 'no-vehicle');
+  const disabledMetric = disabilityAccessSeed.metrics.find((metric) => metric.id === 'with-disability');
+  const briefs = {
+    executive: [
+      { label: 'Baseline', value: metricById['waynesboro-population']?.displayValue || 'N/A', detail: 'Verified city population connector.' },
+      { label: 'Claim posture', value: 'Hybrid mode', detail: 'Real baselines first; operating placeholders labeled.' },
+      { label: 'Next proof', value: 'Documents + parcels', detail: 'Manual records review remains the highest-value lane.' }
+    ],
+    sources: [
+      { label: 'Registry', value: `${sourceRegistry.length} sources`, detail: 'Source routes, seeds, and manual lanes tracked.' },
+      { label: 'Queue', value: `${sourcePriorities.length} tasks`, detail: 'Top 8 rendered to avoid backlog sprawl.' },
+      { label: 'Latest seed', value: 'ACS disability', detail: 'B18101 added as accessibility context.' }
+    ],
+    economic: [
+      { label: 'Workforce', value: 'ACS + BLS', detail: 'City survey context plus county LAUS.' },
+      { label: 'Revenue', value: 'DOR route', detail: 'Sales tax remains row-parse pending.' },
+      { label: 'Income', value: incomeDistributionSeed.rollups?.under50k?.displayShare || 'ACS seeded', detail: 'Household bracket context is source-labeled.' }
+    ],
+    downtown: [
+      { label: 'Map posture', value: 'Schematic', detail: 'OSM/TIGER seeds support orientation only.' },
+      { label: 'Projects', value: `${projects.length} demo rows`, detail: 'Tracker remains synthetic until agendas/docs are parsed.' },
+      { label: 'Storefronts', value: `${downtownProperties.length} mock assets`, detail: 'Needs parcel and field-verification layer.' }
+    ],
+    operations: [
+      { label: 'Telemetry guardrail', value: 'Reference layer', detail: 'No live dispatch, utility, or emergency claims.' },
+      { label: 'Mobility', value: noVehicleMetric?.displayShare || 'ACS seeded', detail: 'Zero-vehicle context with MOE caveats.' },
+      { label: 'Accessibility', value: disabledMetric?.displayShare || 'ACS seeded', detail: 'Disability context added for planning only.' }
+    ],
+    council: [
+      { label: 'Advisor mode', value: 'Source-gated', detail: 'The Council separates evidence from placeholder judgment.' },
+      { label: 'Safe brief', value: 'Caveated', detail: 'No real municipal claim without source label.' },
+      { label: 'Next upgrade', value: 'Citation cards', detail: 'Manual document review should feed decisions.' }
+    ]
+  };
+
+  return (
+    <section className="page-brief-strip" aria-label="active page briefing summary">
+      {(briefs[page] || briefs.executive).map((item) => (
+        <article key={`${page}-${item.label}`}>
+          <span>{item.label}</span>
+          <b>{item.value}</b>
+          <small>{item.detail}</small>
+        </article>
+      ))}
+    </section>
+  );
 }
 
 export default function WaynesboroTerminal({ page = 'executive' }) {
@@ -2223,6 +2330,7 @@ export default function WaynesboroTerminal({ page = 'executive' }) {
         <section className="page-switcher" aria-label="Waynesboro OS page groups">
           {nav.map((item) => <a key={item.id} href={item.href} className={activePage === item.id ? 'active' : ''}>{item.label}</a>)}
         </section>
+        <PageBriefStrip page={activePage} />
         <PageContent page={activePage} />
       </section>
     </main>

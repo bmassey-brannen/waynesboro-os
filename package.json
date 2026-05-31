@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "fetch:datacommons": "node scripts/fetch-data-commons.js",
-    "fetch:docs": "node scripts/fetch-official-documents.js"
+    "fetch:docs": "node scripts/fetch-official-documents.js",
+    "audit:public": "python3 scripts/publication-audit.py"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.6",
