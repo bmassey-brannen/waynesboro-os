@@ -1131,6 +1131,17 @@ export const sourceRegistry = [
     difficulty: 'Medium',
     status: 'Reference route verified',
     notes: 'Runtime route check returned HTTP 200. Added src/data/councilPolicyQuestionsSeed.js and a Council policy question queue so ordinance, nuisance, sign, zoning, and permit topics remain research questions until section citations, effective dates, maps, and staff/public-record routes are manually verified. Not legal advice and not code-enforcement evidence.'
+  },
+  {
+    name: 'Georgia Data Local Government Financial Portal / DCA RLGF',
+    url: 'https://georgiadata.org/financialdata',
+    dataType: 'Local-government finance portal and DCA Report of Local Government Finance reference route for revenue, expenditure, debt, and fund-category context after row-level verification',
+    geography: 'Georgia local governments; filter to City of Waynesboro and Burke County before display',
+    accessMethod: 'Public no-login web portal and DCA reference pages; low-volume route verification only. Manual filter/export review before automation.',
+    cadence: 'Annual RLGF submissions; portal/update cadence should be confirmed before scheduled ingestion.',
+    difficulty: 'Medium',
+    status: 'Source route verified',
+    notes: 'Runtime route checks reached georgiadata.org/financialdata and the DCA RLGF reference page. Added src/data/localGovernmentFinancePortalSeed.js. Do not show revenue, expenditure, fund-balance, debt, or tax claims until Waynesboro/Burke rows are filtered, dated, downloaded/cited, and reconciled against UGA CVIOG PDFs and city agendas.'
   }
 ];
 

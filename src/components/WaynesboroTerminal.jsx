@@ -620,6 +620,7 @@ function VeteranStatusPanel() {
 function PovertyStatusPanel() {
   const headline = povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-total');
   const child = povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-child-under-18');
+  const comparison = povertyStatusSeed.comparison.slice(0, 3);
 
   return (
     <section className="poverty-status-panel" aria-label="ACS poverty status and economic mobility context">
@@ -637,30 +638,31 @@ function PovertyStatusPanel() {
           <small>{headline.displayValue} residents · MOE {headline.displayMoe} · universe {headline.denominator.toLocaleString()}</small>
         </article>
         <div>
-          <h3>Why this matters for the civic operating picture</h3>
-          <p>Use this as planning context for grant readiness, housing cost burden, food access, health access, mobility access, and service-location questions — not as proof of household eligibility or department workload.</p>
-          <a href={povertyStatusSeed.sourceUrl} target="_blank" rel="noreferrer">Census Reporter B17001 source query</a>
+          <h3>Main takeaway</h3>
+          <p>Economic need is high enough to matter across grants, housing, food access, mobility, and service-location decisions. Keep it as ACS planning context, not a household eligibility or department workload claim.</p>
         </div>
       </div>
       <div className="poverty-context-grid">
-        {povertyStatusSeed.metrics.map((metric) => (
-          <article key={metric.id}>
-            <span>{metric.label}</span>
-            <b>{metric.displayShare || metric.displayValue}</b>
-            <small>{metric.displayValue} estimate · {metric.displayMoe} · {metric.note}</small>
-          </article>
-        ))}
+        <article>
+          <span>Children below poverty</span>
+          <b>{child?.displayShare || 'N/A'}</b>
+          <small>{child?.displayValue || 'N/A'} estimate · rollup MOE pending</small>
+        </article>
+        <article>
+          <span>Use with</span>
+          <b>Housing + mobility</b>
+          <small>Pair with cost burden, vehicle access, SNAP, food access, and local service maps before recommendations.</small>
+        </article>
       </div>
       <div className="poverty-comparison-strip">
-        {povertyStatusSeed.comparison.map((row) => (
+        {comparison.map((row) => (
           <article key={row.geography}>
             <span>{row.geography}</span>
             <b>{row.povertyShare}</b>
-            <small>{row.belowPovertyEstimate.toLocaleString()} below poverty · MOE {row.belowPovertyMoe} · universe {row.universe.toLocaleString()}</small>
+            <small>{row.belowPovertyEstimate.toLocaleString()} below poverty · MOE {row.belowPovertyMoe}</small>
           </article>
         ))}
       </div>
-      <p>{povertyStatusSeed.caveat} Child below-poverty subtotal shown as {child?.displayValue || 'N/A'} with rollup MOE pending; release {povertyStatusSeed.release.name} ({povertyStatusSeed.release.years}).</p>
     </section>
   );
 }
@@ -724,9 +726,10 @@ function ExecutiveContextDetails() {
       <summary>
         <span>Additional ACS context</span>
         <b>Open demographic and service-planning drilldowns</b>
-        <small>Youth, race/ethnicity, household mix, household size, veterans, and SNAP stay collapsed until needed.</small>
+        <small>Age, youth, race/ethnicity, household mix, household size, veterans, and SNAP stay collapsed until needed.</small>
       </summary>
       <div className="executive-context-stack">
+        <AgeProfilePanel />
         <SnapAssistancePanel />
         <YouthProfilePanel />
         <RaceEthnicityPanel />
@@ -750,7 +753,6 @@ function ExecutiveDashboard() {
       <div className="kpi-grid">{executiveKpis.map((item) => <KpiCard key={item.label} item={item} />)}</div>
       <BaselineComparisonPanel />
       <PovertyStatusPanel />
-      <AgeProfilePanel />
       <ExecutiveContextDetails />
     </section>
   );
