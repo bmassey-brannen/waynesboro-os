@@ -223,13 +223,6 @@ function buildExecutiveKpis() {
     ? population.value / metricById['waynesboro-housing-units'].value
     : null;
 
-  const syntheticKpis = kpis.slice(4).map((item) => ({
-    ...item,
-    source: 'Synthetic operating placeholder · source pending',
-    sourceBadge: 'Synthetic',
-    sourceStatus: 'synthetic'
-  }));
-
   return [
     verifiedKpi('waynesboro-population', kpis[0], { mom: 'n/a', yoy: population?.date || 'n/a' }),
     {
@@ -279,8 +272,7 @@ function buildExecutiveKpis() {
       source: 'Derived from Data Commons population and housing units',
       sourceBadge: 'Derived verified',
       sourceStatus: 'verified'
-    },
-    ...syntheticKpis.slice(0, 5)
+    }
   ];
 }
 
@@ -731,10 +723,9 @@ function ExecutiveDashboard() {
     <section id="executive" className="module executive-grid">
       <div className="module-title">
         <span className="eyebrow">EXECUTIVE DASHBOARD</span>
-        <h1>First-meeting city intelligence board</h1>
-        <p>If you became Mayor tomorrow morning, these are the gauges you would check before sitting down with staff.</p>
+        <h1>Waynesboro baseline snapshot</h1>
+        <p>Only headline indicators with source-backed context. Detailed source inventory lives on the Sources page.</p>
       </div>
-      <SourceStatusStrip />
       <div className="kpi-grid">{executiveKpis.map((item) => <KpiCard key={item.label} item={item} />)}</div>
       <BaselineComparisonPanel />
       <PovertyStatusPanel />
@@ -3892,7 +3883,7 @@ function CivicModeCard({ activePage }) {
         <span><b>{seedConnectors}</b><small>seed routes</small></span>
         <span><b>{officialLinks}</b><small>public links</small></span>
       </div>
-      <p>Verified baselines first. The synthetic operating placeholders and synthetic mock data stay labeled until source, geography, and timestamp are attached.</p>
+      <p>Baselines and placeholders are labeled. Anything without source, geography, and timestamp stays off the headline dashboard.</p>
     </aside>
   );
 }
@@ -3933,9 +3924,9 @@ function CivicBriefingStrip() {
   return (
     <section className="civic-briefing-strip executive-lead-brief" aria-label="civic briefing snapshot">
       <div className="briefing-lead-copy">
-        <span className="eyebrow">FIRST-MEETING BRIEF</span>
-        <h2>Start with verified baseline facts, then move into record-backed questions.</h2>
-        <p>Waynesboro OS is currently a source-gated public demo: population, income, and ACS need context are labeled; permits, parcels, public-safety activity, downtown occupancy, and project status remain questions until official exports or reviewed documents are attached.</p>
+        <span className="eyebrow">EXECUTIVE SNAPSHOT</span>
+        <h2>Verified baseline first. Questions and source inventory come later.</h2>
+        <p>The home page is now for quick takeaways only: population, income, poverty, housing, age, and county workforce context.</p>
       </div>
       <div className="briefing-cards">
         {briefItems.map((item) => (
@@ -3954,7 +3945,7 @@ const pageMeta = {
   executive: {
     eyebrow: 'WAYNESBORO, GEORGIA · EXECUTIVE HOME',
     title: 'Municipal Operating Picture for Waynesboro.',
-    description: 'First-meeting dashboard with verified baseline facts, public trust status, and source-gated civic brief cards.'
+    description: 'Verified baseline facts and the most important public-context takeaways. Source inventory is kept separate.'
   },
   sources: {
     eyebrow: 'WAYNESBORO, GEORGIA · SOURCE CONFIDENCE',
@@ -3977,9 +3968,9 @@ const pageMeta = {
     description: 'Operations source confidence, public works references, weather, water, housing, environmental, mobility, and hazard context.'
   },
   council: {
-    eyebrow: 'WAYNESBORO, GEORGIA · THE COUNCIL',
-    title: 'AI advisor and source-gated brief.',
-    description: 'Council-style decision framing that separates verified baseline, official record trails, seed evidence, and placeholders.'
+    eyebrow: 'WAYNESBORO, GEORGIA · BRIEFING',
+    title: 'Source-gated civic briefing.',
+    description: 'Clear recommendations and open questions separated from evidence, placeholders, and source inventory.'
   }
 };
 
@@ -3988,11 +3979,11 @@ const withBase = (path) => `${appBase}${path}` || '/';
 
 const nav = [
   { id: 'executive', label: 'Executive', href: withBase('/') },
-  { id: 'sources', label: 'Sources', href: withBase('/sources/') },
   { id: 'economic', label: 'Economic', href: withBase('/economic/') },
   { id: 'downtown', label: 'Downtown + Projects', href: withBase('/downtown/') },
   { id: 'operations', label: 'Operations', href: withBase('/operations/') },
-  { id: 'council', label: 'Council', href: withBase('/council/') }
+  { id: 'council', label: 'Briefing', href: withBase('/council/') },
+  { id: 'sources', label: 'Sources', href: withBase('/sources/') }
 ];
 
 function PageContent({ page }) {
@@ -4001,7 +3992,7 @@ function PageContent({ page }) {
   if (page === 'downtown') return <><DowntownCommandCenter /><BeautificationIndex /><ProjectTracker /></>;
   if (page === 'operations') return <InfrastructureSafetyHousing />;
   if (page === 'council') return <Council />;
-  return <><PublicTrustRibbon /><CivicBriefingStrip /><MeetingReadinessStrip /><ExecutiveDashboard /></>;
+  return <><CivicBriefingStrip /><ExecutiveDashboard /></>;
 }
 
 function PageBriefStrip({ page }) {
@@ -4009,12 +4000,9 @@ function PageBriefStrip({ page }) {
   const disabledMetric = disabilityAccessSeed.metrics.find((metric) => metric.id === 'with-disability');
   const briefs = {
     executive: [
-      { label: 'Baseline', value: metricById['waynesboro-population']?.displayValue || 'N/A', detail: 'Verified city population connector.' },
-      { label: 'Claim posture', value: 'Hybrid mode', detail: 'Real baselines first; operating placeholders labeled.' },
-      { label: 'Need lens', value: povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-total')?.displayShare || 'ACS seeded', detail: 'B17001 context visible with MOE and strict eligibility guardrails.' },
-      { label: 'Food security', value: snapAssistanceSeed.metrics.find((metric) => metric.id === 'snap-households')?.displayShare || 'ACS seeded', detail: 'B22001 SNAP receipt context; not eligibility, benefits files, pantry demand, or service workload.' },
-      { label: 'Demographic lens', value: raceEthnicitySeed.headline.displayShare, detail: 'ACS B03002 race/origin context; not voter, household, eligibility, policing, or workload data.' },
-      { label: 'Youth lens', value: youthProfileSeed.totalUnder18.displayShareOfPopulation, detail: 'B09001 splits under-18 cohorts for family-service planning only.' }
+      { label: 'Population', value: metricById['waynesboro-population']?.displayValue || 'N/A', detail: 'Verified city baseline.' },
+      { label: 'Income', value: compactMoney(metricById['waynesboro-median-income']?.value), detail: 'Median household income, ACS/Data Commons.' },
+      { label: 'Need context', value: povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-total')?.displayShare || 'ACS seeded', detail: 'Poverty survey context; not eligibility or case files.' }
     ],
     sources: [
       { label: 'Registry', value: `${sourceRegistry.length} sources`, detail: 'Source routes, seeds, and manual lanes tracked.' },
@@ -4099,7 +4087,7 @@ export default function WaynesboroTerminal({ page = 'executive' }) {
       <aside className="sidebar">
         <div className="brand-mark"><span>W</span><div><b>Waynesboro OS</b><small>Municipal Intelligence Terminal</small></div></div>
         <nav>{nav.map((item) => <a key={item.id} href={item.href} className={activePage === item.id ? 'active' : ''}>{item.label}</a>)}</nav>
-        <div className="sidebar-note"><b>Core question</b><span>If I became Mayor tomorrow morning, what do I need before my first meeting?</span></div>
+        <div className="sidebar-note"><b>Public demo</b><span>Verified facts first. Placeholder or source-route material stays labeled and lower in the hierarchy.</span></div>
       </aside>
       <section className="workspace paged-workspace">
         <header className="topbar">
