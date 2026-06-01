@@ -6,7 +6,7 @@ export const councilPolicyQuestionsSeed = {
     accessMethod: 'Public web library; citation-only manual review path. Do not scrape aggressively or present legal advice.',
     status: 'HTTP 200 route verified'
   },
-  posture: 'Policy queue only: these are questions The Council should ask against official code, agendas, maps, permits, and staff records before making recommendations.',
+  posture: 'Policy queue only: these are questions the briefing should ask against official code, agendas, maps, permits, and staff records before making recommendations.',
   questions: [
     {
       lane: 'Vacancy / nuisance',
@@ -27,10 +27,10 @@ export const councilPolicyQuestionsSeed = {
       gate: 'Use as workflow routing only until counts and approval status come from official records.'
     },
     {
-      lane: 'Council brief discipline',
+      lane: 'Briefing discipline',
       question: 'What should be framed as a policy question rather than an AI recommendation?',
       evidenceNeeded: 'Verified source label, geography, date, and manual review note for each cited law/document',
-      gate: 'The Council may prioritize research questions, not issue legal or enforcement conclusions.'
+      gate: 'The briefing may prioritize research questions, not issue legal or enforcement conclusions.'
     }
   ]
 };

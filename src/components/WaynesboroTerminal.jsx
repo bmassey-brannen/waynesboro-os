@@ -626,7 +626,7 @@ function PovertyStatusPanel() {
       <div className="panel-head">
         <div>
           <span className="eyebrow">ECONOMIC MOBILITY · ACS CONTEXT</span>
-          <h2>Poverty-status seed adds a source-labeled need lens to the executive board</h2>
+          <h2>Economic need baseline for grants, housing, food access, and mobility</h2>
         </div>
         <span className="terminal-badge live">NO-KEY API SEED</span>
       </div>
@@ -903,7 +903,7 @@ function OfficialDocumentsPanel() {
           </a>
         ))}
       </div>
-      <p className="source-note">Document index is metadata only: official public links are cached so the terminal can build Council briefs, spending trails, and project evidence without scraping private systems or over-claiming document contents.</p>
+      <p className="source-note">Document index is metadata only: official public links are cached so the terminal can build civic briefs, spending trails, and project evidence without scraping private systems or over-claiming document contents.</p>
     </section>
   );
 }
@@ -3180,7 +3180,7 @@ function MentalHealthResourcesPanel() {
         </article>
         <div>
           <h3>What this adds to the operations lane</h3>
-          <p>The platform now has a public, city-hosted service-navigation route beside ACS health-insurance and language-access context. This keeps The Council from treating health-access questions as only survey metrics.</p>
+          <p>The platform now has a public, city-hosted service-navigation route beside ACS health-insurance and language-access context. This keeps the briefing layer from treating health-access questions as only survey metrics.</p>
           <p>{mentalHealthResourcesSeed.caveat}</p>
         </div>
       </div>
@@ -3771,18 +3771,18 @@ function Council() {
       status: 'Official record trail',
       title: `${officialDocumentsSnapshot.summary.documentCount} public document links indexed`,
       note: 'Agendas, budgets, check registers, and finance reports are citation paths; contents still need manual review before quotation.',
-      action: 'Turn the next Council brief into a document-backed decision log, not a generic chatbot summary.'
+      action: 'Turn the next civic brief into a document-backed decision log, not a generic chatbot summary.'
     },
     {
       status: 'Economic mobility context',
       title: `${povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-total')?.displayShare || 'N/A'} ACS poverty-status estimate`,
       note: 'The executive lane now has B17001 poverty-status context with MOE and city/county/state comparison, but it is still survey planning context only.',
-      action: 'Pair with income distribution, housing burden, vehicle access, food access, health access, and source-labeled service locations before The Council recommends interventions.'
+      action: 'Pair with income distribution, housing burden, vehicle access, food access, health access, and source-labeled service locations before any recommendation is shown.'
     },
     {
       status: 'Still synthetic',
       title: 'Permits, parcels, crime, occupancy, and blight scores remain hypotheses',
-      note: 'The Council may discuss these as questions and operating priorities, not as municipal facts.',
+      note: 'The briefing layer may discuss these as questions and operating priorities, not as municipal facts.',
       action: 'Prioritize parcel/export permission, permit history, public-safety aggregates, and downtown inventory QA.'
     }
   ];
@@ -3817,7 +3817,7 @@ function Council() {
   return (
     <section id="council" className="module council-panel">
       <section className="panel council-main">
-        <div className="panel-head"><div><span className="eyebrow">AI LAYER</span><h2>The Council</h2></div><span className="terminal-badge gold">SOURCE-GATED BRIEF</span></div>
+        <div className="panel-head"><div><span className="eyebrow">BRIEFING LAYER</span><h2>Source-gated civic briefing</h2></div><span className="terminal-badge gold">PUBLIC BRIEF</span></div>
         <div className="council-grid">
           <div className="orb">WOS</div>
           <div className="brief-list council-brief-cards">
@@ -3841,7 +3841,7 @@ function Council() {
         <div className="panel-head">
           <div>
             <span className="eyebrow">POLICY QUESTION QUEUE</span>
-            <h2>What The Council must verify before advice</h2>
+            <h2>What the briefing must verify before advice</h2>
           </div>
           <span className="terminal-badge gold">ORDINANCE ROUTE</span>
         </div>
@@ -3864,8 +3864,8 @@ function Council() {
       <section className="panel council-evidence-card">
         <div className="panel-head">
           <div>
-            <span className="eyebrow">COUNCIL SOURCE DISCIPLINE</span>
-            <h2>What the AI advisor is allowed to know today</h2>
+            <span className="eyebrow">BRIEFING SOURCE DISCIPLINE</span>
+            <h2>What the public briefing is allowed to know today</h2>
           </div>
           <span className="terminal-badge">PUBLIC DEMO GUARDRAIL</span>
         </div>
@@ -3878,7 +3878,7 @@ function Council() {
             </article>
           ))}
         </div>
-        <p className="source-note">The Council should brief decisions like a civic analyst: verified baseline first, official records second, labeled hypotheses last. No synthetic operating metric should be presented as municipal fact.</p>
+        <p className="source-note">The briefing should read like civic analysis: verified baseline first, official records second, labeled hypotheses last. No synthetic operating metric should be presented as municipal fact.</p>
       </section>
     </section>
   );
@@ -4110,7 +4110,7 @@ function PageBriefStrip({ page }) {
       { label: 'Home values', value: homeValueDistributionSeed.brackets.find((item) => item.id === '200k-299k')?.displayShare || 'ACS seeded', detail: 'B25075 value distribution; not assessments, sales, or tax records.' }
     ],
     council: [
-      { label: 'Advisor mode', value: 'Source-gated', detail: 'The Council separates evidence from placeholder judgment.' },
+      { label: 'Briefing mode', value: 'Source-gated', detail: 'The briefing separates evidence from placeholder judgment.' },
       { label: 'Safe brief', value: 'Caveated', detail: 'No real municipal claim without source label.' },
       { label: 'Next upgrade', value: 'Citation cards', detail: 'Manual document review should feed decisions.' }
     ]

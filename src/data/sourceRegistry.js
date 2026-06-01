@@ -796,11 +796,11 @@ export const sourceRegistry = [
     url: 'https://gdottrafficdata.drakewell.com/publicmultinodemap.asp',
     dataType: 'Public traffic count stations, AADT context, roadway-volume map views and reports',
     geography: 'Georgia statewide; filter or map-query around Waynesboro/Burke County corridors',
-    accessMethod: 'Public GDOT/Drakewell web application; use as a reference surface first, then identify permitted export/report endpoints before caching counts.',
+    accessMethod: 'Public GDOT/Drakewell web application and GDOT Road Traffic Data page; use as a reference surface first, then identify permitted export/report endpoints before caching counts.',
     cadence: 'Traffic count updates as published by GDOT; exact station cadence varies',
     difficulty: 'Medium',
-    status: 'Source hub identified',
-    notes: 'Low-volume check returned the public map application. This can support downtown foot-traffic, corridor-priority, and infrastructure modules once station export rules/endpoints are confirmed.'
+    status: 'Source route verified',
+    notes: 'Low-volume checks returned HTTP 200 for the TADA map and GDOT Road Traffic Data page. Added src/data/trafficCountSourceSeed.js as a source-route/data-shape stub; no AADT, station, downtown foot-traffic, live traffic, or corridor-priority claims should display until station export rules and rows are verified.'
   },
   {
     name: 'Georgia DOT GeoPI Project Information',
