@@ -231,6 +231,17 @@ export const sourceRegistry = [
     notes: 'Low-volume source check reached DOR pages for Sales Tax Distribution Rates for Counties and Cities, Sales Tax Commodity Report, and County and City Sales Tax ID Codes. Added src/data/salesTaxDistributionSeed.js and an economic local-revenue source panel; no Waynesboro sales-tax amount is displayed until rows are parsed and reconciled.'
   },
   {
+    name: 'UGA CVIOG Local Government Financial Documents Online',
+    url: 'https://ted.cviog.uga.edu/financial-documents/budget_docs_view?og_group_ref_target_id%5B%5D=727&field_fiscal_year_value%5Bmin%5D%5Byear%5D=2024&field_fiscal_year_value%5Bmax%5D%5Byear%5D=2026',
+    dataType: 'City of Waynesboro annual operating budget reports and financial report PDFs indexed by fiscal year and document type',
+    geography: 'City of Waynesboro, Georgia; entity node 727 in the public GeorgiaData/CVIOG financial-documents portal',
+    accessMethod: 'Public no-login document portal; low-volume filtered GET query cached in src/data/localFinancialDocumentsSeed.js. PDF contents require manual review/page citations before facts are promoted.',
+    cadence: 'Annual budget and financial-report postings; portal states budget documents can be searched by fiscal year, document type, and local government.',
+    difficulty: 'Low',
+    status: 'Ready for document index',
+    notes: 'Runtime filtered query returned FY2026, FY2025, and FY2024 Waynesboro budget-report PDFs plus the FY2024 financial-report PDF. UI now renders a source-index panel; no revenue, spending, fund-balance, audit, tax-rate, or policy claims are displayed until PDFs are reviewed and cited.'
+  },
+  {
     name: 'Georgia Department of Labor Area Labor Profiles',
     url: 'https://dol.georgia.gov/workforce-statistics-economic-research',
     dataType: 'Labor force, unemployment, workforce and industry statistics',
@@ -868,7 +879,7 @@ export const readinessStrip = [
   { lane: 'Map base', status: 'Boundary seed ready', source: 'OSM + TIGERweb + Census Reporter GeoJSON', tone: 'good' },
   { lane: 'Economy', status: 'Workforce + income + commute', source: 'BLS LAUS + ACS B19001/B15003/B23025 + LEHD/LODES + CBP', tone: 'good' },
   { lane: 'Education', status: 'GaDOE routes indexed', source: 'Georgia Insights + Burke County Public Schools', tone: 'watch' },
-  { lane: 'Finance', status: 'Sales-tax + digest routes', source: 'Georgia DOR Distributions / Digest Compliance', tone: 'good' },
+  { lane: 'Finance', status: 'Budget PDFs + sales-tax + digest routes', source: 'UGA CVIOG / Georgia DOR Distributions / Digest Compliance', tone: 'good' },
   { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },
   { lane: 'Utilities', status: 'Water + energy context', source: 'City Water Rates / EPA SDWIS / Georgia EPD DWW / ACS B25040', tone: 'good' },
   { lane: 'Digital access', status: 'ACS context + FCC route', source: 'Census Reporter B28002 / FCC BDC', tone: 'good' },
@@ -893,6 +904,14 @@ export const sourcePriorities = [
     source: 'City of Waynesboro Agenda Center / Archive Center',
     value: 'Turns the active public-link index into source-labeled Council brief ingredients without over-claiming document contents.',
     nextStep: 'Manually parse a small selected set of agendas/minutes/check registers into topic tags and citation cards.',
+    difficulty: 'Low'
+  },
+  {
+    lane: 'Local finance',
+    target: 'Review Waynesboro budget and financial-report PDFs from the CVIOG portal',
+    source: 'UGA CVIOG Local Government Financial Documents Online',
+    value: 'Gives finance and Council modules a public, city-specific document spine before any budget, audit, fund-balance, or revenue claim is promoted.',
+    nextStep: 'Open FY2026/FY2025/FY2024 budget reports and FY2024 financial report, extract only title/date/page-cited fields first, then reconcile against agendas and DOR rows.',
     difficulty: 'Low'
   },
   {

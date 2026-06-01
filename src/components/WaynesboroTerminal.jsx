@@ -69,6 +69,7 @@ import { healthInsuranceSeed } from '../data/healthInsuranceSeed.js';
 import { povertyStatusSeed } from '../data/povertyStatusSeed.js';
 import { youthProfileSeed } from '../data/youthProfileSeed.js';
 import { snapAssistanceSeed } from '../data/snapAssistanceSeed.js';
+import { localFinancialDocumentsSeed } from '../data/localFinancialDocumentsSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -890,6 +891,7 @@ function SourceReadiness() {
       <DataCommonsLivePanel />
       <CensusReporterCrosscheckPanel />
       <TaxDigestSourcePanel />
+      <LocalFinancialDocumentsPanel />
       <OfficialDocumentsPanel />
       <CommunityDevelopmentPolicyPanel />
       <CivicParticipationSourcePanel />
@@ -929,6 +931,53 @@ function SourceReadiness() {
           ))}
         </div>
       </section>
+    </section>
+  );
+}
+
+function LocalFinancialDocumentsPanel() {
+  const latestBudget = localFinancialDocumentsSeed.documents.find((doc) => doc.type === 'Budget Report');
+  const latestFinancial = localFinancialDocumentsSeed.documents.find((doc) => doc.type === 'Financial Report');
+
+  return (
+    <section className="panel local-finance-documents-panel" aria-label="Waynesboro public budget and financial report source index">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">LOCAL FINANCE DOCUMENTS · PUBLIC PORTAL</span>
+          <h2>Waynesboro budget and financial-report PDFs are now indexed before dollar claims</h2>
+        </div>
+        <span className="terminal-badge live">DOC INDEX SEED</span>
+      </div>
+      <div className="local-finance-summary">
+        <article>
+          <span>Observed portal rows</span>
+          <b>{localFinancialDocumentsSeed.observedShape.rowsObserved}</b>
+          <small>{localFinancialDocumentsSeed.entity} · FY {localFinancialDocumentsSeed.observedShape.fiscalYears.join(', ')}</small>
+        </article>
+        <article>
+          <span>Latest budget route</span>
+          <b>FY {latestBudget?.fiscalYear || 'N/A'}</b>
+          <small>{latestBudget?.filename || 'No linked budget found'}</small>
+        </article>
+        <article>
+          <span>Latest financial route</span>
+          <b>FY {latestFinancial?.fiscalYear || 'N/A'}</b>
+          <small>{latestFinancial?.filename || 'No linked report found'}</small>
+        </article>
+      </div>
+      <div className="local-finance-doc-grid">
+        {localFinancialDocumentsSeed.documents.map((doc) => (
+          <a href={doc.url} target="_blank" rel="noreferrer" key={doc.filename}>
+            <span>FY {doc.fiscalYear} · {doc.type}</span>
+            <b>{doc.filename}</b>
+            <small>{doc.posture}</small>
+          </a>
+        ))}
+      </div>
+      <div className="local-finance-actions">
+        {localFinancialDocumentsSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p className="source-note">{localFinancialDocumentsSeed.caveat} Source-checked from {localFinancialDocumentsSeed.provider}; retrieved {new Date(localFinancialDocumentsSeed.retrievedAt).toLocaleDateString()}.</p>
     </section>
   );
 }
@@ -2957,7 +3006,7 @@ function PageBriefStrip({ page }) {
     sources: [
       { label: 'Registry', value: `${sourceRegistry.length} sources`, detail: 'Source routes, seeds, and manual lanes tracked.' },
       { label: 'Queue', value: `${sourcePriorities.length} tasks`, detail: 'Top 8 rendered to avoid backlog sprawl.' },
-      { label: 'Latest seed', value: 'SNAP context', detail: 'ACS B22001 household food-assistance survey context.' }
+      { label: 'Finance docs', value: `${localFinancialDocumentsSeed.observedShape.rowsObserved} PDFs`, detail: 'UGA/CVIOG budget + financial-report routes indexed; PDF review pending.' }
     ],
     economic: [
       { label: 'Workforce', value: 'ACS + BLS', detail: 'City survey context plus county LAUS.' },
