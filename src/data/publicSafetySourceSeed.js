@@ -1,6 +1,6 @@
 export const publicSafetySourceSeed = {
   posture: 'Public-safety operating metrics remain synthetic until official aggregate incident, response-time, or crime-reporting data is released or obtained through a lawful records process.',
-  retrievedAt: '2026-05-31T00:00:00Z',
+  retrievedAt: '2026-06-01T00:00:00Z',
   sources: [
     {
       label: 'GBI Crime Statistics',
@@ -35,6 +35,22 @@ export const publicSafetySourceSeed = {
       integrationUse: 'Future source path for aggregate call volume and response-time questions, not live dispatch telemetry.'
     },
     {
+      label: 'GEMA/HS Burke County profile',
+      url: 'https://gema.georgia.gov/locations/burke',
+      dataType: 'Official Georgia Emergency Management and Homeland Security Agency county location/profile route',
+      accessMethod: 'Public state page reached by low-volume route check; use as emergency-management contact/source routing only until published plans or aggregates are reviewed.',
+      status: 'Emergency route indexed',
+      integrationUse: 'Adds a state emergency-management anchor for preparedness, hazard, and coordination drilldowns without implying live incident status or response capability.'
+    },
+    {
+      label: 'Burke County Sheriff public site',
+      url: 'https://www.burkecountysheriff.com/',
+      dataType: 'Official sheriff public information surface for department context, divisions, and public notices where published',
+      accessMethod: 'Public web page; manual review before extracting any reports, notices, jail, warrant, or incident information.',
+      status: 'Agency route indexed',
+      integrationUse: 'Cross-check agency identity and published public-safety context before trying to map GBI/FBI ORI rows or county-level safety indicators.'
+    },
+    {
       label: 'GDOT Crash Data & Reporting',
       url: 'https://www.dot.ga.gov/GDOT/Pages/CrashReporting.aspx',
       dataType: 'State crash-reporting source hub with GDOT Crash Data Dashboard link, GEARS references, and crash report documentation',
@@ -45,7 +61,7 @@ export const publicSafetySourceSeed = {
   ],
   nextQuestions: [
     'Which agency/ORI should represent City of Waynesboro police reporting in FBI CDE or GBI tables?',
-    'Does the city or county publish monthly aggregate incident, fire, EMS, or E-911 call-volume reports?',
+    'Does the city, sheriff, county EMA, or E-911 office publish monthly aggregate incident, fire, EMS, emergency-management, or call-volume reports?',
     'Can GDOT crash dashboard filters/export rules support Burke County or Waynesboro corridor safety summaries without scraping the web app?',
     'What fields can be safely requested as aggregate public records without exposing private incident details?'
   ]

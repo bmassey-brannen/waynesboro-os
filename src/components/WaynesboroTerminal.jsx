@@ -3931,15 +3931,33 @@ function PageBriefStrip({ page }) {
     ]
   };
 
+  const activeBriefs = briefs[page] || briefs.executive;
+  const primaryBriefs = activeBriefs.slice(0, 6);
+  const overflowBriefs = activeBriefs.slice(6);
+
   return (
     <section className="page-brief-strip" aria-label="active page briefing summary">
-      {(briefs[page] || briefs.executive).map((item) => (
+      {primaryBriefs.map((item) => (
         <article key={`${page}-${item.label}`}>
           <span>{item.label}</span>
           <b>{item.value}</b>
           <small>{item.detail}</small>
         </article>
       ))}
+      {overflowBriefs.length > 0 && (
+        <details className="brief-overflow-details">
+          <summary>{overflowBriefs.length} more source lenses</summary>
+          <div>
+            {overflowBriefs.map((item) => (
+              <article key={`${page}-overflow-${item.label}`}>
+                <span>{item.label}</span>
+                <b>{item.value}</b>
+                <small>{item.detail}</small>
+              </article>
+            ))}
+          </div>
+        </details>
+      )}
     </section>
   );
 }

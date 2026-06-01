@@ -462,6 +462,28 @@ export const sourceRegistry = [
     notes: 'Public safety dashboard needs aggregated, officially released incident/response data or records request results.'
   },
   {
+    name: 'GEMA/HS Burke County profile',
+    url: 'https://gema.georgia.gov/locations/burke',
+    dataType: 'Official Georgia Emergency Management and Homeland Security Agency county profile/location route for emergency-management context',
+    geography: 'Burke County, Georgia',
+    accessMethod: 'Public state web page; low-volume route check only, no private emergency systems or incident feeds.',
+    cadence: 'As posted by GEMA/HS; exact update cadence not stated',
+    difficulty: 'Low',
+    status: 'Source route indexed',
+    notes: 'Runtime check returned HTTP 200. Use as preparedness/contact/source routing only until official emergency plans, hazard mitigation documents, or aggregate incident data are reviewed.'
+  },
+  {
+    name: 'Burke County Sheriff public site',
+    url: 'https://www.burkecountysheriff.com/',
+    dataType: 'Official sheriff public information surface for agency identity, divisions, notices, and source routing',
+    geography: 'Burke County / Waynesboro public safety context',
+    accessMethod: 'Public web page; manual review before extracting reports, notices, jail, warrant, or incident information.',
+    cadence: 'As posted by sheriff office; exact update cadence not stated',
+    difficulty: 'Medium',
+    status: 'Source route indexed',
+    notes: 'Runtime check returned HTTP 200 title Home - Burke County Sheriff. Use to cross-check public-safety agency context before mapping GBI/FBI ORI rows or publishing county safety indicators.'
+  },
+  {
     name: 'Burke County Board of Elections and Registration / Georgia SOS MVP',
     url: 'https://www.burkecounty-ga.gov/departments/board_of_elections_and_registration.php',
     dataType: 'County elections office source route, voter-information links, and state voter/election portal reference path',
