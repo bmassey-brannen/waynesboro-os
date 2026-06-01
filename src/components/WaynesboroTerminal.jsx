@@ -52,6 +52,7 @@ import { housingTenureSeed } from '../data/housingTenureSeed.js';
 import { housingAgeSeed } from '../data/housingAgeSeed.js';
 import { housingCostBurdenSeed } from '../data/housingCostBurdenSeed.js';
 import { housingStructureSeed } from '../data/housingStructureSeed.js';
+import { homeValueDistributionSeed } from '../data/homeValueDistributionSeed.js';
 import { commuteProfileSeed } from '../data/commuteProfileSeed.js';
 import { workforceEducationSeed } from '../data/workforceEducationSeed.js';
 import { foodAccessSeed } from '../data/foodAccessSeed.js';
@@ -2574,6 +2575,53 @@ function HousingStructurePanel() {
   );
 }
 
+function HomeValueDistributionPanel() {
+  const headline = homeValueDistributionSeed.brackets.find((item) => item.id === '200k-299k');
+
+  return (
+    <section className="panel housing-structure-panel" aria-label="ACS owner-occupied home value distribution context">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">HOME VALUE DISTRIBUTION · ACS CONTEXT</span>
+          <h2>Owner-occupied value lens before parcel/tax claims</h2>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="housing-structure-hero">
+        <article>
+          <span>{headline.label} band</span>
+          <b>{headline.displayShare}</b>
+          <small>{headline.estimate.toLocaleString()} of {homeValueDistributionSeed.totalOwnerOccupiedUnits.toLocaleString()} owner-occupied units · total MOE ±{homeValueDistributionSeed.totalMoe.toLocaleString()}</small>
+        </article>
+        <div>
+          <h3>Tax-base signal, not tax records</h3>
+          <p>{homeValueDistributionSeed.posture}</p>
+          <a href={homeValueDistributionSeed.sourceUrl} target="_blank" rel="noreferrer">Census Reporter B25075 source query</a>
+        </div>
+      </div>
+      <div className="housing-structure-bars">
+        {homeValueDistributionSeed.brackets.map((bracket) => (
+          <article key={bracket.id}>
+            <div><span>{bracket.label}</span><b>{bracket.displayShare}</b></div>
+            <div className="mini-bar"><span style={{ width: bracket.displayShare }} /></div>
+            <small>{bracket.estimate.toLocaleString()} units · derived from {homeValueDistributionSeed.table}</small>
+          </article>
+        ))}
+      </div>
+      <div className="housing-structure-comparison">
+        {homeValueDistributionSeed.comparison.map((item) => (
+          <article key={item.geography}>
+            <span>{item.geography}</span>
+            <b>{item.twoHundredPlusShare}</b>
+            <small>$200K+ owner-occupied units · {item.under100kShare} under $100K · {item.oneHundredTo199Share} $100K–$199K</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{homeValueDistributionSeed.caveat} Release: {homeValueDistributionSeed.release.name} ({homeValueDistributionSeed.release.years}); retrieved {new Date(homeValueDistributionSeed.retrievedAt).toLocaleDateString()}.</p>
+    </section>
+  );
+}
+
 function InfrastructureSafetyHousing() {
   return (
     <section id="operations" className="module operations-module">
@@ -2604,6 +2652,7 @@ function InfrastructureSafetyHousing() {
       <HousingCostBurdenPanel />
       <HousingAgeSourcePanel />
       <HousingStructurePanel />
+      <HomeValueDistributionPanel />
       <AffordableHousingSourcePanel />
       <WeatherReadinessPanel />
       <WaterSystemsPanel />
@@ -2928,7 +2977,8 @@ function PageBriefStrip({ page }) {
       { label: 'Energy mix', value: utilityEnergySeed.metrics.find((metric) => metric.id === 'electricity')?.displayShare || 'ACS seeded', detail: 'B25040 heating-fuel context; not utility accounts, outage exposure, or rate burden.' },
       { label: 'Language access', value: languageAccessSeed.metrics.find((metric) => metric.id === 'language-other-than-english')?.displayShare || 'ACS seeded', detail: 'C16001 communication-planning context; not a service workload claim.' },
       { label: 'Affordability', value: housingCostBurdenSeed.metrics.find((metric) => metric.id === 'renter-cost-burden')?.displayShare || 'ACS seeded', detail: 'Renter cost-burden survey context with MOE caveats.' },
-      { label: 'Housing type', value: housingStructureSeed.derived.find((item) => item.id === 'small-multifamily')?.displayShare || 'ACS seeded', detail: 'B25024 units-in-structure context; not parcels, zoning, or permits.' }
+      { label: 'Housing type', value: housingStructureSeed.derived.find((item) => item.id === 'small-multifamily')?.displayShare || 'ACS seeded', detail: 'B25024 units-in-structure context; not parcels, zoning, or permits.' },
+      { label: 'Home values', value: homeValueDistributionSeed.brackets.find((item) => item.id === '200k-299k')?.displayShare || 'ACS seeded', detail: 'B25075 value distribution; not assessments, sales, or tax records.' }
     ],
     council: [
       { label: 'Advisor mode', value: 'Source-gated', detail: 'The Council separates evidence from placeholder judgment.' },
