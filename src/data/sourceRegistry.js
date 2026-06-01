@@ -242,6 +242,17 @@ export const sourceRegistry = [
     notes: 'Low-volume sitemap review found Building Permits, Planning, Licenses & Permits, Open Records Request, Planning Commission, and Zoning Board of Appeals pages. Added src/data/cityPermittingSeed.js and an economic-development intake panel; do not treat these routes as permit counts, license counts, or approval records.'
   },
   {
+    name: 'City of Waynesboro CivicPlus Access Route Check',
+    url: 'https://www.waynesboroga.com/AgendaCenter',
+    dataType: 'Official city Agenda Center, Document Center, licenses/permits page, and sitemap route availability for connector planning',
+    geography: 'City of Waynesboro, Georgia',
+    accessMethod: 'Low-volume public HTTP route checks with a descriptive User-Agent; no private portals, credentials, form submissions, or aggressive scraping.',
+    cadence: 'Route availability can change whenever city staff update CivicPlus content; check before presentation or ingestion runs.',
+    difficulty: 'Low',
+    status: 'Source routes indexed',
+    notes: 'This run verified HTTP 200 for AgendaCenter, DocumentCenter, Licenses-Permits, and sitemap.xml and cached src/data/civicAccessRoutesSeed.js. Treat these as legitimate access paths only: no agenda findings, permit counts, license counts, or document contents are claimed until links/files are parsed and manually reviewed.'
+  },
+  {
     name: 'Burke County Board of Commissioners Agendas and Minutes',
     url: 'https://www.burkecounty-ga.gov/departments/board_of_commissioners/meetings_agendas_minutes.php',
     dataType: 'Meetings, agendas, minutes, policy/project decision trail',

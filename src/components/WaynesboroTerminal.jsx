@@ -87,6 +87,7 @@ import { tenureIncomeSeed } from '../data/tenureIncomeSeed.js';
 import { parksFacilitiesSeed } from '../data/parksFacilitiesSeed.js';
 import { renterStructureSeed } from '../data/renterStructureSeed.js';
 import { downtownSourceSeed } from '../data/downtownSourceSeed.js';
+import { civicAccessRoutesSeed } from '../data/civicAccessRoutesSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -1013,6 +1014,37 @@ function CredentialReadinessPanel() {
   );
 }
 
+function CivicAccessRoutesPanel() {
+  return (
+    <section className="panel civic-access-routes-panel" aria-label="official city access route checks">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">OFFICIAL CITY ACCESS ROUTES · LOW-VOLUME CHECK</span>
+          <h2>Agenda, document, permit, and sitemap routes are queued for source-safe connectors</h2>
+        </div>
+        <span className="terminal-badge live">ROUTE SEED</span>
+      </div>
+      <div className="civic-access-route-grid">
+        {civicAccessRoutesSeed.routes.map((route) => (
+          <article key={route.id}>
+            <div>
+              <span>{route.label}</span>
+              <b>{route.status}</b>
+            </div>
+            <a href={route.url} target="_blank" rel="noreferrer">{route.url}</a>
+            <p>{route.integrationUse}</p>
+            <small>{route.accessMethod}</small>
+          </article>
+        ))}
+      </div>
+      <div className="access-next-actions">
+        {civicAccessRoutesSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p className="source-note">{civicAccessRoutesSeed.posture} Retrieved from {civicAccessRoutesSeed.provider}; no private, credentialed, or aggressive scraping was used.</p>
+    </section>
+  );
+}
+
 function SourceReadiness() {
   const statusCounts = sourceRegistry.reduce((counts, source) => {
     counts[source.status] = (counts[source.status] || 0) + 1;
@@ -1063,6 +1095,7 @@ function SourceReadiness() {
       <TaxDigestSourcePanel />
       <LocalFinancialDocumentsPanel />
       <OfficialDocumentsPanel />
+      <CivicAccessRoutesPanel />
       <CommunityDevelopmentPolicyPanel />
       <CivicParticipationSourcePanel />
       <section className="panel source-queue-card">
@@ -3740,11 +3773,12 @@ function MeetingReadinessStrip() {
 function CivicBriefingStrip() {
   const cityPopulation = metricById['waynesboro-population'];
   const medianIncome = metricById['waynesboro-median-income'];
+  const povertyRate = povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-total')?.displayShare || 'ACS seeded';
+  const snapShare = snapAssistanceSeed.metrics.find((metric) => metric.id === 'snap-households')?.displayShare || 'ACS seeded';
   const latestDocYear = officialDocumentsSnapshot.recentDocuments
     .map((doc) => Number(doc.year))
     .filter(Boolean)
     .sort((a, b) => b - a)[0];
-  const waterSource = sourceRegistry.find((source) => source.name.includes('SDWIS'));
 
   const briefItems = [
     {
@@ -3753,27 +3787,28 @@ function CivicBriefingStrip() {
       detail: `${medianIncome?.displayValue || 'N/A'} median household income · Data Commons`
     },
     {
-      label: 'Official record trail',
-      value: `${officialDocumentsSnapshot.summary.documentCount} links indexed`,
-      detail: `City/county documents metadata only${latestDocYear ? ` · latest year ${latestDocYear}` : ''}`
+      label: 'Need context',
+      value: `${povertyRate} poverty · ${snapShare} SNAP`,
+      detail: 'ACS survey context only; not eligibility, benefits files, or municipal service workload.'
     },
     {
-      label: 'Decision focus',
-      value: 'Parcels + permits + corridors',
-      detail: 'Next layer should narrow downtown assets, development signals, and gateway traffic.'
+      label: 'Record trail',
+      value: `${officialDocumentsSnapshot.summary.documentCount} public links`,
+      detail: `Metadata indexed${latestDocYear ? ` · latest year ${latestDocYear}` : ''}; document text still requires review.`
     },
     {
-      label: 'Operations source watch',
-      value: waterSource ? `${waterSystemsSeed.systemsServingWaynesboro[0]?.pwsId || 'PWSID'} scoped` : 'Water source pending',
-      detail: 'EPA ECHO/SDWIS public water-system identity is cached as evidence, not live utility telemetry.'
+      label: 'Route watch',
+      value: `${civicAccessRoutesSeed.routes.length} official routes checked`,
+      detail: 'Agenda Center, Document Center, sitemap, and license/permit route are access paths, not facts.'
     }
   ];
 
   return (
-    <section className="civic-briefing-strip" aria-label="civic briefing snapshot">
-      <div>
-        <span className="eyebrow">CIVIC BRIEF SNAPSHOT</span>
-        <h2>What the first screen says before the meeting starts</h2>
+    <section className="civic-briefing-strip executive-lead-brief" aria-label="civic briefing snapshot">
+      <div className="briefing-lead-copy">
+        <span className="eyebrow">FIRST-MEETING BRIEF</span>
+        <h2>Start with verified baseline facts, then move into record-backed questions.</h2>
+        <p>Waynesboro OS is currently a source-gated public demo: population, income, and ACS need context are labeled; permits, parcels, public-safety activity, downtown occupancy, and project status remain questions until official exports or reviewed documents are attached.</p>
       </div>
       <div className="briefing-cards">
         {briefItems.map((item) => (

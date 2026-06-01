@@ -148,7 +148,7 @@ a { color: inherit; }
 
 .civic-briefing-strip {
   display: grid;
-  grid-template-columns: 285px minmax(0, 1fr);
+  grid-template-columns: minmax(320px, .72fr) minmax(0, 1.28fr);
   gap: 12px;
   align-items: stretch;
   padding: 12px;
@@ -159,6 +159,8 @@ a { color: inherit; }
 }
 .civic-briefing-strip > div:first-child { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
 .civic-briefing-strip h2 { margin: 4px 0 0; font-size: 18px; line-height: 1.12; letter-spacing: -.03em; color: #12271d; }
+.briefing-lead-copy p { margin: 8px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+.executive-lead-brief { border-left-color: var(--forest-2); background: linear-gradient(135deg, rgba(255,255,255,.96), rgba(239,244,238,.96)); }
 .briefing-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
 .briefing-cards article { min-width: 0; padding: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.78); }
 .briefing-cards span, .briefing-cards b, .briefing-cards small { display: block; overflow-wrap: anywhere; }
@@ -372,6 +374,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .source-readiness > .tax-digest-panel,
 .source-readiness > .local-finance-documents-panel { grid-column: span 6; }
 .source-readiness > .official-docs-panel,
+.source-readiness > .civic-access-routes-panel,
 .source-readiness > .community-development-panel { grid-column: span 8; }
 .source-readiness > .civic-participation-panel { grid-column: span 4; }
 .source-readiness > .source-map-card { grid-column: 1 / -1; }
@@ -501,6 +504,18 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .credential-card small { margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.35; overflow-wrap: anywhere; }
 .census-reporter-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(238,243,239,.96)); border-color: rgba(38,116,79,.22); }
 .official-docs-panel { grid-column: 1 / 3; background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(246,241,229,.96)); border-color: rgba(165,128,49,.24); }
+.civic-access-routes-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,240,.96)); border-color: rgba(38,116,79,.24); }
+.civic-access-route-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.civic-access-route-grid article { min-width: 0; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.78); }
+.civic-access-route-grid article > div:first-child { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.civic-access-route-grid span, .civic-access-route-grid b, .civic-access-route-grid a, .civic-access-route-grid p, .civic-access-route-grid small, .access-next-actions span { display: block; overflow-wrap: anywhere; }
+.civic-access-route-grid span { color: var(--gold); font-size: 9px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
+.civic-access-route-grid b { color: var(--forest-2); font-size: 11px; text-align: right; line-height: 1.25; }
+.civic-access-route-grid a { margin-top: 7px; color: #13251b; font-size: 11px; font-weight: 850; text-decoration: none; }
+.civic-access-route-grid p { margin: 7px 0 0; color: #33423a; font-size: 11px; line-height: 1.35; }
+.civic-access-route-grid small { margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.access-next-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin-top: 10px; }
+.access-next-actions span { padding: 8px; border: 1px solid rgba(165,128,49,.22); background: rgba(165,128,49,.07); color: #3f3b2d; font-size: 10px; line-height: 1.35; font-weight: 750; }
 .civic-participation-panel, .community-development-panel { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,240,.96)); border-color: rgba(38,116,79,.22); }
 .community-development-panel { grid-column: 1 / 3; border-color: rgba(165,128,49,.24); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(248,244,232,.96)); }
 .civic-route-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 12px; }
@@ -1122,7 +1137,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .public-works-route-grid, .public-works-next-actions, .parks-facilities-grid, .parks-facilities-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .public-works-route-hero, .parks-facilities-hero { grid-template-columns: 1fr; }
   .ops-source-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .weather-meta-grid, .weather-endpoint-list, .public-safety-source-grid, .health-equity-samples, .food-access-grid, .food-access-actions, .mental-health-shape-grid, .mental-health-link-grid, .mental-health-actions, .education-route-grid, .industry-summary-grid, .industry-next-actions, .occupation-summary-grid, .occupation-next-actions, .income-rollup-grid, .income-bracket-grid, .income-next-actions, .lehd-route-grid, .commute-route-grid, .commute-profile-grid, .housing-source-ladder, .housing-tenure-grid, .housing-derived-strip, .housing-cost-grid, .housing-cost-comparison, .tenure-income-grid, .tenure-income-comparison, .housing-crowding-tenure, .housing-crowding-bands, .housing-crowding-comparison, .household-composition-grid, .household-comparison-strip, .youth-profile-grid, .youth-context-strip, .youth-comparison-strip, .poverty-context-grid, .poverty-comparison-strip, .funding-summary-grid, .funding-quarter-grid, .sales-tax-source-grid, .permit-route-grid, .community-route-grid, .community-next-steps, .internet-subscription-grid, .digital-next-actions, .broadband-source-grid, .housing-source-grid, .utility-energy-grid, .utility-energy-comparison, .vehicle-access-grid, .vehicle-comparison-strip, .vehicle-tenure-grid, .mobility-evidence-ladder, .disability-age-grid, .disability-comparison-strip, .language-access-grid, .language-comparison-strip, .health-insurance-grid, .health-insurance-comparison, .state-water-grid, .state-water-next, .transport-project-grid, .transport-project-actions, .hydrology-summary-grid, .hydrology-site-list, .hydrology-next-actions, .hydrology-observation-grid, .hydrology-observation-actions, .hazardous-waste-list, .hazardous-waste-actions, .tri-source-list, .tri-source-actions, .local-finance-summary, .local-finance-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .weather-meta-grid, .weather-endpoint-list, .public-safety-source-grid, .health-equity-samples, .food-access-grid, .food-access-actions, .mental-health-shape-grid, .mental-health-link-grid, .mental-health-actions, .education-route-grid, .industry-summary-grid, .industry-next-actions, .occupation-summary-grid, .occupation-next-actions, .income-rollup-grid, .income-bracket-grid, .income-next-actions, .lehd-route-grid, .commute-route-grid, .commute-profile-grid, .housing-source-ladder, .housing-tenure-grid, .housing-derived-strip, .housing-cost-grid, .housing-cost-comparison, .tenure-income-grid, .tenure-income-comparison, .housing-crowding-tenure, .housing-crowding-bands, .housing-crowding-comparison, .household-composition-grid, .household-comparison-strip, .youth-profile-grid, .youth-context-strip, .youth-comparison-strip, .poverty-context-grid, .poverty-comparison-strip, .funding-summary-grid, .funding-quarter-grid, .sales-tax-source-grid, .permit-route-grid, .community-route-grid, .community-next-steps, .internet-subscription-grid, .digital-next-actions, .broadband-source-grid, .housing-source-grid, .utility-energy-grid, .utility-energy-comparison, .vehicle-access-grid, .vehicle-comparison-strip, .vehicle-tenure-grid, .mobility-evidence-ladder, .disability-age-grid, .disability-comparison-strip, .language-access-grid, .language-comparison-strip, .health-insurance-grid, .health-insurance-comparison, .state-water-grid, .state-water-next, .transport-project-grid, .transport-project-actions, .hydrology-summary-grid, .hydrology-site-list, .hydrology-next-actions, .hydrology-observation-grid, .hydrology-observation-actions, .hazardous-waste-list, .hazardous-waste-actions, .tri-source-list, .tri-source-actions, .local-finance-summary, .local-finance-actions, .civic-access-route-grid, .access-next-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .housing-cost-hero, .tenure-income-hero, .renter-structure-hero, .housing-crowding-hero, .household-composition-hero, .youth-profile-hero, .poverty-status-hero, .utility-energy-hero, .vehicle-access-hero, .disability-access-hero, .language-access-hero, .health-insurance-hero, .mental-health-hero { grid-template-columns: 1fr; }
   .hydrology-observation-hero { grid-template-columns: 1fr; }
   .state-water-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -1160,7 +1175,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .source-queue-card .priority-list { grid-template-columns: 1fr; }
   .economic-module > .intelligence-card, .economic-module .metric-stack, .economic-evidence-strip, .economic-evidence-cards { grid-template-columns: 1fr; }
   .kpi-grid, .source-status-strip, .source-stats, .source-maturity-strip, .doc-source-grid, .doc-link-list { grid-template-columns: 1fr; }
-  .dc-meta-grid, .dc-metric-grid, .comparison-grid, .age-profile-grid, .credential-grid, .cbp-query-grid, .business-source-grid, .education-route-grid, .industry-summary-grid, .industry-next-actions, .occupation-summary-grid, .occupation-next-actions, .income-rollup-grid, .income-bracket-grid, .income-next-actions, .lehd-route-grid, .commute-route-grid, .commute-profile-grid, .housing-tenure-grid, .housing-derived-strip, .labor-force-grid, .funding-summary-grid, .funding-quarter-grid, .sales-tax-source-grid, .permit-route-grid, .community-route-grid, .community-next-steps, .census-crosscheck-grid, .tax-digest-grid, .tax-digest-next, .civic-route-grid, .civic-next-steps, .census-link-row, .labor-query-row, .funding-link-row, .youth-profile-grid, .youth-context-strip, .youth-comparison-strip, .poverty-context-grid, .poverty-comparison-strip, .local-finance-summary, .local-finance-doc-grid, .local-finance-actions { grid-template-columns: 1fr; }
+  .dc-meta-grid, .dc-metric-grid, .comparison-grid, .age-profile-grid, .credential-grid, .cbp-query-grid, .business-source-grid, .education-route-grid, .industry-summary-grid, .industry-next-actions, .occupation-summary-grid, .occupation-next-actions, .income-rollup-grid, .income-bracket-grid, .income-next-actions, .lehd-route-grid, .commute-route-grid, .commute-profile-grid, .housing-tenure-grid, .housing-derived-strip, .labor-force-grid, .funding-summary-grid, .funding-quarter-grid, .sales-tax-source-grid, .permit-route-grid, .community-route-grid, .community-next-steps, .census-crosscheck-grid, .tax-digest-grid, .tax-digest-next, .civic-route-grid, .civic-next-steps, .census-link-row, .labor-query-row, .funding-link-row, .youth-profile-grid, .youth-context-strip, .youth-comparison-strip, .poverty-context-grid, .poverty-comparison-strip, .local-finance-summary, .local-finance-doc-grid, .local-finance-actions, .civic-access-route-grid, .access-next-actions { grid-template-columns: 1fr; }
   .page-brief-strip { grid-template-columns: 1fr; }
   .map-source-bar { grid-template-columns: 1fr; }
   .civic-asset-head { display: block; }
