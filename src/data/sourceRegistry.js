@@ -220,6 +220,17 @@ export const sourceRegistry = [
     notes: 'Schneider-hosted pages may present anti-bot protection. Use official exports/API only if offered or obtain permission.'
   },
   {
+    name: 'Georgia Superior Court Clerks Cooperative Authority search portal',
+    url: 'https://www.gsccca.org/search',
+    dataType: 'Statewide public search hub for real estate indexes, PT-61 transfer records, liens, plats, UCC, and related clerk-record routes',
+    geography: 'Georgia statewide; manually filter to Burke County / Waynesboro records before use',
+    accessMethod: 'Public GSCCCA search hub; this seed only indexes visible official search routes. Do not automate account-only, premium, captcha, or terms-restricted workflows.',
+    cadence: 'Recorded-instrument posting cadence varies by county and search type; confirm Burke County coverage before presentation use',
+    difficulty: 'Medium',
+    status: 'Source route indexed',
+    notes: 'Low-volume route discovery reached the GSCCCA search hub with HTTP 200 and found real-estate, PT-61, lien, and plat search links. Added src/data/gscccaPropertyRecordsSeed.js as a recorded-property source-route stub. This is not a sale, deed, ownership, lien, or property-condition claim and should stay off the executive dashboard until records are manually verified and cited.'
+  },
+  {
     name: 'Burke County Planning: Permits and Inspections',
     url: 'https://www.burkecounty-ga.gov/departments/planning_department/permits_and_inspections.php',
     dataType: 'Building permits, inspections process, planning contacts',

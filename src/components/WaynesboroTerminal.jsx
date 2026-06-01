@@ -745,12 +745,7 @@ function ExecutiveContextDetails() {
 function ExecutiveDashboard() {
   const executiveKpis = buildExecutiveKpis();
   return (
-    <section id="executive" className="module executive-grid">
-      <div className="module-title">
-        <span className="eyebrow">EXECUTIVE DASHBOARD</span>
-        <h1>Waynesboro baseline snapshot</h1>
-        <p>Headline source-backed takeaways first. Secondary ACS context is available as a drilldown; source inventory stays on the Sources page.</p>
-      </div>
+    <section id="executive" className="module executive-grid" aria-label="source-backed Waynesboro baseline indicators">
       <div className="kpi-grid">{executiveKpis.map((item) => <KpiCard key={item.label} item={item} />)}</div>
       <BaselineComparisonPanel />
       <PovertyStatusPanel />
