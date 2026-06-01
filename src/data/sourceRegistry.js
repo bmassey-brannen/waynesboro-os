@@ -154,6 +154,17 @@ export const sourceRegistry = [
     notes: 'Runtime query returned Waynesboro C24030 context: 2,580 civilian employed residents/workers, led by education/health care 21.2%, retail trade 19.3%, transportation/utilities 13.2%, professional/admin services 12.7%, and manufacturing 11.4%. Treat as ACS survey workforce context only; not employer payroll, establishment counts, business-license records, job postings, wages, tax revenue, or live economic-development telemetry.'
   },
   {
+    name: 'Census Reporter ACS occupation employment table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=C24010&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS C24010 occupation mix for the civilian employed population 16+ with broad occupation categories, city/county/state comparison, and margins of error',
+    geography: 'Waynesboro city, Burke County, and Georgia comparison rows',
+    accessMethod: 'Public no-key Census Reporter API; low-volume request cached in src/data/occupationEmploymentSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Runtime query returned Waynesboro C24010 context: 2,580 civilian employed residents/workers, led by sales/office 28.6%, production/transportation 26.6%, service 20.5%, management/science/arts 18.2%, and natural resources/construction/maintenance 6.0%. Treat as ACS survey workforce context only; not employer payroll, job postings, occupational credentials, business-license records, wages, or municipal telemetry.'
+  },
+  {
     name: 'Georgia Insights / GaDOE Education Dashboards',
     url: 'https://georgiainsights.gadoe.org/data-downloads/',
     dataType: 'Public state education dashboards and data-download route for accountability, attendance, CTAE/workforce pathway, district finance, and whole-child indicators',
@@ -932,7 +943,7 @@ export const readinessStrip = [
   { lane: 'City documents', status: 'Index-ready', source: 'Agenda Center / Archive Center', tone: 'good' },
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
   { lane: 'Map base', status: 'Boundary seed ready', source: 'OSM + TIGERweb + Census Reporter GeoJSON', tone: 'good' },
-  { lane: 'Economy', status: 'Workforce + industry + income + commute', source: 'BLS LAUS + ACS B19001/B15003/B23025/C24030 + LEHD/LODES + CBP', tone: 'good' },
+  { lane: 'Economy', status: 'Workforce + industry + occupation + income + commute', source: 'BLS LAUS + ACS B19001/B15003/B23025/C24030/C24010 + LEHD/LODES + CBP', tone: 'good' },
   { lane: 'Education', status: 'GaDOE routes + ACS enrollment seed', source: 'Georgia Insights + Burke County Public Schools + Census Reporter B14001', tone: 'good' },
   { lane: 'Finance', status: 'Budget PDFs + sales-tax + digest routes', source: 'UGA CVIOG / Georgia DOR Distributions / Digest Compliance', tone: 'good' },
   { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },

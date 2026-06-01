@@ -75,6 +75,7 @@ import { householdSizeSeed } from '../data/householdSizeSeed.js';
 import { industryEmploymentSeed } from '../data/industryEmploymentSeed.js';
 import { schoolEnrollmentSeed } from '../data/schoolEnrollmentSeed.js';
 import { veteranStatusSeed } from '../data/veteranStatusSeed.js';
+import { occupationEmploymentSeed } from '../data/occupationEmploymentSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -1435,6 +1436,52 @@ function IndustryEmploymentPanel() {
   );
 }
 
+function OccupationEmploymentPanel() {
+  const topOccupations = occupationEmploymentSeed.occupations.slice(0, 5);
+  const maxShare = Math.max(...topOccupations.map((occupation) => occupation.share));
+  return (
+    <section className="occupation-employment-panel" aria-label="ACS occupation employment source panel">
+      <div className="bridge-head">
+        <div>
+          <span className="eyebrow">OCCUPATION MIX · ACS CONTEXT</span>
+          <h3>C24010 adds a worker-role lens before employer, payroll, or job-posting data exists</h3>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="occupation-summary-grid">
+        <article>
+          <span>Universe</span>
+          <b>{occupationEmploymentSeed.universe.displayValue}</b>
+          <small>{occupationEmploymentSeed.universe.label} · MOE {occupationEmploymentSeed.universe.displayMoe}</small>
+        </article>
+        {occupationEmploymentSeed.comparisonRows.map((row) => (
+          <article key={row.geography}>
+            <span>{row.geography}</span>
+            <b>{row.displayShare}</b>
+            <small>{row.topOccupation} leads · universe {row.universe}</small>
+          </article>
+        ))}
+      </div>
+      <div className="occupation-role-list">
+        {topOccupations.map((occupation) => (
+          <article key={occupation.id}>
+            <div>
+              <span>{occupation.label}</span>
+              <b>{occupation.displayShare}</b>
+            </div>
+            <div className="occupation-share-bar"><span style={{ width: `${(occupation.share / maxShare) * 100}%` }} /></div>
+            <small>{occupation.displayValue} estimate · MOE ±{occupation.moe.toLocaleString()} · source fields {occupation.sourceFields.join(' + ')}</small>
+          </article>
+        ))}
+      </div>
+      <div className="occupation-next-actions">
+        {occupationEmploymentSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p>{occupationEmploymentSeed.caveat} Release: {occupationEmploymentSeed.release.name} ({occupationEmploymentSeed.release.years}); retrieved {new Date(occupationEmploymentSeed.retrievedAt).toLocaleDateString()} from Census Reporter table {occupationEmploymentSeed.table.id}.</p>
+    </section>
+  );
+}
+
 function CommuteProfilePanel() {
   const primary = commuteProfileSeed.metrics.filter((metric) => ['drove-alone', 'worked-from-home', 'commute-under-15', 'commute-45-plus'].includes(metric.id));
   return (
@@ -1532,10 +1579,55 @@ function CityPermittingIntakePanel() {
   );
 }
 
+function EconomicEvidenceStrip() {
+  const cards = [
+    {
+      label: 'County labor',
+      value: laborForceSeed.series.find((metric) => metric.id === 'unemployment-rate')?.displayValue || 'Seeded',
+      detail: 'BLS LAUS county context; not city-level unemployment.'
+    },
+    {
+      label: 'City workforce',
+      value: workforceEducationSeed.metrics.find((metric) => metric.id === 'high-school-or-higher')?.percent?.toFixed(1) + '%',
+      detail: 'ACS attainment/labor-force context with MOE visible.'
+    },
+    {
+      label: 'Industry lens',
+      value: industryEmploymentSeed.sectors[0]?.share.toFixed(1) + '%',
+      detail: `${industryEmploymentSeed.sectors[0]?.label} leads ACS C24030; not employer payroll.`
+    },
+    {
+      label: 'Occupation lens',
+      value: occupationEmploymentSeed.occupations[0]?.displayShare,
+      detail: `${occupationEmploymentSeed.occupations[0]?.label} leads ACS C24010; not job postings.`
+    }
+  ];
+
+  return (
+    <section className="economic-evidence-strip" aria-label="economic page evidence hierarchy">
+      <div>
+        <span className="eyebrow">ECONOMIC EVIDENCE LADDER</span>
+        <h2>Source-backed context now sits above synthetic prospect tables</h2>
+        <p>Use this page from verified/seeded workforce context toward harder local records: permits, business licenses, property, DCA project records, and official finance documents.</p>
+      </div>
+      <div className="economic-evidence-cards">
+        {cards.map((card) => (
+          <article key={card.label}>
+            <span>{card.label}</span>
+            <b>{card.value}</b>
+            <small>{card.detail}</small>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function EconomicDevelopment() {
   const driRecord = regionalDevelopmentSeed.records[0];
   return (
     <section id="economic" className="module economic-module">
+      <EconomicEvidenceStrip />
       <DataTable
         title="Ranked Development Pipeline"
         eyebrow="ECONOMIC DEVELOPMENT"
@@ -1570,6 +1662,7 @@ function EconomicDevelopment() {
         <SchoolEnrollmentPanel />
         <WorkforceEducationPanel />
         <IndustryEmploymentPanel />
+        <OccupationEmploymentPanel />
         <LehdCommutingPanel />
         <CommuteProfilePanel />
         <FederalFundingPanel />
@@ -3134,7 +3227,7 @@ function MeetingReadinessStrip() {
     { label: 'First-screen posture', value: 'Public demo', detail: 'White/silver civic surface, forest-green identity, no affiliation or trading language.' },
     { label: 'Claims discipline', value: 'Source-gated', detail: 'Verified baseline first; synthetic operating scores stay visibly labeled.' },
     { label: 'Presentation packet', value: 'Print aware', detail: 'Dense panels remain readable for PDF/meeting screenshots and council-style review.' },
-    { label: 'Next evidence lane', value: 'Veteran services', detail: `${veteranStatusSeed.headline.displayShare} ACS B21001 veteran-status context is seeded; pair it with VA, health, accessibility, and local organization sources before Council recommendations.` }
+    { label: 'Next evidence lane', value: 'Occupation mix', detail: `${occupationEmploymentSeed.occupations[0].displayShare} ACS C24010 ${occupationEmploymentSeed.occupations[0].label.toLowerCase()} context is seeded; pair it with CBP, LEHD, Georgia DOL, employer records, and training sources before Council workforce recommendations.` }
   ];
 
   return (
