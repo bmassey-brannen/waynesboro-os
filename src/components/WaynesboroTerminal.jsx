@@ -63,6 +63,7 @@ import { ageProfileSeed } from '../data/ageProfileSeed.js';
 import { vehicleAccessSeed } from '../data/vehicleAccessSeed.js';
 import { disabilityAccessSeed } from '../data/disabilityAccessSeed.js';
 import { hazardousWasteSeed } from '../data/hazardousWasteSeed.js';
+import { toxicReleaseInventorySeed } from '../data/toxicReleaseInventorySeed.js';
 import { incomeDistributionSeed } from '../data/incomeDistributionSeed.js';
 import { mapboxReadinessSeed } from '../data/mapboxReadinessSeed.js';
 import { householdCompositionSeed } from '../data/householdCompositionSeed.js';
@@ -2170,6 +2171,41 @@ function HazardousWasteSourcePanel() {
   );
 }
 
+function ToxicReleaseInventoryPanel() {
+  return (
+    <section className="panel tri-source-panel" aria-label="EPA toxic release inventory facility source routing">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">TRI FACILITY SOURCE</span>
+          <h2>EPA Envirofacts TRI identity rows for Burke / Waynesboro</h2>
+        </div>
+        <span className="terminal-badge live">PUBLIC API SEED</span>
+      </div>
+      <div className="tri-source-summary">
+        <article><span>County query rows</span><b>{toxicReleaseInventorySeed.query.rowsReturned}</b><small>TRI_FACILITY rows returned by county filter</small></article>
+        <article><span>Waynesboro rows</span><b>{toxicReleaseInventorySeed.query.waynesboroAddressRows}</b><small>Public identity sample, not a complete inventory</small></article>
+        <article><span>Closed indicator rows</span><b>{toxicReleaseInventorySeed.query.closedIndicatorRows}</b><small>Field copied as reported; profile QA required</small></article>
+      </div>
+      <div className="tri-source-list">
+        {toxicReleaseInventorySeed.facilities.map((facility) => (
+          <article key={facility.sourceId}>
+            <div>
+              <span>{facility.sourceId} · {facility.city}</span>
+              <b>{facility.name}</b>
+              <small>{facility.address} · {facility.displayStatus}</small>
+            </div>
+            <em>{facility.facilityClosedIndicator === '1' ? 'Closed flag' : 'Identity'}</em>
+          </article>
+        ))}
+      </div>
+      <div className="tri-source-actions">
+        {toxicReleaseInventorySeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p className="source-note">{toxicReleaseInventorySeed.caveat} Retrieved {new Date(toxicReleaseInventorySeed.retrievedAt).toLocaleString()} from EPA Envirofacts; chemical/release tables are intentionally not displayed yet.</p>
+    </section>
+  );
+}
+
 function HazardResiliencePanel() {
   const sampleEvent = stormEventsSeed.sampleEvents[0];
   return (
@@ -3350,6 +3386,7 @@ function InfrastructureSafetyHousing() {
       <VehicleAccessPanel />
       <CleanWaterPermitPanel />
       <HazardousWasteSourcePanel />
+      <ToxicReleaseInventoryPanel />
       <HydrologySourcePanel />
       <HydrologyObservationsPanel />
       <HazardResiliencePanel />
@@ -3666,6 +3703,7 @@ function PageBriefStrip({ page }) {
       { label: 'Service routes', value: 'City resource page', detail: 'Mental-health links indexed as navigation only; not clinical, crisis-call, or utilization data.' },
       { label: 'SVI resilience', value: socialVulnerabilitySeed.summary.find((item) => item.label === 'Highest overall SVI percentile')?.value || 'CDC seeded', detail: 'Burke County tract vulnerability context; not yet a city score or live emergency feed.' },
       { label: 'Energy mix', value: utilityEnergySeed.metrics.find((metric) => metric.id === 'electricity')?.displayShare || 'ACS seeded', detail: 'B25040 heating-fuel context; not utility accounts, outage exposure, or rate burden.' },
+      { label: 'TRI route', value: `${toxicReleaseInventorySeed.query.rowsReturned} EPA rows`, detail: 'EPA Envirofacts TRI facility identity seed; not emissions, risk, violation, zoning, or inspection evidence.' },
       { label: 'Language access', value: languageAccessSeed.metrics.find((metric) => metric.id === 'language-other-than-english')?.displayShare || 'ACS seeded', detail: 'C16001 communication-planning context; not a service workload claim.' },
       { label: 'Affordability', value: housingCostBurdenSeed.metrics.find((metric) => metric.id === 'renter-cost-burden')?.displayShare || 'ACS seeded', detail: 'Renter cost-burden survey context with MOE caveats.' },
       { label: 'Housing type', value: housingStructureSeed.derived.find((item) => item.id === 'small-multifamily')?.displayShare || 'ACS seeded', detail: 'B25024 units-in-structure context; not parcels, zoning, or permits.' },

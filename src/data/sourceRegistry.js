@@ -660,6 +660,17 @@ export const sourceRegistry = [
     notes: 'Low-volume query returned 11 active Burke County RCRA handler rows with summary counts and no current-violation rows in the query metadata; added src/data/hazardousWasteSeed.js and an Operations environmental source panel. This is not a complete business inventory, zoning finding, city inspection record, hazard finding, or standalone compliance conclusion.'
   },
   {
+    name: 'EPA Envirofacts Toxics Release Inventory Facility API',
+    url: 'https://data.epa.gov/efservice/TRI_FACILITY/STATE_ABBR/GA/COUNTY_NAME/BURKE/ROWS/0:20/JSON',
+    dataType: 'Public TRI_FACILITY identity rows for facilities reported in the EPA Envirofacts Toxics Release Inventory facility table',
+    geography: 'Burke County, Georgia; current cached sample returned Waynesboro-addressed TRI facility identity rows',
+    accessMethod: 'Public EPA Envirofacts API; low-volume county-filtered table request. Cache identity fields only until release/chemical/report-year tables and facility profiles are manually verified.',
+    cadence: 'EPA TRI/Envirofacts table refresh cadence varies by TRI reporting cycle and table; refresh before presentation use.',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Low-volume TRI_FACILITY query returned five Burke County rows, all with Waynesboro addresses, and one facility-closed indicator row. Added src/data/toxicReleaseInventorySeed.js and an Operations TRI panel. This is source-routing context only, not an emissions finding, violation finding, health-risk claim, zoning determination, city inspection record, complete inventory, or live environmental telemetry.'
+  },
+  {
     name: 'CDC PLACES Local Data for Better Health - Census Tract Data',
     url: 'https://data.cdc.gov/resource/cwsq-ngmh.json',
     dataType: 'Model-based public health estimates by census tract: prevention, health outcomes, disability, and risk-factor measures with confidence intervals',
@@ -1017,7 +1028,7 @@ export const readinessStrip = [
   { lane: 'Digital access', status: 'ACS context + FCC route', source: 'Census Reporter B28002 / FCC BDC', tone: 'good' },
   { lane: 'Mobility access', status: 'ACS vehicle + tenure + disability seeds', source: 'Census Reporter B08201 / B25044 / B18101', tone: 'good' },
   { lane: 'Housing', status: 'ACS tenure + burden + monthly costs + age + typology + crowding + values + LIHTC route', source: 'Census Reporter B25003/B25002/B25070/B25091/B25064/B25088/B25034/B25024/B25014/B25075 / City DocumentCenter / Georgia DCA', tone: 'good' },
-  { lane: 'Environmental', status: 'CWA + RCRA seeds ready', source: 'EPA ECHO Clean Water Act / RCRA', tone: 'good' },
+  { lane: 'Environmental', status: 'CWA + RCRA + TRI seeds ready', source: 'EPA ECHO / Envirofacts', tone: 'good' },
   { lane: 'Hydrology', status: 'USGS IV snapshot', source: 'USGS NWIS Site + Instantaneous Values', tone: 'good' },
   { lane: 'Resilience', status: 'Hazard source stack', source: 'FEMA NFHL / NOAA Storm Events', tone: 'watch' },
   { lane: 'Ordinances', status: 'Reference-ready', source: 'Municode Library', tone: 'good' },
