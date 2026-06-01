@@ -35,6 +35,7 @@ import { stormEventsSeed } from '../data/stormEventsSeed.js';
 import { publicSafetySourceSeed } from '../data/publicSafetySourceSeed.js';
 import { healthEquitySeed } from '../data/healthEquitySeed.js';
 import { laborForceSeed } from '../data/laborForceSeed.js';
+import { qcewPayrollSeed } from '../data/qcewPayrollSeed.js';
 import { salesTaxDistributionSeed } from '../data/salesTaxDistributionSeed.js';
 import { cityPermittingSeed } from '../data/cityPermittingSeed.js';
 import { federalSpendingSeed } from '../data/federalSpendingSeed.js';
@@ -1263,6 +1264,59 @@ function LaborForceSourcePanel() {
   );
 }
 
+function QcewPayrollPanel() {
+  const fmt = (value) => value.toLocaleString();
+  const money = (value) => `$${value.toLocaleString()}`;
+  const topSectors = qcewPayrollSeed.disclosedPrivateSectors.slice(0, 5);
+  const maxEmployment = Math.max(...topSectors.map((sector) => sector.employment));
+
+  return (
+    <section className="qcew-payroll-panel" aria-label="BLS QCEW payroll and covered employment source panel">
+      <div className="bridge-head">
+        <div>
+          <span className="eyebrow">PAYROLL SOURCE SNAPSHOT · COUNTY CONTEXT</span>
+          <h3>BLS QCEW adds covered employment and wage context before employer-level claims</h3>
+        </div>
+        <span className="terminal-badge live">PUBLIC CSV SEED</span>
+      </div>
+      <div className="qcew-summary-grid">
+        <article>
+          <span>Total covered employment</span>
+          <b>{fmt(qcewPayrollSeed.totalCovered.employment)}</b>
+          <small>{fmt(qcewPayrollSeed.totalCovered.establishments)} establishments · avg weekly wage {money(qcewPayrollSeed.totalCovered.averageWeeklyWage)}</small>
+        </article>
+        <article>
+          <span>Private covered employment</span>
+          <b>{fmt(qcewPayrollSeed.privateCovered.employment)}</b>
+          <small>{fmt(qcewPayrollSeed.privateCovered.establishments)} private establishments · YoY employment {qcewPayrollSeed.privateCovered.employmentYoYChange}</small>
+        </article>
+        <article>
+          <span>Annual covered wages</span>
+          <b>${(qcewPayrollSeed.totalCovered.annualWages / 1000000).toFixed(1)}M</b>
+          <small>Burke County annual 2024 area file; not city revenue or project impact.</small>
+        </article>
+      </div>
+      <div className="qcew-sector-list">
+        {topSectors.map((sector) => (
+          <article key={sector.code}>
+            <div>
+              <span>NAICS {sector.code}</span>
+              <b>{sector.label}</b>
+              <em>{fmt(sector.employment)} jobs · {fmt(sector.establishments)} est.</em>
+            </div>
+            <div className="qcew-sector-bar"><span style={{ width: `${(sector.employment / maxEmployment) * 100}%` }} /></div>
+            <small>Avg annual pay {money(sector.averageAnnualPay)} · YoY employment {sector.employmentYoYChange}</small>
+          </article>
+        ))}
+      </div>
+      <div className="qcew-next-actions">
+        {qcewPayrollSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p>{qcewPayrollSeed.caveat} Retrieved {new Date(qcewPayrollSeed.retrievedAt).toLocaleDateString()} from BLS QCEW area CSV for FIPS 13033.</p>
+    </section>
+  );
+}
+
 function IncomeDistributionPanel() {
   const under50 = incomeDistributionSeed.rollups.find((item) => item.id === 'under-50k');
   const over100 = incomeDistributionSeed.rollups.find((item) => item.id === '100k-plus');
@@ -1683,6 +1737,11 @@ function EconomicEvidenceStrip() {
       detail: 'ACS attainment/labor-force context with MOE visible.'
     },
     {
+      label: 'Payroll lens',
+      value: qcewPayrollSeed.totalCovered.employment.toLocaleString(),
+      detail: `BLS QCEW ${qcewPayrollSeed.year} Burke covered employment; sector disclosure rules apply.`
+    },
+    {
       label: 'Industry lens',
       value: industryEmploymentSeed.sectors[0]?.share.toFixed(1) + '%',
       detail: `${industryEmploymentSeed.sectors[0]?.label} leads ACS C24030; not employer payroll.`
@@ -1748,6 +1807,7 @@ function EconomicDevelopment() {
         <BusinessSurfacePanel />
         <CityPermittingIntakePanel />
         <LaborForceSourcePanel />
+        <QcewPayrollPanel />
         <IncomeDistributionPanel />
         <EducationWorkforcePanel />
         <SchoolEnrollmentPanel />
@@ -3754,7 +3814,7 @@ function MeetingReadinessStrip() {
     { label: 'First-screen posture', value: 'Public demo', detail: 'White/silver civic surface, forest-green identity, no affiliation or trading language.' },
     { label: 'Claims discipline', value: 'Source-gated', detail: 'Verified baseline first; synthetic operating scores stay visibly labeled.' },
     { label: 'Presentation packet', value: 'Print aware', detail: 'Dense panels remain readable for PDF/meeting screenshots and council-style review.' },
-    { label: 'Next evidence lane', value: 'Occupation mix', detail: `${occupationEmploymentSeed.occupations[0].displayShare} ACS C24010 ${occupationEmploymentSeed.occupations[0].label.toLowerCase()} context is seeded; pair it with CBP, LEHD, Georgia DOL, employer records, and training sources before Council workforce recommendations.` }
+    { label: 'Next evidence lane', value: 'QCEW payroll', detail: `${qcewPayrollSeed.totalCovered.employment.toLocaleString()} Burke County covered jobs are seeded from BLS QCEW; keep sector rows disclosure-aware and county-scoped before Council workforce recommendations.` }
   ];
 
   return (
@@ -3898,6 +3958,7 @@ function PageBriefStrip({ page }) {
       { label: 'Workforce', value: 'ACS + BLS', detail: 'City survey context plus county LAUS.' },
       { label: 'School lens', value: schoolEnrollmentSeed.enrolled.displayShare, detail: 'ACS B14001 age-3+ enrollment context; not district enrollment or school performance.' },
       { label: 'Revenue', value: 'DOR route', detail: 'Sales tax remains row-parse pending.' },
+      { label: 'Payroll', value: `${qcewPayrollSeed.totalCovered.employment.toLocaleString()} jobs`, detail: 'BLS QCEW Burke covered employment; county context only, disclosure-aware.' },
       { label: 'Income', value: incomeDistributionSeed.rollups?.under50k?.displayShare || 'ACS seeded', detail: 'Household bracket context is source-labeled.' }
     ],
     downtown: [

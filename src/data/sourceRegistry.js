@@ -154,6 +154,17 @@ export const sourceRegistry = [
     notes: 'Low-volume API test returned December 2025 Burke County rate 4.2%, labor force 10,600, employed 10,156, unemployed 444. Added src/data/laborForceSeed.js and an economic workforce source snapshot; use as county context only.'
   },
   {
+    name: 'BLS Quarterly Census of Employment and Wages (QCEW) Area API',
+    url: 'https://data.bls.gov/cew/data/api/2024/a/area/13033.csv',
+    dataType: 'County covered-employment, establishment, payroll, average weekly wage, annual pay, and NAICS-sector rows with disclosure flags',
+    geography: 'Burke County, Georgia area FIPS 13033; not a Waynesboro city-level employer, license, or project-impact dataset',
+    accessMethod: 'Public CSV API endpoint; low-volume annual area request cached in src/data/qcewPayrollSeed.js.',
+    cadence: 'Annual QCEW area files; refresh annually and before presentation use',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Runtime query returned 2024 Burke County covered-employment context: 476 establishments, 7,429 total covered jobs, $592.2M annual covered wages, and $1,533 average weekly wage. Added an Economic QCEW payroll panel; sector rows remain disclosure-aware and county-scoped.'
+  },
+  {
     name: 'USAspending.gov Spending Over Time API',
     url: 'https://api.usaspending.gov/api/v2/search/spending_over_time/',
     dataType: 'Federal award obligation totals by quarter and award category using place-of-performance filters',
