@@ -72,6 +72,7 @@ import { youthProfileSeed } from '../data/youthProfileSeed.js';
 import { snapAssistanceSeed } from '../data/snapAssistanceSeed.js';
 import { localFinancialDocumentsSeed } from '../data/localFinancialDocumentsSeed.js';
 import { householdSizeSeed } from '../data/householdSizeSeed.js';
+import { industryEmploymentSeed } from '../data/industryEmploymentSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -1292,6 +1293,52 @@ function WorkforceEducationPanel() {
   );
 }
 
+function IndustryEmploymentPanel() {
+  const topSectors = industryEmploymentSeed.sectors.slice(0, 5);
+  const maxShare = Math.max(...topSectors.map((sector) => sector.share));
+  return (
+    <section className="industry-employment-panel" aria-label="ACS industry employment source panel">
+      <div className="bridge-head">
+        <div>
+          <span className="eyebrow">INDUSTRY EMPLOYMENT · ACS CONTEXT</span>
+          <h3>C24030 adds a source-labeled workforce-cluster lens before employer or license data exists</h3>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="industry-summary-grid">
+        <article>
+          <span>Universe</span>
+          <b>{industryEmploymentSeed.universe.displayValue}</b>
+          <small>{industryEmploymentSeed.universe.label} · MOE ±{industryEmploymentSeed.universe.moe.toLocaleString()}</small>
+        </article>
+        {industryEmploymentSeed.comparisonRows.map((row) => (
+          <article key={row.geography}>
+            <span>{row.geography}</span>
+            <b>{row.leadingSectorShare.toFixed(1)}%</b>
+            <small>{row.leadingSector} leads; second: {row.secondSector} {row.secondSectorShare.toFixed(1)}%</small>
+          </article>
+        ))}
+      </div>
+      <div className="industry-sector-list">
+        {topSectors.map((sector) => (
+          <article key={sector.id}>
+            <div>
+              <span>{sector.label}</span>
+              <b>{sector.share.toFixed(1)}%</b>
+            </div>
+            <div className="industry-share-bar"><span style={{ width: `${(sector.share / maxShare) * 100}%` }} /></div>
+            <small>{sector.displayValue} estimate · MOE ±{sector.moe.toLocaleString()} · Burke {sector.comparison.burkeCountyShare.toFixed(1)}% / GA {sector.comparison.georgiaShare.toFixed(1)}%</small>
+          </article>
+        ))}
+      </div>
+      <div className="industry-next-actions">
+        {industryEmploymentSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p>{industryEmploymentSeed.caveat} Release: {industryEmploymentSeed.release.name} ({industryEmploymentSeed.release.years}); retrieved {new Date(industryEmploymentSeed.retrievedAt).toLocaleDateString()} from Census Reporter table {industryEmploymentSeed.table.id}.</p>
+    </section>
+  );
+}
+
 function CommuteProfilePanel() {
   const primary = commuteProfileSeed.metrics.filter((metric) => ['drove-alone', 'worked-from-home', 'commute-under-15', 'commute-45-plus'].includes(metric.id));
   return (
@@ -1425,6 +1472,7 @@ function EconomicDevelopment() {
         <IncomeDistributionPanel />
         <EducationWorkforcePanel />
         <WorkforceEducationPanel />
+        <IndustryEmploymentPanel />
         <LehdCommutingPanel />
         <CommuteProfilePanel />
         <FederalFundingPanel />
