@@ -933,6 +933,17 @@ export const sourceRegistry = [
     difficulty: 'Low',
     status: 'Public API seed ready',
     notes: 'Runtime query returned Waynesboro veteran-status context: 313 veterans / 7.3% of civilian population age 18+ with MOE ±158, plus Burke County and Georgia comparisons. Added an Executive veteran-service lens panel. Treat as ACS survey planning context only; not VA enrollment, benefits eligibility, service-connected disability, nonprofit caseload, household-level records, or municipal service demand.'
+  },
+  {
+    name: 'CDC/ATSDR Social Vulnerability Index 2022 Georgia CSV',
+    url: 'https://svi.cdc.gov/Documents/Data/2022/csv/states/Georgia.csv',
+    dataType: 'Tract-level Social Vulnerability Index percentiles and component fields for emergency planning, resilience, grant context, and service-access questions',
+    geography: 'Burke County census tracts (STCNTY 13033); Waynesboro-specific overlap requires boundary/tract QA',
+    accessMethod: 'Public no-key CSV download; low-volume Georgia file filtered locally to Burke County rows and cached in src/data/socialVulnerabilitySeed.js.',
+    cadence: 'CDC/ATSDR SVI release-based; current seed uses 2022 release.',
+    difficulty: 'Low',
+    status: 'Public CSV seed ready',
+    notes: 'Runtime download returned the Georgia SVI CSV and 7 Burke County tract rows. Added an Operations SVI resilience panel showing top tract context and strict caveats. Treat as county tract planning context only; not a Waynesboro city score, parcel risk finding, disaster-loss record, household-level data, or live emergency-management feed.'
   }
 ];
 
@@ -960,7 +971,7 @@ export const readinessStrip = [
   { lane: 'Policy / zoning', status: 'Route index', source: 'City Community Development / DocumentCenter', tone: 'watch' },
   { lane: 'Transportation', status: 'GeoPI route verified', source: 'GDOT GeoPI Project Information', tone: 'watch' },
   { lane: 'Health access', status: 'ACS insurance seed', source: 'Census Reporter B27010', tone: 'good' },
-  { lane: 'Health equity', status: 'PLACES + food access', source: 'CDC PLACES / USDA ERS Food Access Atlas', tone: 'watch' }
+  { lane: 'Health equity', status: 'PLACES + SVI + food access', source: 'CDC PLACES / CDC-ATSDR SVI / USDA ERS Food Access Atlas', tone: 'watch' }
 ];
 
 export const sourcePriorities = [

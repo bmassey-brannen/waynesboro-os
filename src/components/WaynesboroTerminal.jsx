@@ -76,6 +76,7 @@ import { industryEmploymentSeed } from '../data/industryEmploymentSeed.js';
 import { schoolEnrollmentSeed } from '../data/schoolEnrollmentSeed.js';
 import { veteranStatusSeed } from '../data/veteranStatusSeed.js';
 import { occupationEmploymentSeed } from '../data/occupationEmploymentSeed.js';
+import { socialVulnerabilitySeed } from '../data/socialVulnerabilitySeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -2292,6 +2293,40 @@ function HealthEquitySourcePanel() {
   );
 }
 
+function SocialVulnerabilityPanel() {
+  return (
+    <section className="panel health-equity-panel social-vulnerability-panel" aria-label="CDC social vulnerability source seed">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">RESILIENCE / EMERGENCY PLANNING</span>
+          <h2>CDC/ATSDR SVI adds tract-level vulnerability context</h2>
+        </div>
+        <span className="terminal-badge gold">TRACT CONTEXT</span>
+      </div>
+      <div className="health-equity-summary">
+        {socialVulnerabilitySeed.summary.map((item) => (
+          <article key={item.label}>
+            <span>{item.label}</span>
+            <b>{item.value}</b>
+            <small>{item.detail}</small>
+          </article>
+        ))}
+      </div>
+      <div className="health-equity-samples">
+        {socialVulnerabilitySeed.topTracts.map((tract) => (
+          <article key={tract.fips}>
+            <span>{tract.fips} · pop. {tract.population.toLocaleString()}</span>
+            <b>{tract.tract} · overall {tract.overallPercentile.toFixed(4)}</b>
+            <em>Theme percentiles: socioeconomic {tract.socioeconomicPercentile.toFixed(4)} · household {tract.householdCharacteristicsPercentile.toFixed(4)} · housing/transport {tract.housingTransportationPercentile.toFixed(4)}</em>
+            <small>Planning flags: {tract.poverty150Share} at/under 150% poverty · {tract.noVehicleShare} no vehicle · {tract.noInternetShare} no internet</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{socialVulnerabilitySeed.caveat} Retrieved {new Date(socialVulnerabilitySeed.retrievedAt).toLocaleDateString()} from the public CDC/ATSDR Georgia CSV.</p>
+    </section>
+  );
+}
+
 function FoodAccessSourcePanel() {
   return (
     <section className="panel food-access-panel" aria-label="USDA food access source routing">
@@ -2394,6 +2429,12 @@ function OperationsConfidenceStrip() {
       status: `${usgsHydrologySeed.query.returnedRows} USGS sites`,
       detail: `${hydrologyObservationsSeed.observedShape.returnedSeries} provisional IV series cached; still not flood telemetry or drainage performance.`,
       tone: 'good'
+    },
+    {
+      label: 'SVI resilience',
+      status: `${socialVulnerabilitySeed.observedShape.burkeCountyTractsObserved} tract rows`,
+      detail: 'CDC/ATSDR SVI is county tract context until Waynesboro boundary overlap is mapped.',
+      tone: 'neutral'
     },
     {
       label: 'Environmental permits',
@@ -3048,6 +3089,7 @@ function InfrastructureSafetyHousing() {
       <TransportationProjectSourcePanel />
       <PublicSafetySourcePanel />
       <HealthEquitySourcePanel />
+      <SocialVulnerabilityPanel />
       <HealthInsuranceAccessPanel />
       <DisabilityAccessPanel />
       <LanguageAccessPanel />
@@ -3380,6 +3422,7 @@ function PageBriefStrip({ page }) {
       { label: 'Mobility', value: noVehicleMetric?.displayShare || 'ACS seeded', detail: 'Zero-vehicle context with MOE caveats.' },
       { label: 'Accessibility', value: disabledMetric?.displayShare || 'ACS seeded', detail: 'Disability context added for planning only.' },
       { label: 'Health access', value: healthInsuranceSeed.metrics.find((metric) => metric.id === 'uninsured-total')?.displayShare || 'ACS seeded', detail: 'B27010 insurance-coverage context; not enrollment, clinical, or service-demand data.' },
+      { label: 'SVI resilience', value: socialVulnerabilitySeed.summary.find((item) => item.label === 'Highest overall SVI percentile')?.value || 'CDC seeded', detail: 'Burke County tract vulnerability context; not yet a city score or live emergency feed.' },
       { label: 'Energy mix', value: utilityEnergySeed.metrics.find((metric) => metric.id === 'electricity')?.displayShare || 'ACS seeded', detail: 'B25040 heating-fuel context; not utility accounts, outage exposure, or rate burden.' },
       { label: 'Language access', value: languageAccessSeed.metrics.find((metric) => metric.id === 'language-other-than-english')?.displayShare || 'ACS seeded', detail: 'C16001 communication-planning context; not a service workload claim.' },
       { label: 'Affordability', value: housingCostBurdenSeed.metrics.find((metric) => metric.id === 'renter-cost-burden')?.displayShare || 'ACS seeded', detail: 'Renter cost-burden survey context with MOE caveats.' },
