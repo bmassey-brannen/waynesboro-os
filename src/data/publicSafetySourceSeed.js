@@ -53,10 +53,18 @@ export const publicSafetySourceSeed = {
     {
       label: 'GDOT Crash Data & Reporting',
       url: 'https://www.dot.ga.gov/GDOT/Pages/CrashReporting.aspx',
-      dataType: 'State crash-reporting source hub with GDOT Crash Data Dashboard link, GEARS references, and crash report documentation',
-      accessMethod: 'Public GDOT page; dashboard is a public web app but should be manually reviewed before any automated connector or local crash claims.',
-      status: 'Road-safety source routed',
+      dataType: 'State crash-reporting source hub with GDOT Crash Data Dashboard, AASHTOWare Safety, GEARS references, and crash report documentation',
+      accessMethod: 'Public GDOT page plus public dashboard/safety portal routes; dashboard apps require manual review before any automated connector or local crash claims.',
+      status: 'Seed connector ready',
       integrationUse: 'Potential roadway/crash-safety context for corridors and downtown access after geography filters, dashboard export rules, and publication caveats are verified.'
+    },
+    {
+      label: '511 Georgia',
+      url: 'https://511ga.org/',
+      dataType: 'Public traveler-information route for incidents, cameras, road conditions, and traffic where published',
+      accessMethod: 'Public web route; use as readiness/source link only unless a documented public feed/export is confirmed.',
+      status: 'Reference route indexed',
+      integrationUse: 'Keep live road-condition awareness separate from historic crash counts, police incidents, response times, and local street-condition claims.'
     }
   ],
   nextQuestions: [

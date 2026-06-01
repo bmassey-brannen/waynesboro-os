@@ -44,6 +44,7 @@ import { communityDevelopmentSeed } from '../data/communityDevelopmentSeed.js';
 import { broadbandAccessSeed } from '../data/broadbandAccessSeed.js';
 import { stateDrinkingWaterSeed } from '../data/stateDrinkingWaterSeed.js';
 import { transportationProjectSeed } from '../data/transportationProjectSeed.js';
+import { transportationSafetySeed } from '../data/transportationSafetySeed.js';
 import { educationWorkforceSeed } from '../data/educationWorkforceSeed.js';
 import { affordableHousingSeed } from '../data/affordableHousingSeed.js';
 import { usgsHydrologySeed } from '../data/usgsHydrologySeed.js';
@@ -3849,6 +3850,28 @@ function MeetingReadinessStrip() {
   );
 }
 
+function CivicModeCard({ activePage }) {
+  const liveConnectors = sourceRegistry.filter((source) => source.status === 'Live connector active').length;
+  const seedConnectors = sourceRegistry.filter((source) => source.status === 'Seed connector ready').length;
+  const officialLinks = officialDocumentsSnapshot.summary.documentCount;
+  const claimsLabel = activePage === 'executive' ? 'First-screen safe' : 'Source-gated';
+
+  return (
+    <aside className="civic-mode-card" aria-label="public demo claim discipline">
+      <div className="civic-mode-head">
+        <b>Civic demo mode</b>
+        <span>{claimsLabel}</span>
+      </div>
+      <div className="civic-mode-metrics">
+        <span><b>{liveConnectors}</b><small>live connectors</small></span>
+        <span><b>{seedConnectors}</b><small>seed routes</small></span>
+        <span><b>{officialLinks}</b><small>public links</small></span>
+      </div>
+      <p>Verified baselines first. The synthetic operating placeholders and synthetic mock data stay labeled until source, geography, and timestamp are attached.</p>
+    </aside>
+  );
+}
+
 function CivicBriefingStrip() {
   const cityPopulation = metricById['waynesboro-population'];
   const medianIncome = metricById['waynesboro-median-income'];
@@ -3991,6 +4014,7 @@ function PageBriefStrip({ page }) {
       { label: 'Accessibility', value: disabledMetric?.displayShare || 'ACS seeded', detail: 'Disability context added for planning only.' },
       { label: 'Health access', value: healthInsuranceSeed.metrics.find((metric) => metric.id === 'uninsured-total')?.displayShare || 'ACS seeded', detail: 'B27010 insurance-coverage context; not enrollment, clinical, or service-demand data.' },
       { label: 'Service routes', value: 'City resource page', detail: 'Mental-health links indexed as navigation only; not clinical, crisis-call, or utilization data.' },
+      { label: 'Road safety', value: transportationSafetySeed.observedShape.crashReportingPage.includes('HTTP 200') ? 'GDOT route' : 'Source route', detail: 'Crash dashboard and 511GA access paths indexed; no crash counts or corridor claims yet.' },
       { label: 'Facilities', value: `${parksFacilitiesSeed.observedShape.facilityRoutesObserved} routes`, detail: 'Official parks/facilities pages indexed as service-location routes; not condition, attendance, availability, or maintenance telemetry.' },
       { label: 'SVI resilience', value: socialVulnerabilitySeed.summary.find((item) => item.label === 'Highest overall SVI percentile')?.value || 'CDC seeded', detail: 'Burke County tract vulnerability context; not yet a city score or live emergency feed.' },
       { label: 'Energy mix', value: utilityEnergySeed.metrics.find((metric) => metric.id === 'electricity')?.displayShare || 'ACS seeded', detail: 'B25040 heating-fuel context; not utility accounts, outage exposure, or rate burden.' },
@@ -4059,7 +4083,7 @@ export default function WaynesboroTerminal({ page = 'executive' }) {
             <h1>{meta.title}</h1>
             <p className="public-disclaimer">{meta.description}</p>
           </div>
-          <div className="civic-mode-card"><b>CIVIC DEMO MODE</b><span>Verified baselines · source routes · placeholders labeled</span></div>
+          <CivicModeCard activePage={activePage} />
         </header>
         <section className="page-switcher" aria-label="Waynesboro OS page groups">
           {nav.map((item) => <a key={item.id} href={item.href} className={activePage === item.id ? 'active' : ''}>{item.label}</a>)}

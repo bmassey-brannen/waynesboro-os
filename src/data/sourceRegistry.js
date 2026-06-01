@@ -653,11 +653,11 @@ export const sourceRegistry = [
     url: 'https://www.dot.ga.gov/GDOT/Pages/CrashReporting.aspx',
     dataType: 'Crash-reporting source hub, public GDOT crash dashboard link, GEARS references, and crash-report documentation',
     geography: 'Georgia public roads; future use should verify Burke County / Waynesboro corridor filters and export permissions',
-    accessMethod: 'Public GDOT page and public dashboard link; manually review dashboard filters/export terms before caching any local crash summaries.',
-    cadence: 'GDOT crash dashboard/reporting updates as source systems publish; exact dashboard refresh cadence not confirmed',
+    accessMethod: 'Public GDOT page, public dashboard/safety-portal routes, and 511GA traveler-info route; manually review dashboard filters/export terms before caching any local crash summaries.',
+    cadence: 'GDOT crash dashboard/reporting updates as source systems publish; exact dashboard refresh cadence not confirmed; 511GA is live traveler information, not historic crash data',
     difficulty: 'Medium',
-    status: 'Road-safety source routed',
-    notes: 'Low-volume source check reached the GDOT Crash Data & Reporting page and found the GDOT Crash Data Dashboard link plus GEARS support/reporting documents. Dashboard direct request returned an old-browser page from this runtime, so keep as manual/source-routing path until Playwright/manual export rules are confirmed. No crash-rate claims added.'
+    status: 'Seed connector ready',
+    notes: 'Low-volume source check reached the GDOT Crash Data & Reporting page and 511GA with HTTP 200; direct Numetric/AASHTOWare dashboard checks returned HTTP 426 upgrade-required in this runtime, so keep as manual/source-routing path until browser/manual export rules are confirmed. Added src/data/transportationSafetySeed.js. No crash-rate, corridor-risk, police-incident, or response-time claims added.'
   },
   {
     name: 'USGS NWIS Site Service: Burke County active stream sites',
