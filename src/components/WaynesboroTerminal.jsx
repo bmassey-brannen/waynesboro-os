@@ -51,6 +51,7 @@ import { lehdCommutingSeed } from '../data/lehdCommutingSeed.js';
 import { housingTenureSeed } from '../data/housingTenureSeed.js';
 import { housingAgeSeed } from '../data/housingAgeSeed.js';
 import { housingCostBurdenSeed } from '../data/housingCostBurdenSeed.js';
+import { housingMonthlyCostsSeed } from '../data/housingMonthlyCostsSeed.js';
 import { housingStructureSeed } from '../data/housingStructureSeed.js';
 import { housingCrowdingSeed } from '../data/housingCrowdingSeed.js';
 import { homeValueDistributionSeed } from '../data/homeValueDistributionSeed.js';
@@ -2916,6 +2917,74 @@ function HousingCostBurdenPanel() {
   );
 }
 
+function HousingMonthlyCostsPanel() {
+  const rent = housingMonthlyCostsSeed.metrics.find((metric) => metric.id === 'median-gross-rent');
+  const mortgage = housingMonthlyCostsSeed.metrics.find((metric) => metric.id === 'median-owner-costs-mortgage');
+
+  return (
+    <section className="panel housing-monthly-costs-panel" aria-label="ACS monthly housing costs source snapshot">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">MONTHLY HOUSING COSTS · ACS CONTEXT</span>
+          <h2>Rent and owner-cost medians before local affordability claims</h2>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="housing-cost-hero">
+        <article>
+          <span>{rent.label}</span>
+          <b>{rent.displayValue}</b>
+          <small>MOE ±${rent.moe.toLocaleString()} · {rent.table} · Burke {rent.comparison.county}</small>
+        </article>
+        <div>
+          <h3>Cost context, not a rent roll</h3>
+          <p>{housingMonthlyCostsSeed.posture} Mortgage-owner median: <b>{mortgage.displayValue}</b> with MOE ±${mortgage.moe.toLocaleString()}.</p>
+          <a href={housingMonthlyCostsSeed.sourceUrl} target="_blank" rel="noreferrer">Census Reporter B25064 / B25088 source query</a>
+        </div>
+      </div>
+      <div className="housing-cost-grid monthly-cost-grid">
+        {housingMonthlyCostsSeed.metrics.map((metric) => (
+          <article key={metric.id}>
+            <span>{metric.label}</span>
+            <b>{metric.displayValue}</b>
+            <small>MOE ±${metric.moe.toLocaleString()} · county {metric.comparison.county} · state {metric.comparison.state}</small>
+          </article>
+        ))}
+      </div>
+      <div className="housing-cost-comparison">
+        {housingMonthlyCostsSeed.comparisonRows.map((row) => (
+          <article key={row.geography}>
+            <span>{row.geography}</span>
+            <b>{row.medianGrossRent}</b>
+            <small>median rent · {row.ownerCostsTotal} owner total · {row.ownerCostsWithMortgage} mortgage-owner</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{housingMonthlyCostsSeed.caveat} Release: {housingMonthlyCostsSeed.release.name} ({housingMonthlyCostsSeed.release.years}); retrieved {new Date(housingMonthlyCostsSeed.retrievedAt).toLocaleDateString()}.</p>
+    </section>
+  );
+}
+
+function HousingSourceLadder() {
+  const ladder = [
+    { label: 'Survey context', value: 'ACS tenure, burden, monthly costs, typology, crowding, values', note: 'Good for planning questions; never a parcel, lease, or program record.' },
+    { label: 'Official route', value: 'City LIHTC + Community Development + utility/rate pages', note: 'PDF/page review pending before claims about projects, rates, or eligibility.' },
+    { label: 'Hard-data next', value: 'qPublic parcels, tax digest, permits, code aggregates', note: 'Needs export permission, records request, or manual source review.' }
+  ];
+
+  return (
+    <section className="housing-source-ladder" aria-label="Housing evidence hierarchy">
+      {ladder.map((item) => (
+        <article key={item.label}>
+          <span>{item.label}</span>
+          <b>{item.value}</b>
+          <small>{item.note}</small>
+        </article>
+      ))}
+    </section>
+  );
+}
+
 function HousingAgeSourcePanel() {
   const headline = housingAgeSeed.derived.find((item) => item.id === 'pre-1980-housing');
   const vintageBars = housingAgeSeed.groups.slice(5);
@@ -3142,8 +3211,10 @@ function InfrastructureSafetyHousing() {
       <DisabilityAccessPanel />
       <LanguageAccessPanel />
       <FoodAccessSourcePanel />
+      <HousingSourceLadder />
       <HousingTenureSourcePanel />
       <HousingCostBurdenPanel />
+      <HousingMonthlyCostsPanel />
       <HousingAgeSourcePanel />
       <HousingStructurePanel />
       <HousingCrowdingPanel />

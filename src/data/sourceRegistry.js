@@ -794,13 +794,24 @@ export const sourceRegistry = [
   {
     name: 'Census Reporter ACS housing cost burden tables',
     url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B25070,B25091&geo_ids=16000US1380984,05000US13033,04000US13',
-    dataType: 'ACS renter gross-rent and owner monthly-cost burden estimates with margins of error and city/county/state comparisons',
-    geography: 'Waynesboro city, Georgia (16000US1380984), Burke County (05000US13033), and Georgia (04000US13)',
-    accessMethod: 'Public no-key Census Reporter API; low-volume B25070/B25091 request cached in src/data/housingCostBurdenSeed.js.',
-    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024 release.',
+    dataType: 'ACS B25070 renter gross-rent burden and B25091 owner monthly-cost burden estimates with margins of error and city/county/state comparison context',
+    geography: 'Waynesboro city, Burke County, and Georgia comparison rows',
+    accessMethod: 'Public no-key Census Reporter API; low-volume request cached in src/data/housingCostBurdenSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024',
     difficulty: 'Low',
-    status: 'Public API seed ready',
-    notes: 'Runtime query returned Waynesboro housing cost-burden context: 689 renter-occupied units / 44.3% at 30%+ of income and 125 owner-occupied units / 19.3% at 30%+ of income, with MOE. Added an Operations housing cost-burden panel. Treat as ACS survey context only; not rent-roll, household eligibility, eviction, parcel condition, official affordability-program, or municipal telemetry data.'
+    status: 'Seed connector ready',
+    notes: 'Runtime query returned Waynesboro housing burden context: 689 renter units / 44.3% at 30%+ of income and 125 owner units / 19.3% at 30%+ of income. Treat as ACS survey context only; not rent rolls, household eligibility, eviction records, utility hardship records, parcel condition, program enrollment, or municipal telemetry.'
+  },
+  {
+    name: 'Census Reporter ACS monthly housing cost tables',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B25064,B25088&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS B25064 median gross rent and B25088 median selected monthly owner costs by mortgage status with margins of error',
+    geography: 'Waynesboro city, Burke County, and Georgia comparison rows',
+    accessMethod: 'Public no-key Census Reporter API; low-volume request cached in src/data/housingMonthlyCostsSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Runtime query returned Waynesboro median gross rent $746 ±73, owner costs $846 ±482 total, $1,379 ±99 with mortgage, and $507 ±133 without mortgage. Added an Operations monthly housing-cost panel and Housing Source Ladder; treat as survey planning context only, not rent rolls, lease records, mortgage servicing, property-tax bills, or utility hardship data.'
   },
   {
     name: 'Census Reporter ACS workforce and educational attainment tables',
@@ -972,7 +983,7 @@ export const readinessStrip = [
   { lane: 'Utilities', status: 'Water + energy context', source: 'City Water Rates / EPA SDWIS / Georgia EPD DWW / ACS B25040', tone: 'good' },
   { lane: 'Digital access', status: 'ACS context + FCC route', source: 'Census Reporter B28002 / FCC BDC', tone: 'good' },
   { lane: 'Mobility access', status: 'ACS vehicle + disability seeds', source: 'Census Reporter B08201 / B18101', tone: 'good' },
-  { lane: 'Housing', status: 'ACS tenure + burden + age + typology + crowding + values + LIHTC route', source: 'Census Reporter B25003/B25002/B25070/B25091/B25034/B25024/B25014/B25075 / City DocumentCenter / Georgia DCA', tone: 'good' },
+  { lane: 'Housing', status: 'ACS tenure + burden + monthly costs + age + typology + crowding + values + LIHTC route', source: 'Census Reporter B25003/B25002/B25070/B25091/B25064/B25088/B25034/B25024/B25014/B25075 / City DocumentCenter / Georgia DCA', tone: 'good' },
   { lane: 'Environmental', status: 'CWA + RCRA seeds ready', source: 'EPA ECHO Clean Water Act / RCRA', tone: 'good' },
   { lane: 'Hydrology', status: 'USGS IV snapshot', source: 'USGS NWIS Site + Instantaneous Values', tone: 'good' },
   { lane: 'Resilience', status: 'Hazard source stack', source: 'FEMA NFHL / NOAA Storm Events', tone: 'watch' },
