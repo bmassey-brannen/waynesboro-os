@@ -132,6 +132,7 @@ function KpiCard({ item }) {
   const danger = item.mom?.startsWith('-') && !item.inverse;
   const synthetic = item.sourceStatus === 'synthetic';
   const unavailable = item.sourceStatus === 'unavailable';
+  const sourceLabel = item.sourceShort || item.source?.split(' · ')[0];
   return (
     <article className={`kpi-card ${synthetic ? 'synthetic' : ''} ${unavailable ? 'unavailable' : ''}`}>
       <div className="kpi-topline">
@@ -144,9 +145,9 @@ function KpiCard({ item }) {
         <Sparkline points={item.trend} inverse={item.inverse} />
       </div>
       {item.source && (
-        <div className="kpi-source">
+        <div className="kpi-source" title={item.source}>
           <b>{item.sourceBadge}</b>
-          <span>{item.source}</span>
+          <span>{sourceLabel}</span>
         </div>
       )}
     </article>

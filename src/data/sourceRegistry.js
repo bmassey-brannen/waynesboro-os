@@ -880,6 +880,17 @@ export const sourceRegistry = [
     notes: 'Runtime query returned Waynesboro journey-to-work estimates: workers 16+, drove-alone, carpool, worked-from-home, and travel-time buckets. Added an Economic commute profile panel. Treat as survey context only; not live traffic volume, transit ridership, employer roster, road-safety, or downtown foot-traffic data.'
   },
   {
+    name: 'Census Reporter ACS residence one year ago table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B07003&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS B07003 geographical mobility estimates: same house, moved within county, moved from another Georgia county, another state, or abroad',
+    geography: 'Waynesboro city, Burke County, and Georgia comparison rows',
+    accessMethod: 'Public no-key Census Reporter API; low-volume request cached in src/data/mobilityResidenceSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Runtime query returned Waynesboro B07003 residence-one-year-ago context: 840 residents / 14.9% moved in the past year, mostly within Burke County or from another Georgia county. Treat as turnover/planning context only; not utility starts, leases, school enrollment change, voter files, code-enforcement evidence, or a real-time population feed.'
+  },
+  {
     name: 'Census Reporter ACS housing tenure and occupancy tables',
     url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B25003,B25002,B25077,B25064&geo_ids=16000US1380984,05000US13033,04000US13',
     dataType: 'ACS housing tenure, occupancy status, median owner-occupied value, and median gross rent estimates with margins of error',
