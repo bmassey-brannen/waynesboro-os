@@ -3933,20 +3933,17 @@ function CivicModeCard({ activePage }) {
   const liveConnectors = sourceRegistry.filter((source) => source.status === 'Live connector active').length;
   const seedConnectors = sourceRegistry.filter((source) => source.status === 'Seed connector ready').length;
   const officialLinks = officialDocumentsSnapshot.summary.documentCount;
-  const cityPopulation = metricById['waynesboro-population'];
-  const medianIncome = metricById['waynesboro-median-income'];
-  const povertyRate = povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-total')?.displayShare || 'ACS';
-  const claimsLabel = activePage === 'executive' ? 'First-screen safe' : 'Source-gated';
+  const claimsLabel = activePage === 'executive' ? 'Takeaway first' : 'Source-gated';
   const metrics = activePage === 'executive'
     ? [
-        { value: cityPopulation?.displayValue || 'N/A', label: 'residents' },
-        { value: medianIncome?.displayValue || 'N/A', label: 'median income' },
-        { value: povertyRate, label: 'poverty context' }
+        { value: 'Baseline', label: 'verified facts' },
+        { value: 'Pressure', label: 'income + poverty' },
+        { value: 'Next', label: 'housing + workforce' }
       ]
     : [
         { value: liveConnectors, label: 'live connectors' },
-        { value: seedConnectors, label: 'seed routes' },
-        { value: officialLinks, label: 'public links' }
+        { value: seedConnectors, label: 'seeded routes' },
+        { value: officialLinks, label: 'docs indexed' }
       ];
 
   return (

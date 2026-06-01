@@ -627,6 +627,17 @@ export const sourceRegistry = [
     notes: 'Supports infrastructure source labeling while operational scores remain synthetic.'
   },
   {
+    name: 'Georgia Environmental Finance Authority Water Infrastructure Financing',
+    url: 'https://gefa.georgia.gov/water-programs/water-infrastructure-financing',
+    dataType: 'State water/sewer infrastructure financing route for possible project, loan, grant, and capital-funding context',
+    geography: 'Georgia statewide; manually filter to Waynesboro, Burke County, borrower, project, or utility-system rows before use',
+    accessMethod: 'Public GEFA program page; low-volume route check only, then use official publications/exports if available. Do not infer awards from program eligibility pages.',
+    cadence: 'Program and board/publication updates as posted by GEFA; project/loan cadence must be confirmed',
+    difficulty: 'Medium',
+    status: 'Source route indexed',
+    notes: 'Low-volume check reached the GEFA water infrastructure financing page with HTTP 200 after redirect. Added src/data/gefaWaterInfrastructureSeed.js as an operations capital-funding source route only; no Waynesboro GEFA award, loan, project, capacity, or compliance claim is displayed.'
+  },
+  {
     name: 'City of Waynesboro Public Works / Solid Waste / Storm Drainage',
     url: 'https://www.waynesboroga.com/200/Public-Works',
     dataType: 'Official public works, solid waste, storm drainage, roads/maintenance information pages',
@@ -1478,6 +1489,14 @@ export const sourcePriorities = [
     source: 'FEMA NFHL / FEMA MSC / NOAA NCEI Storm Events',
     value: 'Adds defensible flood and historical severe-weather context for downtown, infrastructure, and Council planning without making unsupported parcel-risk claims.',
     nextStep: 'Confirm NFHL ArcGIS REST access outside this runtime TLS issue, then build a low-volume county/point metadata cache and filter NOAA annual Storm Events CSVs to Georgia / Burke County.',
+    difficulty: 'Medium'
+  },
+  {
+    lane: 'Water / infrastructure finance',
+    target: 'Identify official GEFA water/sewer project rows before any capital-funding card is promoted',
+    source: 'GEFA Water Infrastructure Financing',
+    value: 'Adds a state financing source route for water/sewer capital planning without implying Waynesboro has a current award, loan, capacity issue, or project claim.',
+    nextStep: 'Find GEFA board materials, award announcements, annual reports, or downloadable project lists; reconcile any Waynesboro/Burke row against city agendas, budgets, and EPD/EPA water-system records.',
     difficulty: 'Medium'
   },
   {
