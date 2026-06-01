@@ -79,6 +79,7 @@ import { veteranStatusSeed } from '../data/veteranStatusSeed.js';
 import { occupationEmploymentSeed } from '../data/occupationEmploymentSeed.js';
 import { socialVulnerabilitySeed } from '../data/socialVulnerabilitySeed.js';
 import { raceEthnicitySeed } from '../data/raceEthnicitySeed.js';
+import { vehicleTenureSeed } from '../data/vehicleTenureSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -2655,7 +2656,25 @@ function VehicleAccessPanel() {
           </article>
         ))}
       </div>
-      <p className="source-note">{vehicleAccessSeed.householdSizeCaveat} Pair this with commute, GDOT, transit/nonprofit, school, and service-location sources before any Council recommendation.</p>
+      <div className="mobility-evidence-ladder" aria-label="mobility source evidence ladder">
+        {vehicleTenureSeed.evidenceLadder.map((item) => (
+          <article key={item.label}>
+            <span>{item.label}</span>
+            <b>{item.value}</b>
+            <small>{item.note}</small>
+          </article>
+        ))}
+      </div>
+      <div className="vehicle-tenure-grid" aria-label="ACS vehicle availability by housing tenure">
+        {vehicleTenureSeed.metrics.slice(1).map((metric) => (
+          <article key={metric.id}>
+            <span>{metric.label}</span>
+            <b>{metric.displayShare}</b>
+            <small>{metric.displayValue} households · {metric.displayMoe}</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{vehicleAccessSeed.householdSizeCaveat} Added B25044 tenure split: renter zero-vehicle households are {vehicleTenureSeed.metrics.find((metric) => metric.id === 'renter-zero-vehicle')?.displayShare || 'N/A'} of renter households in the cached ACS seed. {vehicleTenureSeed.posture} Pair with commute, GDOT, transit/nonprofit, school, and service-location sources before any Council recommendation.</p>
     </section>
   );
 }
@@ -3548,6 +3567,7 @@ function PageBriefStrip({ page }) {
       { label: 'Affordability', value: housingCostBurdenSeed.metrics.find((metric) => metric.id === 'renter-cost-burden')?.displayShare || 'ACS seeded', detail: 'Renter cost-burden survey context with MOE caveats.' },
       { label: 'Housing type', value: housingStructureSeed.derived.find((item) => item.id === 'small-multifamily')?.displayShare || 'ACS seeded', detail: 'B25024 units-in-structure context; not parcels, zoning, or permits.' },
       { label: 'Crowding', value: housingCrowdingSeed.derived.find((item) => item.id === 'all-overcrowded')?.displayShare || 'ACS seeded', detail: 'B25014 occupants-per-room context; zero estimate carries MOE and is not an inspection or service record.' },
+      { label: 'Mobility tenure', value: vehicleTenureSeed.metrics.find((metric) => metric.id === 'renter-zero-vehicle')?.displayShare || 'B25044', detail: 'Renter zero-vehicle context; pair with service locations, transit/nonprofit routes, commute, and GDOT before recommendations.' },
       { label: 'Home values', value: homeValueDistributionSeed.brackets.find((item) => item.id === '200k-299k')?.displayShare || 'ACS seeded', detail: 'B25075 value distribution; not assessments, sales, or tax records.' }
     ],
     council: [

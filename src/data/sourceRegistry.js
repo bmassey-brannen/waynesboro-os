@@ -847,6 +847,17 @@ export const sourceRegistry = [
     notes: 'Runtime query returned household vehicle-availability context for Waynesboro, Burke County, and Georgia, including zero-vehicle households. Added an Operations mobility-access panel. Treat as ACS survey context only; not live traffic, transit ridership, hardship, service demand, school transportation, emergency response, or municipal telemetry.'
   },
   {
+    name: 'Census Reporter ACS tenure by vehicles available table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B25044&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS B25044 owner/renter household vehicle-availability estimates with city/county/state comparison context',
+    geography: 'Waynesboro city, Georgia (16000US1380984), Burke County (05000US13033), and Georgia (04000US13)',
+    accessMethod: 'Public no-key Census Reporter API; low-volume request cached in src/data/vehicleTenureSeed.js after retrying with a descriptive User-Agent.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024 release.',
+    difficulty: 'Low',
+    status: 'Public API seed ready',
+    notes: 'Runtime query returned Waynesboro B25044 context: 353 zero-vehicle households / 16.0% overall and 22.7% of renter households. Added an Operations mobility evidence ladder and tenure split. Treat strictly as ACS survey context; not vehicle registration, transit ridership, traffic volume, school transportation records, emergency response, or municipal telemetry.'
+  },
+  {
     name: 'Census Reporter ACS disability-by-age table',
     url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B18101&geo_ids=16000US1380984,05000US13033,04000US13',
     dataType: 'ACS B18101 disability-status estimates by sex and age with city/county/state comparison context',
@@ -982,7 +993,7 @@ export const readinessStrip = [
   { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },
   { lane: 'Utilities', status: 'Water + energy context', source: 'City Water Rates / EPA SDWIS / Georgia EPD DWW / ACS B25040', tone: 'good' },
   { lane: 'Digital access', status: 'ACS context + FCC route', source: 'Census Reporter B28002 / FCC BDC', tone: 'good' },
-  { lane: 'Mobility access', status: 'ACS vehicle + disability seeds', source: 'Census Reporter B08201 / B18101', tone: 'good' },
+  { lane: 'Mobility access', status: 'ACS vehicle + tenure + disability seeds', source: 'Census Reporter B08201 / B25044 / B18101', tone: 'good' },
   { lane: 'Housing', status: 'ACS tenure + burden + monthly costs + age + typology + crowding + values + LIHTC route', source: 'Census Reporter B25003/B25002/B25070/B25091/B25064/B25088/B25034/B25024/B25014/B25075 / City DocumentCenter / Georgia DCA', tone: 'good' },
   { lane: 'Environmental', status: 'CWA + RCRA seeds ready', source: 'EPA ECHO Clean Water Act / RCRA', tone: 'good' },
   { lane: 'Hydrology', status: 'USGS IV snapshot', source: 'USGS NWIS Site + Instantaneous Values', tone: 'good' },
@@ -1056,9 +1067,9 @@ export const sourcePriorities = [
   {
     lane: 'Mobility access',
     target: 'Reconcile ACS vehicle availability with service-location and transportation evidence',
-    source: 'Census Reporter ACS B08201 household vehicle availability table',
-    value: 'Adds city/county/state zero-vehicle household context without inventing transit ridership, hardship, or service-demand claims.',
-    nextStep: 'Propagate derived MOE, pair with commute tables, LEHD/LODES, GDOT, nonprofit/transit routes, school transportation sources, and service-location maps before Council recommendations.',
+    source: 'Census Reporter ACS B08201 household vehicle availability table + B25044 tenure-by-vehicle table',
+    value: 'Adds city/county/state zero-vehicle household context and owner/renter tenure splits without inventing transit ridership, hardship, or service-demand claims.',
+    nextStep: 'Propagate derived MOE for combined zero-vehicle shares, pair with commute tables, LEHD/LODES, GDOT, nonprofit/transit routes, school transportation sources, and service-location maps before Council recommendations.',
     difficulty: 'Low'
   },
   {
