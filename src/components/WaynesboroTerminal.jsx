@@ -38,6 +38,7 @@ import { laborForceSeed } from '../data/laborForceSeed.js';
 import { qcewPayrollSeed } from '../data/qcewPayrollSeed.js';
 import { salesTaxDistributionSeed } from '../data/salesTaxDistributionSeed.js';
 import { cityPermittingSeed } from '../data/cityPermittingSeed.js';
+import { censusBuildingPermitsSeed } from '../data/censusBuildingPermitsSeed.js';
 import { federalSpendingSeed } from '../data/federalSpendingSeed.js';
 import { civicParticipationSeed } from '../data/civicParticipationSeed.js';
 import { communityDevelopmentSeed } from '../data/communityDevelopmentSeed.js';
@@ -1717,6 +1718,54 @@ function CityPermittingIntakePanel() {
   );
 }
 
+function CensusBuildingPermitsPanel() {
+  const money = (value) => `$${(value / 1000000).toFixed(2)}M`;
+  const cards = [
+    {
+      label: 'April county units',
+      value: censusBuildingPermitsSeed.currentMonth.totalUnits.toLocaleString(),
+      detail: `${censusBuildingPermitsSeed.currentMonth.oneUnitUnits} one-unit + ${censusBuildingPermitsSeed.currentMonth.fivePlusUnits} five-plus units · ${money(censusBuildingPermitsSeed.currentMonth.totalValue)}`
+    },
+    {
+      label: '2026 YTD county units',
+      value: censusBuildingPermitsSeed.yearToDate.totalUnits.toLocaleString(),
+      detail: `${censusBuildingPermitsSeed.yearToDate.totalBuildings} residential buildings · ${money(censusBuildingPermitsSeed.yearToDate.totalValue)} reported valuation`
+    },
+    {
+      label: 'Geography guardrail',
+      value: 'Burke County',
+      detail: 'Federal BPS FIPS 13-033 row; not a Waynesboro permit count or project approval list.'
+    }
+  ];
+
+  return (
+    <section className="building-permits-panel" aria-label="Census building permits county seed panel">
+      <div className="bridge-head">
+        <div>
+          <span className="eyebrow">BUILDING PERMITS · COUNTY BPS SEED</span>
+          <h3>Census county permit files add a source-backed bridge before local permit records</h3>
+        </div>
+        <span className="terminal-badge live">NO-KEY PUBLIC FILE</span>
+      </div>
+      <div className="building-permits-grid">
+        {cards.map((card) => (
+          <article key={card.label}>
+            <span>{card.label}</span>
+            <b>{card.value}</b>
+            <small>{card.detail}</small>
+          </article>
+        ))}
+      </div>
+      <div className="permit-source-links">
+        <a href={censusBuildingPermitsSeed.sourceUrl} target="_blank" rel="noreferrer">YTD county file</a>
+        <a href={censusBuildingPermitsSeed.monthlySourceUrl} target="_blank" rel="noreferrer">Current-month county file</a>
+        <a href={censusBuildingPermitsSeed.programUrl} target="_blank" rel="noreferrer">BPS program page</a>
+      </div>
+      <p>{censusBuildingPermitsSeed.caveat} Retrieved {new Date(censusBuildingPermitsSeed.retrievedAt).toLocaleDateString()}.</p>
+    </section>
+  );
+}
+
 function EconomicEvidenceStrip() {
   const cards = [
     {
@@ -1799,6 +1848,7 @@ function EconomicDevelopment() {
         </div>
         <BusinessSurfacePanel />
         <CityPermittingIntakePanel />
+        <CensusBuildingPermitsPanel />
         <LaborForceSourcePanel />
         <QcewPayrollPanel />
         <IncomeDistributionPanel />
@@ -4014,7 +4064,8 @@ function PageBriefStrip({ page }) {
       { label: 'School lens', value: schoolEnrollmentSeed.enrolled.displayShare, detail: 'ACS B14001 age-3+ enrollment context; not district enrollment or school performance.' },
       { label: 'Revenue', value: 'DOR route', detail: 'Sales tax remains row-parse pending.' },
       { label: 'Payroll', value: `${qcewPayrollSeed.totalCovered.employment.toLocaleString()} jobs`, detail: 'BLS QCEW Burke covered employment; county context only, disclosure-aware.' },
-      { label: 'Income', value: incomeDistributionSeed.rollups?.under50k?.displayShare || 'ACS seeded', detail: 'Household bracket context is source-labeled.' }
+      { label: 'Income', value: incomeDistributionSeed.rollups?.under50k?.displayShare || 'ACS seeded', detail: 'Household bracket context is source-labeled.' },
+      { label: 'Permits', value: `${censusBuildingPermitsSeed.yearToDate.totalUnits} county units`, detail: 'Census BPS residential county YTD seed; not city permit history or project approvals.' }
     ],
     downtown: [
       { label: 'Map posture', value: 'Schematic', detail: 'OSM/TIGER seeds support orientation only.' },

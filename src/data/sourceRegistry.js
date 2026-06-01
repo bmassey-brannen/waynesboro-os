@@ -22,15 +22,15 @@ export const sourceRegistry = [
     notes: 'Candidate query shape: get=NAME,DP05_0001E,DP03_0062E,DP03_0005PE&for=place:*&in=state:13. Confirm Waynesboro place code during integration.'
   },
   {
-    name: 'U.S. Census Building Permits Survey API',
-    url: 'https://api.census.gov/data/timeseries/eits/bps',
-    dataType: 'Monthly building permit counts and valuation by state/county/place where published',
-    geography: 'Burke County / Georgia; confirm whether Waynesboro place-level series are available',
-    accessMethod: 'Public Census API endpoint; this environment returned a valid-key requirement, so use an environment API key for scheduled pulls.',
-    cadence: 'Monthly Census Building Permits Survey releases',
-    difficulty: 'Medium',
-    status: 'Connector planned',
-    notes: 'Good candidate to replace synthetic housing/development permit cards. Start with county-level permit trend, then test place-level coverage for Waynesboro.'
+    name: 'U.S. Census Building Permits Survey county ASCII files',
+    url: 'https://www2.census.gov/econ/bps/County/',
+    dataType: 'County residential building-permit units, buildings, and valuation by month and year-to-date, broken out by structure type',
+    geography: 'Burke County, Georgia FIPS 13-033; county context only until city permit records are integrated',
+    accessMethod: 'Public Census HTTPS directory; low-volume read of co2604c.txt and co2604y.txt cached in src/data/censusBuildingPermitsSeed.js.',
+    cadence: 'Monthly Census Building Permits Survey releases; files are posted by YYMM current and YTD pairs.',
+    difficulty: 'Low',
+    status: 'No-key API seed ready',
+    notes: 'Runtime check on 2026-06-01 located Burke County rows in April 2026 current/YTD county files: 12 residential units / $2.89M current month and 24 units / $6.47M YTD. Added an Economic permits bridge panel. Treat as county residential construction context only; not Waynesboro city permit history, commercial permits, parcel status, or project approval evidence.'
   },
   {
     name: 'Census Reporter API / Profile',
@@ -1122,7 +1122,7 @@ export const readinessStrip = [
   { lane: 'Economy', status: 'Workforce + industry + occupation + income + commute', source: 'BLS LAUS + ACS B19001/B15003/B23025/C24030/C24010 + LEHD/LODES + CBP', tone: 'good' },
   { lane: 'Education', status: 'GaDOE routes + ACS enrollment seed', source: 'Georgia Insights + Burke County Public Schools + Census Reporter B14001', tone: 'good' },
   { lane: 'Finance', status: 'Budget PDFs + sales-tax + digest routes', source: 'UGA CVIOG / Georgia DOR Distributions / Digest Compliance', tone: 'good' },
-  { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },
+  { lane: 'Permits', status: 'City route index + Census county BPS seed', source: 'City Building Permits / Open Records / Census BPS County files', tone: 'good' },
   { lane: 'Utilities', status: 'Water + gas + energy context', source: 'City Water/Natural Gas pages / EPA SDWIS / Georgia EPD DWW / ACS B25040', tone: 'good' },
   { lane: 'Digital access', status: 'ACS context + FCC route', source: 'Census Reporter B28002 / FCC BDC', tone: 'good' },
   { lane: 'Mobility access', status: 'ACS vehicle + tenure + disability seeds', source: 'Census Reporter B08201 / B25044 / B18101', tone: 'good' },
