@@ -317,7 +317,7 @@ function BaselineComparisonPanel() {
           </article>
         ))}
       </div>
-      <p className="baseline-brief"><b>Mayor brief:</b> Waynesboro is roughly {cityShareCounty == null ? 'n/a' : formatPercent(cityShareCounty, 1)} of Burke County’s population, but its income baseline trails both county and state levels. Treat economic mobility, housing quality, and downtown reinvestment as linked priorities until parcel, permit, and budget evidence narrows the map.</p>
+      <p className="baseline-brief"><b>Executive read:</b> Waynesboro is roughly {cityShareCounty == null ? 'n/a' : formatPercent(cityShareCounty, 1)} of Burke County’s population, but its income baseline trails both county and state levels. Treat economic mobility, housing quality, and downtown reinvestment as linked priorities until parcel, permit, and budget evidence narrows the map.</p>
     </section>
   );
 }
@@ -345,7 +345,7 @@ function AgeProfilePanel() {
           </article>
         ))}
       </div>
-      <p className="baseline-brief"><b>Council read:</b> ACS estimates show {peakGroup.label.toLowerCase()} as the largest age band in the cached profile ({peakGroup.displayShare}). Use this as service-demand framing only: school, EMS, recreation, housing, health, and workforce records still gate any department-level recommendation.</p>
+      <p className="baseline-brief"><b>Planning read:</b> ACS estimates show {peakGroup.label.toLowerCase()} as the largest age band in the cached profile ({peakGroup.displayShare}). Use this as service-demand framing only: school, EMS, recreation, housing, health, and workforce records still gate any department-level recommendation.</p>
     </section>
   );
 }
@@ -701,7 +701,7 @@ function SnapAssistancePanel() {
         <article>
           <span>Use with</span>
           <b>Food access</b>
-          <small>Pair with USDA ERS tract extraction, poverty status, vehicle access, and local service-location maps before any Council recommendation.</small>
+          <small>Pair with USDA ERS tract extraction, poverty status, vehicle access, and local service-location maps before any public recommendation.</small>
         </article>
       </div>
       <div className="poverty-comparison-strip">
@@ -2567,7 +2567,7 @@ function HealthEquitySourcePanel() {
         <article>
           <span>Best use</span>
           <b>Grant and resilience context</b>
-          <small>Pair with ACS, hazards, and local service records before Council recommendations.</small>
+          <small>Pair with ACS, hazards, and local service records before public recommendations.</small>
         </article>
       </div>
       <div className="health-equity-samples">
@@ -3007,7 +3007,7 @@ function VehicleAccessPanel() {
           </article>
         ))}
       </div>
-      <p className="source-note">{vehicleAccessSeed.householdSizeCaveat} Added B25044 tenure split: renter zero-vehicle households are {vehicleTenureSeed.metrics.find((metric) => metric.id === 'renter-zero-vehicle')?.displayShare || 'N/A'} of renter households in the cached ACS seed. {vehicleTenureSeed.posture} Pair with commute, GDOT, transit/nonprofit, school, and service-location sources before any Council recommendation.</p>
+      <p className="source-note">{vehicleAccessSeed.householdSizeCaveat} Added B25044 tenure split: renter zero-vehicle households are {vehicleTenureSeed.metrics.find((metric) => metric.id === 'renter-zero-vehicle')?.displayShare || 'N/A'} of renter households in the cached ACS seed. {vehicleTenureSeed.posture} Pair with commute, GDOT, transit/nonprofit, school, and service-location sources before any public recommendation.</p>
     </section>
   );
 }
@@ -3810,7 +3810,7 @@ function Council() {
       label: 'Still placeholder',
       confidence: 'Needs source',
       title: 'Crime, permits, downtown occupancy, beautification, and parcel-level claims',
-      note: 'Council recommendations must stay framed as hypotheses until these lanes have official exports or public aggregates.'
+      note: 'Public recommendations must stay framed as hypotheses until these lanes have official exports or public aggregates.'
     }
   ];
 
@@ -3935,20 +3935,32 @@ function CivicModeCard({ activePage }) {
   const liveConnectors = sourceRegistry.filter((source) => source.status === 'Live connector active').length;
   const seedConnectors = sourceRegistry.filter((source) => source.status === 'Seed connector ready').length;
   const officialLinks = officialDocumentsSnapshot.summary.documentCount;
+  const cityPopulation = metricById['waynesboro-population'];
+  const medianIncome = metricById['waynesboro-median-income'];
+  const povertyRate = povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-total')?.displayShare || 'ACS';
   const claimsLabel = activePage === 'executive' ? 'First-screen safe' : 'Source-gated';
+  const metrics = activePage === 'executive'
+    ? [
+        { value: cityPopulation?.displayValue || 'N/A', label: 'residents' },
+        { value: medianIncome?.displayValue || 'N/A', label: 'median income' },
+        { value: povertyRate, label: 'poverty context' }
+      ]
+    : [
+        { value: liveConnectors, label: 'live connectors' },
+        { value: seedConnectors, label: 'seed routes' },
+        { value: officialLinks, label: 'public links' }
+      ];
 
   return (
     <aside className="civic-mode-card" aria-label="public demo claim discipline">
       <div className="civic-mode-head">
-        <b>Civic demo mode</b>
+        <b>{activePage === 'executive' ? 'At a glance' : 'Civic demo mode'}</b>
         <span>{claimsLabel}</span>
       </div>
       <div className="civic-mode-metrics">
-        <span><b>{liveConnectors}</b><small>live connectors</small></span>
-        <span><b>{seedConnectors}</b><small>seed routes</small></span>
-        <span><b>{officialLinks}</b><small>public links</small></span>
+        {metrics.map((item) => <span key={item.label}><b>{item.value}</b><small>{item.label}</small></span>)}
       </div>
-      <p>Baselines and placeholders are labeled. Anything without source, geography, and timestamp stays off the headline dashboard.</p>
+      <p>{activePage === 'executive' ? 'Executive home now opens with public-context takeaways; source inventory lives on the Sources page.' : 'Baselines and placeholders are labeled. Anything without source, geography, and timestamp stays off the headline dashboard.'}</p>
     </aside>
   );
 }
@@ -3958,10 +3970,6 @@ function CivicBriefingStrip() {
   const medianIncome = metricById['waynesboro-median-income'];
   const povertyRate = povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-total')?.displayShare || 'ACS seeded';
   const snapShare = snapAssistanceSeed.metrics.find((metric) => metric.id === 'snap-households')?.displayShare || 'ACS seeded';
-  const latestDocYear = officialDocumentsSnapshot.recentDocuments
-    .map((doc) => Number(doc.year))
-    .filter(Boolean)
-    .sort((a, b) => b - a)[0];
 
   const briefItems = [
     {
@@ -3975,14 +3983,9 @@ function CivicBriefingStrip() {
       detail: 'ACS survey context only; not eligibility, benefits files, or municipal service workload.'
     },
     {
-      label: 'Record trail',
-      value: `${officialDocumentsSnapshot.summary.documentCount} public links`,
-      detail: `Metadata indexed${latestDocYear ? ` · latest year ${latestDocYear}` : ''}; document text still requires review.`
-    },
-    {
-      label: 'Route watch',
-      value: `${civicAccessRoutesSeed.routes.length} official routes checked`,
-      detail: 'Agenda Center, Document Center, sitemap, and license/permit route are access paths, not facts.'
+      label: 'Operating takeaway',
+      value: 'Housing + workforce next',
+      detail: 'The first screen points to affordability, age mix, housing stock, and county labor context before policy claims.'
     }
   ];
 
@@ -3990,8 +3993,8 @@ function CivicBriefingStrip() {
     <section className="civic-briefing-strip executive-lead-brief" aria-label="civic briefing snapshot">
       <div className="briefing-lead-copy">
         <span className="eyebrow">EXECUTIVE SNAPSHOT</span>
-        <h2>Verified baseline first. Questions and source inventory come later.</h2>
-        <p>The home page is now for quick takeaways only: population, income, poverty, housing, age, and county workforce context.</p>
+        <h2>What matters first: people, income pressure, housing, and workforce context.</h2>
+        <p>Source mechanics stay out of the opening screen unless they change the takeaway.</p>
       </div>
       <div className="briefing-cards">
         {briefItems.map((item) => (
@@ -4167,7 +4170,7 @@ export default function WaynesboroTerminal({ page = 'executive' }) {
         <section className="page-switcher" aria-label="Waynesboro OS page groups">
           {nav.map((item) => <a key={item.id} href={item.href} className={activePage === item.id ? 'active' : ''}>{item.label}</a>)}
         </section>
-        <PageBriefStrip page={activePage} />
+        {activePage !== 'executive' && <PageBriefStrip page={activePage} />}
         <PageContent page={activePage} />
       </section>
     </main>

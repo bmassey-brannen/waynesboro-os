@@ -638,6 +638,17 @@ export const sourceRegistry = [
     notes: 'Sitemap exposes Police and Fire pages. Public-safety KPIs must stay synthetic until aggregate incident/response records are officially published or obtained.'
   },
   {
+    name: 'Georgia Power Outage Map and Storm Center',
+    url: 'https://outagemap.georgiapower.com/',
+    dataType: 'Public electric-outage map and storm-center source route for resilience awareness and external utility status context',
+    geography: 'Georgia Power service territory; Waynesboro/Burke relevance requires service-territory verification and city utility cross-checks',
+    accessMethod: 'Public web map and public storm-center pages; manual/reference use first, then only documented or approved feeds if offered. Do not scrape live tiles, customer systems, or private outage details.',
+    cadence: 'Operational/live map; exact refresh cadence not documented in the seed',
+    difficulty: 'Medium',
+    status: 'Source route verified',
+    notes: 'Low-volume public check on 2026-06-01 returned HTTP 200 for the outage map and Georgia Power storm-center page. Added src/data/outageReadinessSeed.js as a source-route stub only. Do not present outage counts, response times, service-territory conclusions, customer-impact estimates, or reliability claims until an approved geography-filtered data path is available.'
+  },
+  {
     name: 'Georgia Bureau of Investigation Crime Statistics',
     url: 'https://gbi.georgia.gov/services/crime-statistics',
     dataType: 'State public crime-statistics service surface and Georgia crime-reporting context',
