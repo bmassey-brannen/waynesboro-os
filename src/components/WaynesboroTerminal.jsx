@@ -718,6 +718,26 @@ function SnapAssistancePanel() {
   );
 }
 
+function ExecutiveContextDetails() {
+  return (
+    <details className="executive-context-details">
+      <summary>
+        <span>Additional ACS context</span>
+        <b>Open demographic and service-planning drilldowns</b>
+        <small>Youth, race/ethnicity, household mix, household size, veterans, and SNAP stay collapsed until needed.</small>
+      </summary>
+      <div className="executive-context-stack">
+        <SnapAssistancePanel />
+        <YouthProfilePanel />
+        <RaceEthnicityPanel />
+        <HouseholdCompositionPanel />
+        <HouseholdSizePanel />
+        <VeteranStatusPanel />
+      </div>
+    </details>
+  );
+}
+
 function ExecutiveDashboard() {
   const executiveKpis = buildExecutiveKpis();
   return (
@@ -725,18 +745,13 @@ function ExecutiveDashboard() {
       <div className="module-title">
         <span className="eyebrow">EXECUTIVE DASHBOARD</span>
         <h1>Waynesboro baseline snapshot</h1>
-        <p>Only headline indicators with source-backed context. Detailed source inventory lives on the Sources page.</p>
+        <p>Headline source-backed takeaways first. Secondary ACS context is available as a drilldown; source inventory stays on the Sources page.</p>
       </div>
       <div className="kpi-grid">{executiveKpis.map((item) => <KpiCard key={item.label} item={item} />)}</div>
       <BaselineComparisonPanel />
       <PovertyStatusPanel />
-      <SnapAssistancePanel />
       <AgeProfilePanel />
-      <YouthProfilePanel />
-      <RaceEthnicityPanel />
-      <HouseholdCompositionPanel />
-      <HouseholdSizePanel />
-      <VeteranStatusPanel />
+      <ExecutiveContextDetails />
     </section>
   );
 }
@@ -4138,7 +4153,7 @@ export default function WaynesboroTerminal({ page = 'executive' }) {
       <aside className="sidebar">
         <div className="brand-mark"><span>W</span><div><b>Waynesboro OS</b><small>Municipal Intelligence Terminal</small></div></div>
         <nav>{nav.map((item) => <a key={item.id} href={item.href} className={activePage === item.id ? 'active' : ''}>{item.label}</a>)}</nav>
-        <div className="sidebar-note"><b>Public demo</b><span>Verified facts first. Placeholder or source-route material stays labeled and lower in the hierarchy.</span></div>
+        <div className="sidebar-note"><b>Public demo</b><span>Verified facts first; synthetic mock data or source-route material stays labeled and lower in the hierarchy.</span></div>
       </aside>
       <section className="workspace paged-workspace">
         <header className="topbar">

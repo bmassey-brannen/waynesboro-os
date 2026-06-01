@@ -265,6 +265,32 @@ a { color: inherit; }
 .kpi-source b, .kpi-source span { display: block; }
 .kpi-source b { color: var(--forest-2); font-size: 9px; text-transform: uppercase; letter-spacing: .11em; font-weight: 900; }
 .kpi-source span { margin-top: 2px; color: var(--muted); font-size: 10px; line-height: 1.25; overflow-wrap: anywhere; }
+.executive-context-details {
+  margin-top: 12px;
+  border: 1px dashed rgba(31,93,66,.28);
+  background: rgba(255,255,255,.72);
+  box-shadow: 0 8px 20px rgba(20,32,27,.045);
+}
+.executive-context-details summary {
+  display: grid;
+  grid-template-columns: .34fr .66fr;
+  gap: 4px 14px;
+  align-items: center;
+  list-style: none;
+  cursor: pointer;
+  padding: 12px 14px;
+}
+.executive-context-details summary::-webkit-details-marker { display: none; }
+.executive-context-details summary span,
+.executive-context-details summary b,
+.executive-context-details summary small { display: block; min-width: 0; overflow-wrap: anywhere; }
+.executive-context-details summary span { color: var(--gold); font-size: 10px; text-transform: uppercase; letter-spacing: .12em; font-weight: 900; }
+.executive-context-details summary b { color: var(--forest-2); font-size: 16px; letter-spacing: -.02em; }
+.executive-context-details summary small { grid-column: 2; color: var(--muted); font-size: 11px; line-height: 1.35; }
+.executive-context-details summary::after { content: 'Open +'; justify-self: end; color: var(--forest-2); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .12em; }
+.executive-context-details[open] summary::after { content: 'Close –'; }
+.executive-context-stack { padding: 0 12px 12px; }
+.executive-context-stack > section:first-child { margin-top: 0; }
 .spark { width: 112px; height: 30px; overflow: visible; }
 .spark path { fill: none; stroke-width: 2.2; vector-effect: non-scaling-stroke; }
 .spark-good { stroke: var(--good); }
@@ -1250,6 +1276,9 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .sidebar-note { position: static; margin-top: 16px; }
   .workspace { padding: 10px; }
   .topbar, .module-title { display: block; }
+  .executive-context-details summary { grid-template-columns: 1fr; }
+  .executive-context-details summary small { grid-column: auto; }
+  .executive-context-details summary::after { justify-self: start; }
   .civic-mode-card { width: auto; min-width: 0; margin-top: 12px; text-align: left; }
   .trust-ribbon { grid-template-columns: 1fr; }
   .briefing-cards { grid-template-columns: 1fr; }

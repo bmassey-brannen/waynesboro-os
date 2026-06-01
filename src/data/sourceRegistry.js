@@ -396,6 +396,17 @@ export const sourceRegistry = [
     notes: 'Low-volume public check found City Maps, SmallMaps/ArcGIS app links, and DocumentCenter map PDFs. Added src/data/cityMapSourceSeed.js and a downtown map source stack. This improves map credibility but does not replace qPublic parcels or live GIS geometry.'
   },
   {
+    name: 'NPS / ArcGIS National Register of Historic Places feature service',
+    url: 'https://services2.arcgis.com/qvkbeam7Wirps6zC/ArcGIS/rest/services/national_register_of_historic_places/FeatureServer',
+    dataType: 'National Register property identity, resource names, addresses, listed dates, categories, and external record URLs for historic-resource and downtown context',
+    geography: 'National layer; Waynesboro/Burke filtering requires reconciled city boundary, historic-district PDF, or record IDs before claims',
+    accessMethod: 'Public ArcGIS REST feature service; low-volume metadata/query review only until NPS/NPGallery records and city historic-district boundaries are reconciled.',
+    cadence: 'Federal/state historic-resource updates are periodic; service metadata exposes edit timestamps but app snapshots need explicit retrieval dates.',
+    difficulty: 'Medium',
+    status: 'Source route indexed',
+    notes: 'Runtime check reached the feature service, confirmed query/export support, and identified fields including resource_name, address, city, listed_date, and property_category. Initial Waynesboro name/bounding-box queries returned no features, so this remains a source route only, not a local historic-resource claim.'
+  },
+  {
     name: 'City of Waynesboro Business / Resource Directory surface',
     url: 'https://www.waynesboroga.com/35/Business',
     dataType: 'Official business navigation, Resource Directory / Local Businesses, Downtown Businesses category, available downtown properties, licenses/permits, bid postings, and jobs modules',
