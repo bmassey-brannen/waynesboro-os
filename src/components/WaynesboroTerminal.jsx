@@ -84,6 +84,7 @@ import { vehicleTenureSeed } from '../data/vehicleTenureSeed.js';
 import { mentalHealthResourcesSeed } from '../data/mentalHealthResourcesSeed.js';
 import { publicWorksServiceSeed } from '../data/publicWorksServiceSeed.js';
 import { tenureIncomeSeed } from '../data/tenureIncomeSeed.js';
+import { parksFacilitiesSeed } from '../data/parksFacilitiesSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -2601,6 +2602,48 @@ function PublicWorksServiceRoutePanel() {
   );
 }
 
+function ParksFacilitiesPanel() {
+  const featuredFacilities = parksFacilitiesSeed.facilities.slice(0, 3);
+
+  return (
+    <section className="panel parks-facilities-panel" aria-label="official parks and civic facilities source route">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">PARKS / CIVIC FACILITIES SOURCE</span>
+          <h2>Service-location routes before access, condition, or program claims</h2>
+        </div>
+        <span className="terminal-badge gold">OFFICIAL ROUTE INDEX</span>
+      </div>
+      <div className="parks-facilities-hero">
+        <article>
+          <span>{parksFacilitiesSeed.status}</span>
+          <b>{parksFacilitiesSeed.observedShape.facilityRoutesObserved} facility routes</b>
+          <small>{parksFacilitiesSeed.observedShape.detailPagesChecked} detail pages checked · retrieved {new Date(parksFacilitiesSeed.retrievedAt).toLocaleDateString()}</small>
+          <a href={parksFacilitiesSeed.sourceUrl} target="_blank" rel="noreferrer">Open official Facilities directory</a>
+        </article>
+        <div>
+          <h3>Why this belongs in Operations</h3>
+          <p>{parksFacilitiesSeed.posture}</p>
+          <p>It gives the public-facing app a real civic-asset spine for parks, meeting space, youth amenities, and future service-location mapping without pretending to know utilization or condition.</p>
+        </div>
+      </div>
+      <div className="parks-facilities-grid">
+        {featuredFacilities.map((facility) => (
+          <a key={facility.id} href={facility.url} target="_blank" rel="noreferrer">
+            <span>{facility.type}</span>
+            <b>{facility.name}</b>
+            <small>{facility.observedFeatures.length ? facility.observedFeatures.join(' · ') : 'Route metadata only; feature QA pending'}</small>
+          </a>
+        ))}
+      </div>
+      <div className="parks-facilities-actions">
+        {parksFacilitiesSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p className="source-note">{parksFacilitiesSeed.caveat} Access method: {parksFacilitiesSeed.accessMethod}</p>
+    </section>
+  );
+}
+
 function BroadbandAccessPanel() {
   const digitalMetrics = internetSubscriptionSeed.metrics.filter((metric) => [
     'with-internet-subscription',
@@ -3393,6 +3436,7 @@ function InfrastructureSafetyHousing() {
     <section id="operations" className="module operations-module">
       <OperationsConfidenceStrip />
       <PublicWorksServiceRoutePanel />
+      <ParksFacilitiesPanel />
       <div className="three-stack">
         <section className="panel">
           <div className="panel-head"><div><span className="eyebrow">INFRASTRUCTURE</span><h2>System health</h2></div><span className="terminal-badge">SYNTHETIC</span></div>
@@ -3751,6 +3795,7 @@ function PageBriefStrip({ page }) {
       { label: 'Accessibility', value: disabledMetric?.displayShare || 'ACS seeded', detail: 'Disability context added for planning only.' },
       { label: 'Health access', value: healthInsuranceSeed.metrics.find((metric) => metric.id === 'uninsured-total')?.displayShare || 'ACS seeded', detail: 'B27010 insurance-coverage context; not enrollment, clinical, or service-demand data.' },
       { label: 'Service routes', value: 'City resource page', detail: 'Mental-health links indexed as navigation only; not clinical, crisis-call, or utilization data.' },
+      { label: 'Facilities', value: `${parksFacilitiesSeed.observedShape.facilityRoutesObserved} routes`, detail: 'Official parks/facilities pages indexed as service-location routes; not condition, attendance, availability, or maintenance telemetry.' },
       { label: 'SVI resilience', value: socialVulnerabilitySeed.summary.find((item) => item.label === 'Highest overall SVI percentile')?.value || 'CDC seeded', detail: 'Burke County tract vulnerability context; not yet a city score or live emergency feed.' },
       { label: 'Energy mix', value: utilityEnergySeed.metrics.find((metric) => metric.id === 'electricity')?.displayShare || 'ACS seeded', detail: 'B25040 heating-fuel context; not utility accounts, outage exposure, or rate burden.' },
       { label: 'TRI route', value: `${toxicReleaseInventorySeed.query.rowsReturned} EPA rows`, detail: 'EPA Envirofacts TRI facility identity seed; not emissions, risk, violation, zoning, or inspection evidence.' },

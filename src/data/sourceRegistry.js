@@ -1021,6 +1021,17 @@ export const sourceRegistry = [
     difficulty: 'Low',
     status: 'Official route index ready',
     notes: 'Runtime confirmed HTTP 200 for 10 city operations/service pages and cached src/data/publicWorksServiceSeed.js. Added a top Operations route-spine panel above synthetic health cards. Treat as service-navigation source context only; not work-order counts, complaint volume, staffing, asset condition, outage status, response time, or operating performance.'
+  },
+  {
+    name: 'City of Waynesboro Facilities directory',
+    url: 'https://www.waynesboroga.com/Facilities',
+    dataType: 'Official city parks, public spaces, and civic facility route index with feature labels and facility-detail pages',
+    geography: 'City of Waynesboro public facilities and parks pages',
+    accessMethod: 'Public CivicEngage directory/detail-page review; low-volume HTTP 200 confirmation for the directory and five facility routes; no forms submitted.',
+    cadence: 'As posted by city staff; facility pages update as public facility information changes.',
+    difficulty: 'Low',
+    status: 'Official route index ready',
+    notes: 'Runtime page review found the Facilities directory and five official facility routes: City Park, Mini Park, Park at Liberty and Ninth, Davis Park (Sixth Street Park), and the City of Waynesboro Ice Plant. Added src/data/parksFacilitiesSeed.js and an Operations parks/facilities panel. Treat as service-location/civic-asset source routing only; not condition, availability, attendance, reservation, accessibility, maintenance, or capital-need evidence.'
   }
 ];
 
@@ -1047,6 +1058,7 @@ export const readinessStrip = [
   { lane: 'Civic participation', status: 'Reference routes', source: 'Burke Elections / Georgia SOS MVP', tone: 'watch' },
   { lane: 'Policy / zoning', status: 'Route index', source: 'City Community Development / DocumentCenter', tone: 'watch' },
   { lane: 'Public works', status: 'Official service routes indexed', source: 'City Public Works / Solid Waste / Streets / Storm Drainage / Natural Gas', tone: 'good' },
+  { lane: 'Parks / facilities', status: 'Official facility routes indexed', source: 'City Facilities directory', tone: 'good' },
   { lane: 'Transportation', status: 'GeoPI route verified', source: 'GDOT GeoPI Project Information', tone: 'watch' },
   { lane: 'Health access', status: 'ACS insurance + city resource route', source: 'Census Reporter B27010 / City Mental Health Resources', tone: 'good' },
   { lane: 'Health equity', status: 'PLACES + SVI + food access', source: 'CDC PLACES / CDC-ATSDR SVI / USDA ERS Food Access Atlas', tone: 'watch' }
