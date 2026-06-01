@@ -968,6 +968,17 @@ export const sourceRegistry = [
     notes: 'Runtime query returned Waynesboro veteran-status context: 313 veterans / 7.3% of civilian population age 18+ with MOE ±158, plus Burke County and Georgia comparisons. Added an Executive veteran-service lens panel. Treat as ACS survey planning context only; not VA enrollment, benefits eligibility, service-connected disability, nonprofit caseload, household-level records, or municipal service demand.'
   },
   {
+    name: 'City of Waynesboro Mental Health Resources page',
+    url: 'https://www.waynesboroga.com/265/Mental-Health-Resources',
+    dataType: 'Official city-hosted service-navigation page with local, state, and national mental-health / crisis-resource links',
+    geography: 'Waynesboro, Georgia residents; local and regional services plus state/national resource routes',
+    accessMethod: 'Public CivicPlus page; low-volume source-route review cached in src/data/mentalHealthResourcesSeed.js.',
+    cadence: 'As posted by the City of Waynesboro; no update cadence stated on the page.',
+    difficulty: 'Low',
+    status: 'Official local resource route indexed',
+    notes: 'Runtime page review returned HTTP 200 and found official city resource text plus links to Georgia DBHDD, GCAL, 988 Georgia, SAMHSA, NAMI, Veterans Crisis Line, and other resource routes. Added an Operations mental-health resource-navigation panel. Treat as public service-navigation context only: not clinical advice, provider endorsement, crisis-call data, utilization counts, eligibility, or local disease-burden evidence.'
+  },
+  {
     name: 'CDC/ATSDR Social Vulnerability Index 2022 Georgia CSV',
     url: 'https://svi.cdc.gov/Documents/Data/2022/csv/states/Georgia.csv',
     dataType: 'Tract-level Social Vulnerability Index percentiles and component fields for emergency planning, resilience, grant context, and service-access questions',
@@ -1003,7 +1014,7 @@ export const readinessStrip = [
   { lane: 'Civic participation', status: 'Reference routes', source: 'Burke Elections / Georgia SOS MVP', tone: 'watch' },
   { lane: 'Policy / zoning', status: 'Route index', source: 'City Community Development / DocumentCenter', tone: 'watch' },
   { lane: 'Transportation', status: 'GeoPI route verified', source: 'GDOT GeoPI Project Information', tone: 'watch' },
-  { lane: 'Health access', status: 'ACS insurance seed', source: 'Census Reporter B27010', tone: 'good' },
+  { lane: 'Health access', status: 'ACS insurance + city resource route', source: 'Census Reporter B27010 / City Mental Health Resources', tone: 'good' },
   { lane: 'Health equity', status: 'PLACES + SVI + food access', source: 'CDC PLACES / CDC-ATSDR SVI / USDA ERS Food Access Atlas', tone: 'watch' }
 ];
 

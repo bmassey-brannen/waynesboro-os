@@ -80,6 +80,7 @@ import { occupationEmploymentSeed } from '../data/occupationEmploymentSeed.js';
 import { socialVulnerabilitySeed } from '../data/socialVulnerabilitySeed.js';
 import { raceEthnicitySeed } from '../data/raceEthnicitySeed.js';
 import { vehicleTenureSeed } from '../data/vehicleTenureSeed.js';
+import { mentalHealthResourcesSeed } from '../data/mentalHealthResourcesSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -2828,6 +2829,55 @@ function HealthInsuranceAccessPanel() {
   );
 }
 
+function MentalHealthResourcesPanel() {
+  return (
+    <section className="panel mental-health-panel">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">SERVICE ACCESS · OFFICIAL CITY ROUTE</span>
+          <h2>Mental health resource navigation</h2>
+        </div>
+        <span className="terminal-badge gold">RESOURCE ROUTE</span>
+      </div>
+      <div className="mental-health-hero">
+        <article>
+          <span>{mentalHealthResourcesSeed.status}</span>
+          <b>City page indexed</b>
+          <small>{mentalHealthResourcesSeed.geography}</small>
+          <a href={mentalHealthResourcesSeed.sourceUrl} target="_blank" rel="noreferrer">Open official city resource page</a>
+        </article>
+        <div>
+          <h3>What this adds to the operations lane</h3>
+          <p>The platform now has a public, city-hosted service-navigation route beside ACS health-insurance and language-access context. This keeps The Council from treating health-access questions as only survey metrics.</p>
+          <p>{mentalHealthResourcesSeed.caveat}</p>
+        </div>
+      </div>
+      <div className="mental-health-shape-grid">
+        {mentalHealthResourcesSeed.observedShape.map((item) => (
+          <article key={item.label}>
+            <span>{item.label}</span>
+            <b>{item.value}</b>
+            <small>{item.detail}</small>
+          </article>
+        ))}
+      </div>
+      <div className="mental-health-link-grid">
+        {mentalHealthResourcesSeed.links.map((link) => (
+          <a key={link.title} href={link.url} target="_blank" rel="noreferrer">
+            <span>{link.label}</span>
+            <b>{link.title}</b>
+            <small>{link.use}</small>
+          </a>
+        ))}
+      </div>
+      <div className="mental-health-actions">
+        {mentalHealthResourcesSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p className="source-note">Retrieved by low-volume public page review on {new Date(mentalHealthResourcesSeed.retrievedAt).toLocaleDateString()}. Keep this as source routing and public service-navigation context until provider details are manually verified.</p>
+    </section>
+  );
+}
+
 function AffordableHousingSourcePanel() {
   return (
     <section className="panel affordable-housing-panel">
@@ -3227,6 +3277,7 @@ function InfrastructureSafetyHousing() {
       <HealthEquitySourcePanel />
       <SocialVulnerabilityPanel />
       <HealthInsuranceAccessPanel />
+      <MentalHealthResourcesPanel />
       <DisabilityAccessPanel />
       <LanguageAccessPanel />
       <FoodAccessSourcePanel />
@@ -3561,6 +3612,7 @@ function PageBriefStrip({ page }) {
       { label: 'Mobility', value: noVehicleMetric?.displayShare || 'ACS seeded', detail: 'Zero-vehicle context with MOE caveats.' },
       { label: 'Accessibility', value: disabledMetric?.displayShare || 'ACS seeded', detail: 'Disability context added for planning only.' },
       { label: 'Health access', value: healthInsuranceSeed.metrics.find((metric) => metric.id === 'uninsured-total')?.displayShare || 'ACS seeded', detail: 'B27010 insurance-coverage context; not enrollment, clinical, or service-demand data.' },
+      { label: 'Service routes', value: 'City resource page', detail: 'Mental-health links indexed as navigation only; not clinical, crisis-call, or utilization data.' },
       { label: 'SVI resilience', value: socialVulnerabilitySeed.summary.find((item) => item.label === 'Highest overall SVI percentile')?.value || 'CDC seeded', detail: 'Burke County tract vulnerability context; not yet a city score or live emergency feed.' },
       { label: 'Energy mix', value: utilityEnergySeed.metrics.find((metric) => metric.id === 'electricity')?.displayShare || 'ACS seeded', detail: 'B25040 heating-fuel context; not utility accounts, outage exposure, or rate burden.' },
       { label: 'Language access', value: languageAccessSeed.metrics.find((metric) => metric.id === 'language-other-than-english')?.displayShare || 'ACS seeded', detail: 'C16001 communication-planning context; not a service workload claim.' },
