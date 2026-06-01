@@ -319,15 +319,15 @@ export const sourceRegistry = [
     notes: 'Runtime filtered query returned FY2026, FY2025, and FY2024 Waynesboro budget-report PDFs plus the FY2024 financial-report PDF. UI now renders a source-index panel; no revenue, spending, fund-balance, audit, tax-rate, or policy claims are displayed until PDFs are reviewed and cited.'
   },
   {
-    name: 'Georgia Department of Labor Area Labor Profiles',
-    url: 'https://dol.georgia.gov/workforce-statistics-economic-research',
-    dataType: 'Labor force, unemployment, workforce and industry statistics',
-    geography: 'County / regional labor market',
-    accessMethod: 'Public state workforce statistics pages; exact downloadable endpoint still to confirm.',
-    cadence: 'Monthly for labor force series where published',
+    name: 'Georgia Department of Labor / Employ Georgia Labor Market Explorer',
+    url: 'https://explorer.gdol.ga.gov/vosnet/Default.aspx',
+    dataType: 'State labor-market explorer route for workforce, employer, occupation, and labor-market reports',
+    geography: 'Georgia statewide portal; county/regional filters to verify for Burke County and Waynesboro-area context',
+    accessMethod: 'Public ASP.NET landing page returned HTTP 200; use manual exports or documented download paths before automation.',
+    cadence: 'State labor-market reports update as GDOL publishes them; exact report-level cadence/export stability still needs confirmation.',
     difficulty: 'Medium',
-    status: 'Needs endpoint confirmation',
-    notes: 'Legacy DOL pages timed out from this environment; keep as a research target before coding ingestion.'
+    status: 'Source route verified',
+    notes: 'Runtime check on 2026-06-01 reached the public Employ Georgia Labor Market Explorer landing page. Added src/data/stateLaborMarketExplorerSeed.js as route evidence only. Do not promote city unemployment, employer counts, job postings, wages, licenses, or program-participant claims from this route until stable public report exports are identified and reconciled with BLS LAUS/QCEW and ACS seeds.'
   },
   {
     name: 'U.S. Census County Business Patterns API',

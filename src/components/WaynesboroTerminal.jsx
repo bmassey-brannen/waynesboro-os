@@ -3960,7 +3960,7 @@ function CivicModeCard({ activePage }) {
       <div className="civic-mode-metrics">
         {metrics.map((item) => <span key={item.label}><b>{item.value}</b><small>{item.label}</small></span>)}
       </div>
-      <p>{activePage === 'executive' ? 'Executive home now opens with public-context takeaways; source inventory lives on the Sources page.' : 'Baselines and placeholders are labeled. Anything without source, geography, and timestamp stays off the headline dashboard.'}</p>
+      {activePage !== 'executive' && <p>Baselines and placeholders are labeled. Anything without source, geography, and timestamp stays off the headline dashboard.</p>}
     </aside>
   );
 }
@@ -3993,8 +3993,7 @@ function CivicBriefingStrip() {
     <section className="civic-briefing-strip executive-lead-brief" aria-label="civic briefing snapshot">
       <div className="briefing-lead-copy">
         <span className="eyebrow">EXECUTIVE SNAPSHOT</span>
-        <h2>What matters first: people, income pressure, housing, and workforce context.</h2>
-        <p>Source mechanics stay out of the opening screen unless they change the takeaway.</p>
+        <h2>What matters first: population baseline, income pressure, housing, and workforce context.</h2>
       </div>
       <div className="briefing-cards">
         {briefItems.map((item) => (
@@ -4012,8 +4011,8 @@ function CivicBriefingStrip() {
 const pageMeta = {
   executive: {
     eyebrow: 'WAYNESBORO, GEORGIA · EXECUTIVE HOME',
-    title: 'Municipal Operating Picture for Waynesboro.',
-    description: 'Verified baseline facts and the most important public-context takeaways. Source inventory is kept separate.'
+    title: 'Waynesboro municipal operating picture.',
+    description: 'Verified baseline facts and the most important public-context takeaways.'
   },
   sources: {
     eyebrow: 'WAYNESBORO, GEORGIA · SOURCE CONFIDENCE',
