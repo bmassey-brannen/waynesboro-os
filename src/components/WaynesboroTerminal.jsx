@@ -83,6 +83,7 @@ import { raceEthnicitySeed } from '../data/raceEthnicitySeed.js';
 import { vehicleTenureSeed } from '../data/vehicleTenureSeed.js';
 import { mentalHealthResourcesSeed } from '../data/mentalHealthResourcesSeed.js';
 import { publicWorksServiceSeed } from '../data/publicWorksServiceSeed.js';
+import { tenureIncomeSeed } from '../data/tenureIncomeSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -3120,9 +3121,57 @@ function HousingMonthlyCostsPanel() {
   );
 }
 
+function TenureIncomePanel() {
+  const renter = tenureIncomeSeed.metrics.find((metric) => metric.id === 'renter-median-income');
+  const owner = tenureIncomeSeed.metrics.find((metric) => metric.id === 'owner-median-income');
+
+  return (
+    <section className="panel tenure-income-panel" aria-label="ACS median household income by housing tenure context">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">TENURE INCOME · ACS CONTEXT</span>
+          <h2>Owner/renter income bridge before affordability recommendations</h2>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="tenure-income-hero">
+        <article>
+          <span>{renter.label}</span>
+          <b>{renter.displayValue}</b>
+          <small>MOE ±${renter.moe.toLocaleString()} · {tenureIncomeSeed.table} · owner median {owner.displayValue}</small>
+        </article>
+        <div>
+          <h3>Affordability bridge, not household files</h3>
+          <p>ACS B25119 adds tenure-specific income context next to rent, cost-burden, home-value, and utility-rate panels. The owner/renter median-income gap is {tenureIncomeSeed.derived.displayOwnerRenterGap}, but the renter MOE is large, so Council copy should stay cautious and source-gated.</p>
+          <a href={tenureIncomeSeed.sourceUrl} target="_blank" rel="noreferrer">Census Reporter B25119 source query</a>
+        </div>
+      </div>
+      <div className="tenure-income-grid">
+        {tenureIncomeSeed.metrics.map((metric) => (
+          <article key={metric.id}>
+            <span>{metric.label}</span>
+            <b>{metric.displayValue}</b>
+            <small>MOE ±${metric.moe.toLocaleString()} · {metric.planningUse}</small>
+          </article>
+        ))}
+      </div>
+      <div className="tenure-income-comparison">
+        {tenureIncomeSeed.comparison.map((row) => (
+          <article key={row.geography}>
+            <span>{row.geography}</span>
+            <b>{row.renterMedian}</b>
+            <small>renter median · {row.ownerMedian} owner median · {row.ownerRenterGap} gap</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{tenureIncomeSeed.caveat} Release: {tenureIncomeSeed.release.name} ({tenureIncomeSeed.release.years}); retrieved {new Date(tenureIncomeSeed.retrievedAt).toLocaleDateString()}.</p>
+    </section>
+  );
+}
+
 function HousingSourceLadder() {
   const ladder = [
-    { label: 'Survey context', value: 'ACS tenure, burden, monthly costs, typology, crowding, values', note: 'Good for planning questions; never a parcel, lease, or program record.' },
+    { label: 'Survey context', value: 'ACS tenure, burden, monthly costs, tenure income, typology, crowding, values', note: 'Good for planning questions; never a parcel, lease, payroll, eligibility, or program record.' },
     { label: 'Official route', value: 'City LIHTC + Community Development + utility/rate pages', note: 'PDF/page review pending before claims about projects, rates, or eligibility.' },
     { label: 'Hard-data next', value: 'qPublic parcels, tax digest, permits, code aggregates', note: 'Needs export permission, records request, or manual source review.' }
   ];
@@ -3372,6 +3421,7 @@ function InfrastructureSafetyHousing() {
       <HousingTenureSourcePanel />
       <HousingCostBurdenPanel />
       <HousingMonthlyCostsPanel />
+      <TenureIncomePanel />
       <HousingAgeSourcePanel />
       <HousingStructurePanel />
       <HousingCrowdingPanel />
@@ -3706,6 +3756,7 @@ function PageBriefStrip({ page }) {
       { label: 'TRI route', value: `${toxicReleaseInventorySeed.query.rowsReturned} EPA rows`, detail: 'EPA Envirofacts TRI facility identity seed; not emissions, risk, violation, zoning, or inspection evidence.' },
       { label: 'Language access', value: languageAccessSeed.metrics.find((metric) => metric.id === 'language-other-than-english')?.displayShare || 'ACS seeded', detail: 'C16001 communication-planning context; not a service workload claim.' },
       { label: 'Affordability', value: housingCostBurdenSeed.metrics.find((metric) => metric.id === 'renter-cost-burden')?.displayShare || 'ACS seeded', detail: 'Renter cost-burden survey context with MOE caveats.' },
+      { label: 'Tenure income', value: tenureIncomeSeed.metrics.find((metric) => metric.id === 'renter-median-income')?.displayValue || 'ACS B25119', detail: 'Renter/owner median-income bridge; not payroll, tax, eligibility, or rent-roll data.' },
       { label: 'Housing type', value: housingStructureSeed.derived.find((item) => item.id === 'small-multifamily')?.displayShare || 'ACS seeded', detail: 'B25024 units-in-structure context; not parcels, zoning, or permits.' },
       { label: 'Crowding', value: housingCrowdingSeed.derived.find((item) => item.id === 'all-overcrowded')?.displayShare || 'ACS seeded', detail: 'B25014 occupants-per-room context; zero estimate carries MOE and is not an inspection or service record.' },
       { label: 'Mobility tenure', value: vehicleTenureSeed.metrics.find((metric) => metric.id === 'renter-zero-vehicle')?.displayShare || 'B25044', detail: 'Renter zero-vehicle context; pair with service locations, transit/nonprofit routes, commute, and GDOT before recommendations.' },

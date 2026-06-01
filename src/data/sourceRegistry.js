@@ -55,6 +55,17 @@ export const sourceRegistry = [
     notes: 'Runtime query returned Waynesboro B19001 income brackets; the UI shows under-$50K and $100K+ rollups plus bracket bars with MOE. Treat as ACS survey context only, not tax records, payroll data, poverty eligibility, local revenue, or household-level data.'
   },
   {
+    name: 'Census Reporter ACS median household income by tenure table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B25119&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS B25119 median household income by owner/renter tenure with margins of error for affordability planning context',
+    geography: 'Waynesboro city, Burke County, and Georgia comparison rows; occupied housing-unit universe',
+    accessMethod: 'Public no-key Census Reporter API; low-volume User-Agent request cached in src/data/tenureIncomeSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Runtime query returned Waynesboro B25119 context: all occupied households median $41.6K, owner-occupied $62.5K, renter-occupied $35.0K, with a large renter MOE. Added an Operations tenure-income panel next to housing affordability context. Treat as ACS survey planning context only; not payroll, tax returns, rent rolls, mortgage-servicing records, household eligibility, local revenue, or municipal telemetry.'
+  },
+  {
     name: 'Census Reporter ACS household composition table',
     url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B11001&geo_ids=16000US1380984,05000US13033,04000US13',
     dataType: 'ACS B11001 household type estimates: family households, nonfamily households, living-alone householders, and household-composition comparison context with margins of error',
@@ -1027,7 +1038,7 @@ export const readinessStrip = [
   { lane: 'Utilities', status: 'Water + gas + energy context', source: 'City Water/Natural Gas pages / EPA SDWIS / Georgia EPD DWW / ACS B25040', tone: 'good' },
   { lane: 'Digital access', status: 'ACS context + FCC route', source: 'Census Reporter B28002 / FCC BDC', tone: 'good' },
   { lane: 'Mobility access', status: 'ACS vehicle + tenure + disability seeds', source: 'Census Reporter B08201 / B25044 / B18101', tone: 'good' },
-  { lane: 'Housing', status: 'ACS tenure + burden + monthly costs + age + typology + crowding + values + LIHTC route', source: 'Census Reporter B25003/B25002/B25070/B25091/B25064/B25088/B25034/B25024/B25014/B25075 / City DocumentCenter / Georgia DCA', tone: 'good' },
+  { lane: 'Housing', status: 'ACS tenure + burden + monthly costs + tenure income + age + typology + crowding + values + LIHTC route', source: 'Census Reporter B25003/B25002/B25070/B25091/B25064/B25088/B25119/B25034/B25024/B25014/B25075 / City DocumentCenter / Georgia DCA', tone: 'good' },
   { lane: 'Environmental', status: 'CWA + RCRA + TRI seeds ready', source: 'EPA ECHO / Envirofacts', tone: 'good' },
   { lane: 'Hydrology', status: 'USGS IV snapshot', source: 'USGS NWIS Site + Instantaneous Values', tone: 'good' },
   { lane: 'Resilience', status: 'Hazard source stack', source: 'FEMA NFHL / NOAA Storm Events', tone: 'watch' },
