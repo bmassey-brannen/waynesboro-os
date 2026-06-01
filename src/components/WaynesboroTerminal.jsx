@@ -52,6 +52,7 @@ import { housingTenureSeed } from '../data/housingTenureSeed.js';
 import { housingAgeSeed } from '../data/housingAgeSeed.js';
 import { housingCostBurdenSeed } from '../data/housingCostBurdenSeed.js';
 import { housingStructureSeed } from '../data/housingStructureSeed.js';
+import { housingCrowdingSeed } from '../data/housingCrowdingSeed.js';
 import { homeValueDistributionSeed } from '../data/homeValueDistributionSeed.js';
 import { commuteProfileSeed } from '../data/commuteProfileSeed.js';
 import { workforceEducationSeed } from '../data/workforceEducationSeed.js';
@@ -2624,6 +2625,62 @@ function HousingStructurePanel() {
   );
 }
 
+function HousingCrowdingPanel() {
+  const headline = housingCrowdingSeed.derived.find((item) => item.id === 'all-overcrowded');
+
+  return (
+    <section className="panel housing-crowding-panel" aria-label="ACS occupants per room housing crowding context">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">HOUSING CROWDING · ACS CONTEXT</span>
+          <h2>Occupancy pressure lens before code, rental, or service claims</h2>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="housing-crowding-hero">
+        <article>
+          <span>{headline.label}</span>
+          <b>{headline.displayShare}</b>
+          <small>{headline.displayValue} of {housingCrowdingSeed.totalOccupiedUnits.toLocaleString()} occupied ACS units · derived MOE ±{headline.moeApprox.toLocaleString()}</small>
+        </article>
+        <div>
+          <h3>Read the zero correctly</h3>
+          <p>{housingCrowdingSeed.posture}</p>
+          <a href={housingCrowdingSeed.sourceUrl} target="_blank" rel="noreferrer">Census Reporter B25014 source query</a>
+        </div>
+      </div>
+      <div className="housing-crowding-tenure">
+        {housingCrowdingSeed.tenure.map((item) => (
+          <article key={item.id}>
+            <span>{item.label}</span>
+            <b>{item.displayShare}</b>
+            <small>{item.displayValue} occupied units · MOE ±{item.moe.toLocaleString()}</small>
+          </article>
+        ))}
+      </div>
+      <div className="housing-crowding-bands">
+        {housingCrowdingSeed.occupancyBands.map((band) => (
+          <article key={band.id}>
+            <div><span>{band.tenure}</span><b>{band.displayShareOfTenure}</b></div>
+            <div className="mini-bar"><span style={{ width: band.displayShareOfTenure }} /></div>
+            <small>{band.label} · {band.estimate.toLocaleString()} units · MOE {band.moe ? `±${band.moe.toLocaleString()}` : `approx. ±${band.moeApprox.toLocaleString()}`}</small>
+          </article>
+        ))}
+      </div>
+      <div className="housing-crowding-comparison">
+        {housingCrowdingSeed.comparison.map((item) => (
+          <article key={item.geography}>
+            <span>{item.geography}</span>
+            <b>{item.overcrowdedShare}</b>
+            <small>{item.overcrowdedUnits.toLocaleString()} units &gt;1.00 occupants/room · {item.renterShare} renter share</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{housingCrowdingSeed.caveat} Release: {housingCrowdingSeed.release.name} ({housingCrowdingSeed.release.years}); retrieved {new Date(housingCrowdingSeed.retrievedAt).toLocaleDateString()}.</p>
+    </section>
+  );
+}
+
 function HomeValueDistributionPanel() {
   const headline = homeValueDistributionSeed.brackets.find((item) => item.id === '200k-299k');
 
@@ -2701,6 +2758,7 @@ function InfrastructureSafetyHousing() {
       <HousingCostBurdenPanel />
       <HousingAgeSourcePanel />
       <HousingStructurePanel />
+      <HousingCrowdingPanel />
       <HomeValueDistributionPanel />
       <AffordableHousingSourcePanel />
       <WeatherReadinessPanel />
@@ -3027,6 +3085,7 @@ function PageBriefStrip({ page }) {
       { label: 'Language access', value: languageAccessSeed.metrics.find((metric) => metric.id === 'language-other-than-english')?.displayShare || 'ACS seeded', detail: 'C16001 communication-planning context; not a service workload claim.' },
       { label: 'Affordability', value: housingCostBurdenSeed.metrics.find((metric) => metric.id === 'renter-cost-burden')?.displayShare || 'ACS seeded', detail: 'Renter cost-burden survey context with MOE caveats.' },
       { label: 'Housing type', value: housingStructureSeed.derived.find((item) => item.id === 'small-multifamily')?.displayShare || 'ACS seeded', detail: 'B25024 units-in-structure context; not parcels, zoning, or permits.' },
+      { label: 'Crowding', value: housingCrowdingSeed.derived.find((item) => item.id === 'all-overcrowded')?.displayShare || 'ACS seeded', detail: 'B25014 occupants-per-room context; zero estimate carries MOE and is not an inspection or service record.' },
       { label: 'Home values', value: homeValueDistributionSeed.brackets.find((item) => item.id === '200k-299k')?.displayShare || 'ACS seeded', detail: 'B25075 value distribution; not assessments, sales, or tax records.' }
     ],
     council: [
