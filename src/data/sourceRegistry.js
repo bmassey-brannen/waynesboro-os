@@ -1098,6 +1098,17 @@ export const sourceRegistry = [
     difficulty: 'Low',
     status: 'No-key API seed ready',
     notes: 'Runtime query returned Waynesboro B25032 context: 1,556 renter-occupied ACS units / 70.6% of occupied units, with 46.6% of renter units in 2-4 unit structures. Added an Operations renter-structure mix panel. Treat as ACS survey context only; not parcel inventory, rental registry, landlord ownership, zoning, permit history, rent roll, code-enforcement evidence, or municipal telemetry.'
+  },
+  {
+    name: 'City of Waynesboro Code of Ordinances / Municode Library',
+    url: 'https://library.municode.com/ga/waynesboro/codes/code_of_ordinances',
+    dataType: 'Public municipal code reference route for zoning, signs, nuisances, enforcement definitions, permits, boards, and policy citations',
+    geography: 'City of Waynesboro, Georgia',
+    accessMethod: 'Public web library; low-volume HTTP 200 route verification only. Use citation-only manual review before normalizing section titles or quoting text.',
+    cadence: 'As ordinances are codified by the city/Municode; verify recency and supplement dates before presentation use.',
+    difficulty: 'Medium',
+    status: 'Reference route verified',
+    notes: 'Runtime route check returned HTTP 200. Added src/data/councilPolicyQuestionsSeed.js and a Council policy question queue so ordinance, nuisance, sign, zoning, and permit topics remain research questions until section citations, effective dates, maps, and staff/public-record routes are manually verified. Not legal advice and not code-enforcement evidence.'
   }
 ];
 

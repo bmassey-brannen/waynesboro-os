@@ -1177,6 +1177,21 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .council-brief-cards p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.38; }
 .council-brief-cards em { margin-top: 6px; padding-left: 8px; border-left: 2px solid var(--gold-soft); color: #35433b; font-size: 11px; line-height: 1.35; font-style: normal; font-weight: 750; }
 .connector-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.council-question-queue { grid-column: 1 / -1; background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(243,246,241,.98)); }
+.question-source-line { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; padding: 9px 10px; border: 1px solid rgba(31,44,37,.12); background: rgba(255,255,255,.72); }
+.question-source-line b { color: var(--good); font-size: 10px; text-transform: uppercase; letter-spacing: .1em; }
+.question-source-line a { color: var(--forest-2); font-size: 12px; font-weight: 850; text-decoration: none; }
+.question-source-line a:hover { text-decoration: underline; }
+.council-question-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; margin-top: 10px; }
+.council-question-list article { min-width: 0; display: flex; flex-direction: column; gap: 6px; padding: 11px; border: 1px solid var(--line); border-top: 3px solid var(--forest-2); background: rgba(255,255,255,.8); }
+.council-question-list article:nth-child(even) { border-top-color: var(--gold-soft); }
+.council-question-list div { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.council-question-list span, .council-question-list b, .council-question-list h3, .council-question-list p, .council-question-list em { display: block; overflow-wrap: anywhere; }
+.council-question-list span { color: var(--gold); font-size: 10px; font-weight: 950; letter-spacing: .09em; }
+.council-question-list b { color: var(--forest-2); font-size: 10px; text-transform: uppercase; letter-spacing: .09em; text-align: right; }
+.council-question-list h3 { margin: 0; color: #13251b; font-size: 13px; line-height: 1.25; }
+.council-question-list p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.38; }
+.council-question-list em { margin-top: auto; padding-top: 7px; border-top: 1px dashed rgba(31,44,37,.16); color: #35433b; font-size: 10px; line-height: 1.35; font-style: normal; font-weight: 760; }
 .council-evidence-card { grid-column: 1 / -1; background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(239,244,238,.98)); }
 .evidence-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; margin-top: 12px; }
 .evidence-grid article { min-width: 0; padding: 11px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
@@ -1220,7 +1235,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .storm-event-snapshot { grid-template-columns: 1fr; }
   .active-alert-snapshot { grid-template-columns: 1fr; }
   .comparison-grid, .age-profile-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .evidence-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .evidence-grid, .council-question-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .civic-asset-list, .city-map-source-list, .downtown-source-grid, .downtown-action-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .official-docs-panel, .community-development-panel { grid-column: auto; }
   .compact { grid-template-columns: 1fr; }
@@ -1252,7 +1267,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .water-system-list { grid-template-columns: 1fr; }
   .utility-reference-grid { grid-template-columns: 1fr; }
   .clean-water-summary, .clean-water-list, .hazard-source-grid, .hydrology-summary-grid, .hydrology-site-list, .hydrology-next-actions, .hydrology-observation-hero, .hydrology-observation-grid, .hydrology-observation-actions { grid-template-columns: 1fr; }
-  .evidence-grid { grid-template-columns: 1fr; }
+  .evidence-grid, .council-question-list { grid-template-columns: 1fr; }
   .factor, .ops-row, .heat-row { grid-template-columns: 1fr; }
   .source-list article { grid-template-columns: 1fr; }
   .source-list { grid-template-columns: 1fr; }

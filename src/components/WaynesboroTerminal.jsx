@@ -90,6 +90,7 @@ import { parksFacilitiesSeed } from '../data/parksFacilitiesSeed.js';
 import { renterStructureSeed } from '../data/renterStructureSeed.js';
 import { downtownSourceSeed } from '../data/downtownSourceSeed.js';
 import { civicAccessRoutesSeed } from '../data/civicAccessRoutesSeed.js';
+import { councilPolicyQuestionsSeed } from '../data/councilPolicyQuestionsSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -3779,6 +3780,30 @@ function Council() {
         <span className="eyebrow">FUTURE DATA CONNECTORS</span>
         <h2>Integration spine</h2>
         <div className="connector-grid">{integrationRoadmap.map((source) => <span key={source}>{source}</span>)}</div>
+      </section>
+      <section className="panel council-question-queue">
+        <div className="panel-head">
+          <div>
+            <span className="eyebrow">POLICY QUESTION QUEUE</span>
+            <h2>What The Council must verify before advice</h2>
+          </div>
+          <span className="terminal-badge gold">ORDINANCE ROUTE</span>
+        </div>
+        <div className="question-source-line">
+          <b>{councilPolicyQuestionsSeed.source.status}</b>
+          <a href={councilPolicyQuestionsSeed.source.url} target="_blank" rel="noreferrer">{councilPolicyQuestionsSeed.source.name}</a>
+        </div>
+        <div className="council-question-list">
+          {councilPolicyQuestionsSeed.questions.map((item, index) => (
+            <article key={item.lane}>
+              <div><span>{String(index + 1).padStart(2, '0')}</span><b>{item.lane}</b></div>
+              <h3>{item.question}</h3>
+              <p>{item.evidenceNeeded}</p>
+              <em>{item.gate}</em>
+            </article>
+          ))}
+        </div>
+        <p className="source-note">{councilPolicyQuestionsSeed.posture}</p>
       </section>
       <section className="panel council-evidence-card">
         <div className="panel-head">
