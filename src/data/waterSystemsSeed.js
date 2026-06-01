@@ -3,16 +3,35 @@ export const waterSystemsSeed = {
   sourceUrl: 'https://echodata.epa.gov/echo/sdw_rest_services.get_systems?output=JSON&p_co=Burke&p_st=GA&p_act=Y',
   resultsUrlPattern: 'https://echodata.epa.gov/echo/sdw_rest_services.get_qid?output=JSON&qid={QueryID}&pageno=1',
   documentationUrl: 'https://echo.epa.gov/tools/web-services/facility-search-drinking-water#!/Safe_Drinking_Water/get_sdw_rest_services_get_systems',
-  retrievedAt: '2026-05-31T01:44:47Z',
+  retrievedAt: '2026-06-01T11:08:31Z',
   geography: 'Active public water systems in Burke County, Georgia; filtered display for systems listing Waynesboro as a served city',
   query: {
     state: 'GA',
     county: 'Burke',
     activeOnly: true,
     returnedRows: 23,
-    queryIdObserved: '147'
+    queryIdObserved: '824',
+    summaryRows: {
+      seriousViolatorRows: 2,
+      currentViolationRows: 5,
+      threeYearViolationRows: 14,
+      federalEnforcementActionRows: 0,
+      informalFederalEnforcementActionRows: 15,
+      inspectionRows: 23
+    }
   },
-  caveat: 'Low-volume public EPA ECHO/SDWIS seed. Use for water-system identity and public reporting context only; do not present as live utility telemetry, water quality assurance, or a complete local operations feed.',
+  caveat: 'Low-volume public EPA ECHO/SDWIS seed. Use for water-system identity and public reporting context only; do not present as live utility telemetry, water quality assurance, a customer count, or a complete local operations feed. Violation-quarter fields are screening flags that require row-level SDWIS/ECHO report review before any public water-quality claim.',
+  complianceScreen: {
+    scope: 'EPA ECHO SDWIS active Burke County query, then Waynesboro served-city display subset',
+    primarySystemPwsId: 'GA0330004',
+    primarySystemObserved: 'WAYNESBORO',
+    primarySystemQuarterViolations: 0,
+    primarySystemQuarterSNC: 0,
+    primarySystemSeriousViolator: 'No',
+    subsetSystemsWithViolationQuarters: 3,
+    subsetSystemsWithSNCQuarters: 0,
+    nextStep: 'Open system-level ECHO/SDWIS reports for GA0330004 and flagged small systems; verify violations, monitoring periods, contaminants/rules, and dates before display beyond screening flags.'
+  },
   systemsServingWaynesboro: [
     {
       pwsName: 'WAYNESBORO',
@@ -22,7 +41,14 @@ export const waterSystemsSeed = {
       pwsType: 'Community water system',
       primarySource: 'Ground water',
       populationServed: 5900,
-      activityCode: 'A'
+      activityCode: 'A',
+      quartersWithViolation: 0,
+      quartersWithSNC: 0,
+      seriousViolator: 'No',
+      healthFlag: 'No',
+      monitoringReportingFlag: 'No',
+      publicNoticeFlag: 'No',
+      otherFlag: 'No'
     },
     {
       pwsName: 'CROSS ROADS RV PARK WATER SYSTEM',
@@ -32,7 +58,14 @@ export const waterSystemsSeed = {
       pwsType: 'Transient non-community system',
       primarySource: 'Ground water',
       populationServed: 30,
-      activityCode: 'A'
+      activityCode: 'A',
+      quartersWithViolation: 5,
+      quartersWithSNC: 0,
+      seriousViolator: 'No',
+      healthFlag: 'No',
+      monitoringReportingFlag: 'No',
+      publicNoticeFlag: 'No',
+      otherFlag: 'No'
     },
     {
       pwsName: 'DOGWOOD RV PARK',
@@ -42,7 +75,14 @@ export const waterSystemsSeed = {
       pwsType: 'Transient non-community system',
       primarySource: 'Ground water',
       populationServed: 110,
-      activityCode: 'A'
+      activityCode: 'A',
+      quartersWithViolation: 2,
+      quartersWithSNC: 0,
+      seriousViolator: 'No',
+      healthFlag: 'No',
+      monitoringReportingFlag: 'No',
+      publicNoticeFlag: 'No',
+      otherFlag: 'No'
     },
     {
       pwsName: 'DOLLAR GENERAL #21167',
@@ -52,7 +92,14 @@ export const waterSystemsSeed = {
       pwsType: 'Transient non-community system',
       primarySource: 'Ground water',
       populationServed: 35,
-      activityCode: 'A'
+      activityCode: 'A',
+      quartersWithViolation: 0,
+      quartersWithSNC: 0,
+      seriousViolator: 'No',
+      healthFlag: 'No',
+      monitoringReportingFlag: 'No',
+      publicNoticeFlag: 'No',
+      otherFlag: 'No'
     },
     {
       pwsName: 'DOLLAR GENERAL STORE #18659',
@@ -62,7 +109,14 @@ export const waterSystemsSeed = {
       pwsType: 'Transient non-community system',
       primarySource: 'Ground water',
       populationServed: 26,
-      activityCode: 'A'
+      activityCode: 'A',
+      quartersWithViolation: 0,
+      quartersWithSNC: 0,
+      seriousViolator: 'No',
+      healthFlag: 'No',
+      monitoringReportingFlag: 'No',
+      publicNoticeFlag: 'No',
+      otherFlag: 'No'
     },
     {
       pwsName: 'URBAN KITCHEN',
@@ -72,7 +126,14 @@ export const waterSystemsSeed = {
       pwsType: 'Transient non-community system',
       primarySource: 'Ground water',
       populationServed: 23,
-      activityCode: 'A'
+      activityCode: 'A',
+      quartersWithViolation: 1,
+      quartersWithSNC: 0,
+      seriousViolator: 'No',
+      healthFlag: 'No',
+      monitoringReportingFlag: 'No',
+      publicNoticeFlag: 'No',
+      otherFlag: 'No'
     }
   ]
 };

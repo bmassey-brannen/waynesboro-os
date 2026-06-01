@@ -591,7 +591,7 @@ export const sourceRegistry = [
     cadence: 'EPA ECHO/SDWIS refresh cadence varies by source table; snapshot should be refreshed before public presentations.',
     difficulty: 'Low',
     status: 'Seed connector ready',
-    notes: 'Low-volume query returned 23 active Burke County systems; display seed identifies WAYNESBORO PWSID GA0330004 as a community water system using ground water with population served 5,900, plus five smaller systems listing Waynesboro as served city. Added src/data/waterSystemsSeed.js.'
+    notes: 'Low-volume query refreshed 2026-06-01 with QueryID 824 and returned 23 active Burke County systems; display seed identifies WAYNESBORO PWSID GA0330004 as a community water system using ground water with population served 5,900 and 0 violation/SNC quarters in the screen. Three smaller active systems listing Waynesboro showed violation-quarter flags; added screening fields to src/data/waterSystemsSeed.js and the Operations panel with strict caveats.'
   },
   {
     name: 'City of Waynesboro Sewer & Wastewater',

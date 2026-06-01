@@ -1087,12 +1087,17 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .weather-meta-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; margin-top: 12px; }
 .weather-meta-grid article { min-width: 0; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
 .water-system-primary { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(180px, .45fr) minmax(220px, .65fr); gap: 9px; margin-top: 12px; }
-.water-system-primary article, .water-system-list article { min-width: 0; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
+.water-system-primary article, .water-compliance-strip article, .water-system-list article { min-width: 0; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
+.water-compliance-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.water-system-list article.needs-review { border-left-color: #a58031; background: linear-gradient(180deg, rgba(255,250,238,.96), rgba(255,255,255,.78)); }
+.water-system-list article.clean-screen { border-left-color: #326c48; }
 .water-system-primary span, .water-system-primary b, .water-system-primary small,
+.water-compliance-strip span, .water-compliance-strip b, .water-compliance-strip small,
 .water-system-list span, .water-system-list b, .water-system-list small { display: block; overflow-wrap: anywhere; }
-.water-system-primary span, .water-system-list span { color: var(--gold); font-size: 10px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
+.water-system-primary span, .water-compliance-strip span, .water-system-list span { color: var(--gold); font-size: 10px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
 .water-system-primary b { margin-top: 4px; color: #13251b; font-size: 20px; letter-spacing: -.03em; }
-.water-system-primary small, .water-system-list small { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.water-compliance-strip b { margin-top: 4px; color: #13251b; font-size: 13px; line-height: 1.25; }
+.water-system-primary small, .water-compliance-strip small, .water-system-list small { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.35; }
 .water-system-list { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
 .water-system-list b { margin-top: 4px; color: #13251b; font-size: 12px; line-height: 1.25; }
 .weather-meta-grid span, .weather-meta-grid b, .weather-meta-grid small { display: block; overflow-wrap: anywhere; }
@@ -1193,7 +1198,7 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .public-safety-questions { grid-template-columns: 1fr; }
   .forecast-snapshot-head { grid-template-columns: 1fr; }
   .forecast-period-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .water-system-primary { grid-template-columns: 1fr; }
+  .water-system-primary, .water-compliance-strip { grid-template-columns: 1fr; }
   .water-system-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .utility-reference-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .clean-water-summary, .hazardous-waste-summary, .tri-source-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }

@@ -2134,13 +2134,15 @@ function WeatherReadinessPanel() {
 function WaterSystemsPanel() {
   const primarySystem = waterSystemsSeed.systemsServingWaynesboro.find((system) => system.pwsName === 'WAYNESBORO');
   const smallSystems = waterSystemsSeed.systemsServingWaynesboro.filter((system) => system.pwsName !== 'WAYNESBORO').slice(0, 5);
+  const compliance = waterSystemsSeed.complianceScreen;
+  const summaryRows = waterSystemsSeed.query.summaryRows;
 
   return (
     <section className="panel water-system-panel">
       <div className="panel-head">
         <div>
           <span className="eyebrow">DRINKING WATER SOURCE SNAPSHOT</span>
-          <h2>EPA ECHO / SDWIS public water-system identity</h2>
+          <h2>EPA ECHO / SDWIS water-system identity + compliance screen</h2>
         </div>
         <span className="terminal-badge live">PWSID SEED</span>
       </div>
@@ -2161,16 +2163,33 @@ function WaterSystemsPanel() {
           <small>Filtered display: systems listing Waynesboro as served city.</small>
         </article>
       </div>
+      <div className="water-compliance-strip" aria-label="EPA ECHO SDWIS compliance screening fields">
+        <article>
+          <span>Waynesboro PWSID screen</span>
+          <b>{compliance.primarySystemQuarterViolations} violation qtrs · {compliance.primarySystemQuarterSNC} SNC qtrs</b>
+          <small>{compliance.primarySystemPwsId} · serious violator: {compliance.primarySystemSeriousViolator}</small>
+        </article>
+        <article>
+          <span>County query flags</span>
+          <b>{summaryRows.currentViolationRows} current-violation rows · {summaryRows.seriousViolatorRows} SV rows</b>
+          <small>{summaryRows.inspectionRows} inspection rows in ECHO summary; row-level review still required.</small>
+        </article>
+        <article>
+          <span>Waynesboro subset flags</span>
+          <b>{compliance.subsetSystemsWithViolationQuarters} smaller systems with violation quarters</b>
+          <small>{compliance.subsetSystemsWithSNCQuarters} subset systems with SNC quarters; do not conflate with city utility.</small>
+        </article>
+      </div>
       <div className="water-system-list">
         {smallSystems.map((system) => (
-          <article key={system.pwsId}>
+          <article key={system.pwsId} className={system.quartersWithViolation > 0 ? 'needs-review' : 'clean-screen'}>
             <span>{system.pwsId}</span>
             <b>{system.pwsName}</b>
-            <small>{system.pwsType} · pop. {system.populationServed.toLocaleString()}</small>
+            <small>{system.pwsType} · pop. {system.populationServed.toLocaleString()} · {system.quartersWithViolation} violation qtrs · SNC {system.quartersWithSNC}</small>
           </article>
         ))}
       </div>
-      <p className="source-note">{waterSystemsSeed.caveat} Retrieved {new Date(waterSystemsSeed.retrievedAt).toLocaleString()} from a public EPA ECHO SDWIS REST query.</p>
+      <p className="source-note">{waterSystemsSeed.caveat} {compliance.nextStep} Retrieved {new Date(waterSystemsSeed.retrievedAt).toLocaleString()} from a public EPA ECHO SDWIS REST query.</p>
     </section>
   );
 }
