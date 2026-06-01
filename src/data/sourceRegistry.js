@@ -900,6 +900,17 @@ export const sourceRegistry = [
     difficulty: 'Low',
     status: 'Public API seed ready',
     notes: 'Runtime query returned Waynesboro SNAP receipt context: 731 households / 33.2% receiving Food Stamps/SNAP in the past 12 months with MOE ±231, plus Burke County and Georgia comparisons. Added an Executive food-security panel. Treat as ACS survey planning context only; not benefits enrollment administration, eligibility, school-meal participation, pantry demand, agency caseload, household-level records, or municipal telemetry.'
+  },
+  {
+    name: 'Census Reporter ACS school enrollment table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B14001&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS B14001 school-enrollment-by-level estimates with margins of error and city/county/state comparison context',
+    geography: 'Waynesboro city, Georgia (16000US1380984), Burke County (05000US13033), and Georgia (04000US13)',
+    accessMethod: 'Public no-key Census Reporter API; low-volume B14001 request cached in src/data/schoolEnrollmentSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024 release.',
+    difficulty: 'Low',
+    status: 'Public API seed ready',
+    notes: 'Runtime query returned Waynesboro school-enrollment context: 5,427 residents age 3+ in the table universe and 1,260 / 23.2% enrolled in school with MOE ±269, plus level splits from preschool through college and Burke/Georgia comparisons. Added an Economic school-enrollment panel. Treat as ACS survey planning context only; not Burke County Public Schools enrollment, attendance, graduation, CTAE, student-level, childcare-slot, school-performance, or municipal workload data.'
   }
 ];
 
@@ -911,7 +922,7 @@ export const readinessStrip = [
   { lane: 'Parcels', status: 'Manual / permissioned', source: 'qPublic / Schneider GIS', tone: 'watch' },
   { lane: 'Map base', status: 'Boundary seed ready', source: 'OSM + TIGERweb + Census Reporter GeoJSON', tone: 'good' },
   { lane: 'Economy', status: 'Workforce + industry + income + commute', source: 'BLS LAUS + ACS B19001/B15003/B23025/C24030 + LEHD/LODES + CBP', tone: 'good' },
-  { lane: 'Education', status: 'GaDOE routes indexed', source: 'Georgia Insights + Burke County Public Schools', tone: 'watch' },
+  { lane: 'Education', status: 'GaDOE routes + ACS enrollment seed', source: 'Georgia Insights + Burke County Public Schools + Census Reporter B14001', tone: 'good' },
   { lane: 'Finance', status: 'Budget PDFs + sales-tax + digest routes', source: 'UGA CVIOG / Georgia DOR Distributions / Digest Compliance', tone: 'good' },
   { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },
   { lane: 'Utilities', status: 'Water + energy context', source: 'City Water Rates / EPA SDWIS / Georgia EPD DWW / ACS B25040', tone: 'good' },
@@ -1010,6 +1021,14 @@ export const sourcePriorities = [
     value: 'Adds a public education and CTAE/workforce context route without inventing school-performance, student-level, or city-government metrics.',
     nextStep: 'Manually test Georgia Insights district/school filters for Burke County, confirm downloadable data terms, and cache only aggregate school-year rows with source URLs.',
     difficulty: 'Medium'
+  },
+  {
+    lane: 'Education / youth services',
+    target: 'Cross-check ACS school-enrollment context against district/source exports',
+    source: 'Census Reporter ACS B14001 + Georgia Insights / Burke County Public Schools',
+    value: 'Adds a city-level enrollment-by-level planning lens while keeping school-performance, attendance, district enrollment, and student-level records gated behind official education sources.',
+    nextStep: 'Compare B14001 estimates with Burke County Public Schools and Georgia Insights aggregate rows; propagate derived MOE before public grade-band comparisons.',
+    difficulty: 'Low'
   },
   {
     lane: 'Digital inclusion',

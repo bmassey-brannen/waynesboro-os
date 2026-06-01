@@ -73,6 +73,7 @@ import { snapAssistanceSeed } from '../data/snapAssistanceSeed.js';
 import { localFinancialDocumentsSeed } from '../data/localFinancialDocumentsSeed.js';
 import { householdSizeSeed } from '../data/householdSizeSeed.js';
 import { industryEmploymentSeed } from '../data/industryEmploymentSeed.js';
+import { schoolEnrollmentSeed } from '../data/schoolEnrollmentSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -1226,6 +1227,53 @@ function EducationWorkforcePanel() {
   );
 }
 
+function SchoolEnrollmentPanel() {
+  const topLevels = schoolEnrollmentSeed.levels.filter((level) => ['preschool', 'grades-5-8', 'grades-9-12', 'college-undergrad'].includes(level.id));
+  return (
+    <section className="education-workforce-panel" aria-label="ACS school enrollment source panel">
+      <div className="bridge-head">
+        <div>
+          <span className="eyebrow">SCHOOL ENROLLMENT · ACS CONTEXT</span>
+          <h3>B14001 adds a public service-demand lens before school-district exports are integrated</h3>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="labor-force-grid">
+        <article>
+          <span>Enrollment universe</span>
+          <b>{schoolEnrollmentSeed.totalPopulation3Plus.displayValue}</b>
+          <small>Population age 3+ · MOE {schoolEnrollmentSeed.totalPopulation3Plus.displayMoe}</small>
+        </article>
+        <article>
+          <span>Enrolled in school</span>
+          <b>{schoolEnrollmentSeed.enrolled.displayShare}</b>
+          <small>{schoolEnrollmentSeed.enrolled.displayValue} residents · MOE {schoolEnrollmentSeed.enrolled.displayMoe}</small>
+        </article>
+        {topLevels.map((level) => (
+          <article key={level.id}>
+            <span>{level.label}</span>
+            <b>{level.displayShare}</b>
+            <small>{level.displayValue} estimate · MOE {level.displayMoe}</small>
+          </article>
+        ))}
+      </div>
+      <div className="education-route-grid">
+        {schoolEnrollmentSeed.comparison.map((row) => (
+          <a key={row.geography} href={schoolEnrollmentSeed.sourceUrl} target="_blank" rel="noreferrer">
+            <span>{row.geography}</span>
+            <b>{row.enrolledShare} enrolled</b>
+            <small>{row.enrolled.toLocaleString()} of {row.universe.toLocaleString()} age 3+ · MOE ±{row.enrolledMoe.toLocaleString()}</small>
+          </a>
+        ))}
+      </div>
+      <div className="education-next-steps">
+        {schoolEnrollmentSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p>{schoolEnrollmentSeed.caveat} Release: {schoolEnrollmentSeed.release.name} ({schoolEnrollmentSeed.release.years}); retrieved {new Date(schoolEnrollmentSeed.retrievedAt).toLocaleDateString()}.</p>
+    </section>
+  );
+}
+
 function LehdCommutingPanel() {
   return (
     <section className="lehd-commuting-panel" aria-label="LEHD commuting and jobs source routing panel">
@@ -1471,6 +1519,7 @@ function EconomicDevelopment() {
         <LaborForceSourcePanel />
         <IncomeDistributionPanel />
         <EducationWorkforcePanel />
+        <SchoolEnrollmentPanel />
         <WorkforceEducationPanel />
         <IndustryEmploymentPanel />
         <LehdCommutingPanel />
@@ -3176,6 +3225,7 @@ function PageBriefStrip({ page }) {
     ],
     economic: [
       { label: 'Workforce', value: 'ACS + BLS', detail: 'City survey context plus county LAUS.' },
+      { label: 'School lens', value: schoolEnrollmentSeed.enrolled.displayShare, detail: 'ACS B14001 age-3+ enrollment context; not district enrollment or school performance.' },
       { label: 'Revenue', value: 'DOR route', detail: 'Sales tax remains row-parse pending.' },
       { label: 'Income', value: incomeDistributionSeed.rollups?.under50k?.displayShare || 'ACS seeded', detail: 'Household bracket context is source-labeled.' }
     ],
