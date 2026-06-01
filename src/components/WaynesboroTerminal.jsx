@@ -3389,7 +3389,7 @@ function TenureIncomePanel() {
         </article>
         <div>
           <h3>Affordability bridge, not household files</h3>
-          <p>ACS B25119 adds tenure-specific income context next to rent, cost-burden, home-value, and utility-rate panels. The owner/renter median-income gap is {tenureIncomeSeed.derived.displayOwnerRenterGap}, but the renter MOE is large, so Council copy should stay cautious and source-gated.</p>
+          <p>ACS B25119 adds tenure-specific income context next to rent, cost-burden, home-value, and utility-rate panels. The owner/renter median-income gap is {tenureIncomeSeed.derived.displayOwnerRenterGap}, but the renter MOE is large, so public briefing copy should stay cautious and source-gated.</p>
           <a href={tenureIncomeSeed.sourceUrl} target="_blank" rel="noreferrer">Census Reporter B25119 source query</a>
         </div>
       </div>
@@ -3761,7 +3761,7 @@ function InfrastructureSafetyHousing() {
   );
 }
 
-function Council() {
+function Briefing() {
   const disciplinedBrief = [
     {
       status: 'Verified baseline',
@@ -3789,7 +3789,7 @@ function Council() {
     }
   ];
 
-  const councilEvidence = [
+  const briefingEvidence = [
     {
       label: 'Baseline facts',
       confidence: 'Verified connector',
@@ -3817,7 +3817,7 @@ function Council() {
   ];
 
   return (
-    <section id="council" className="module council-panel">
+    <section id="briefing" className="module council-panel">
       <section className="panel council-main">
         <div className="panel-head"><div><span className="eyebrow">BRIEFING LAYER</span><h2>Source-gated civic briefing</h2></div><span className="terminal-badge gold">PUBLIC BRIEF</span></div>
         <div className="council-grid">
@@ -3872,7 +3872,7 @@ function Council() {
           <span className="terminal-badge">PUBLIC DEMO GUARDRAIL</span>
         </div>
         <div className="evidence-grid">
-          {councilEvidence.map((item) => (
+          {briefingEvidence.map((item) => (
             <article key={item.label}>
               <div><span>{item.label}</span><b>{item.confidence}</b></div>
               <h3>{item.title}</h3>
@@ -3916,8 +3916,8 @@ function MeetingReadinessStrip() {
   const checks = [
     { label: 'First-screen posture', value: 'Public demo', detail: 'White/silver civic surface, forest-green identity, no affiliation or trading language.' },
     { label: 'Claims discipline', value: 'Source-gated', detail: 'Verified baseline first; synthetic operating scores stay visibly labeled.' },
-    { label: 'Presentation packet', value: 'Print aware', detail: 'Dense panels remain readable for PDF/meeting screenshots and council-style review.' },
-    { label: 'Next evidence lane', value: 'QCEW payroll', detail: `${qcewPayrollSeed.totalCovered.employment.toLocaleString()} Burke County covered jobs are seeded from BLS QCEW; keep sector rows disclosure-aware and county-scoped before Council workforce recommendations.` }
+    { label: 'Presentation packet', value: 'Print aware', detail: 'Dense panels remain readable for PDF/meeting screenshots and public review.' },
+    { label: 'Next evidence lane', value: 'QCEW payroll', detail: `${qcewPayrollSeed.totalCovered.employment.toLocaleString()} Burke County covered jobs are seeded from BLS QCEW; keep sector rows disclosure-aware and county-scoped before workforce recommendations.` }
   ];
 
   return (
@@ -4036,7 +4036,7 @@ const pageMeta = {
     title: 'Infrastructure, safety, housing, and resilience.',
     description: 'Operations source confidence, public works references, weather, water, housing, environmental, mobility, and hazard context.'
   },
-  council: {
+  briefing: {
     eyebrow: 'WAYNESBORO, GEORGIA · BRIEFING',
     title: 'Source-gated civic briefing.',
     description: 'Clear recommendations and open questions separated from evidence, placeholders, and source inventory.'
@@ -4051,7 +4051,7 @@ const nav = [
   { id: 'economic', label: 'Economic', href: withBase('/economic/') },
   { id: 'downtown', label: 'Downtown + Projects', href: withBase('/downtown/') },
   { id: 'operations', label: 'Operations', href: withBase('/operations/') },
-  { id: 'council', label: 'Briefing', href: withBase('/council/') },
+  { id: 'briefing', label: 'Briefing', href: withBase('/briefing/') },
   { id: 'sources', label: 'Sources', href: withBase('/sources/') }
 ];
 
@@ -4060,7 +4060,7 @@ function PageContent({ page }) {
   if (page === 'economic') return <EconomicDevelopment />;
   if (page === 'downtown') return <><DowntownCommandCenter /><BeautificationIndex /><ProjectTracker /></>;
   if (page === 'operations') return <InfrastructureSafetyHousing />;
-  if (page === 'council') return <Council />;
+  if (page === 'briefing' || page === 'council') return <Briefing />;
   return <><CivicBriefingStrip /><ExecutiveDashboard /></>;
 }
 
@@ -4111,7 +4111,7 @@ function PageBriefStrip({ page }) {
       { label: 'Mobility tenure', value: vehicleTenureSeed.metrics.find((metric) => metric.id === 'renter-zero-vehicle')?.displayShare || 'B25044', detail: 'Renter zero-vehicle context; pair with service locations, transit/nonprofit routes, commute, and GDOT before recommendations.' },
       { label: 'Home values', value: homeValueDistributionSeed.brackets.find((item) => item.id === '200k-299k')?.displayShare || 'ACS seeded', detail: 'B25075 value distribution; not assessments, sales, or tax records.' }
     ],
-    council: [
+    briefing: [
       { label: 'Briefing mode', value: 'Source-gated', detail: 'The briefing separates evidence from placeholder judgment.' },
       { label: 'Safe brief', value: 'Caveated', detail: 'No real municipal claim without source label.' },
       { label: 'Next upgrade', value: 'Citation cards', detail: 'Manual document review should feed decisions.' }

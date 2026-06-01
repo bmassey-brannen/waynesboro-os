@@ -891,6 +891,17 @@ export const sourceRegistry = [
     notes: 'Runtime query returned occupied, owner/renter, vacant housing, median home value, and median gross rent estimates for Waynesboro with MOE. Added an Operations housing source panel. Treat as ACS context only; not parcel-level vacancy, rent-roll, tax, code-enforcement, official housing-program, or downtown occupancy data.'
   },
   {
+    name: 'HUD User USPS Vacancy Data',
+    url: 'https://www.huduser.gov/portal/datasets/usps.html',
+    dataType: 'Quarterly aggregate USPS residential/business vacancy and no-stat address context distributed by HUD User',
+    geography: 'Census tract / ZIP-level context; Waynesboro/Burke County filtering requires geography crosswalk QA before local use',
+    accessMethod: 'Public HUD User dataset landing page; manual download/terms review first, then cache only aggregate rows with release period and source URL.',
+    cadence: 'Quarterly HUD User releases',
+    difficulty: 'Medium',
+    status: 'Source route verified',
+    notes: 'Low-volume runtime check reached the HUD User USPS Vacancy Data landing pages with HTTP 202. Added src/data/hudUspsVacancySeed.js as a route/data-shape stub. Do not display Waynesboro vacancy counts, parcel vacancy, downtown storefront occupancy, code enforcement, or address-level claims until permitted aggregate rows are downloaded, geographies are matched, and local sources are reconciled.'
+  },
+  {
     name: 'Census Reporter ACS housing cost burden tables',
     url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B25070,B25091&geo_ids=16000US1380984,05000US13033,04000US13',
     dataType: 'ACS B25070 renter gross-rent burden and B25091 owner monthly-cost burden estimates with margins of error and city/county/state comparison context',
