@@ -911,11 +911,22 @@ export const sourceRegistry = [
     difficulty: 'Low',
     status: 'Public API seed ready',
     notes: 'Runtime query returned Waynesboro school-enrollment context: 5,427 residents age 3+ in the table universe and 1,260 / 23.2% enrolled in school with MOE ±269, plus level splits from preschool through college and Burke/Georgia comparisons. Added an Economic school-enrollment panel. Treat as ACS survey planning context only; not Burke County Public Schools enrollment, attendance, graduation, CTAE, student-level, childcare-slot, school-performance, or municipal workload data.'
+  },
+  {
+    name: 'Census Reporter ACS veteran status table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B21001&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS B21001 civilian population 18+ veteran-status estimates with margins of error and city/county/state comparison context',
+    geography: 'Waynesboro city, Georgia (16000US1380984), Burke County (05000US13033), and Georgia (04000US13)',
+    accessMethod: 'Public no-key Census Reporter API; low-volume B21001 request cached in src/data/veteranStatusSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024 release.',
+    difficulty: 'Low',
+    status: 'Public API seed ready',
+    notes: 'Runtime query returned Waynesboro veteran-status context: 313 veterans / 7.3% of civilian population age 18+ with MOE ±158, plus Burke County and Georgia comparisons. Added an Executive veteran-service lens panel. Treat as ACS survey planning context only; not VA enrollment, benefits eligibility, service-connected disability, nonprofit caseload, household-level records, or municipal service demand.'
   }
 ];
 
 export const readinessStrip = [
-  { lane: 'Demographics', status: 'Live snapshot + age + household + youth mix', source: 'Data Commons API / Census Reporter B01001/B09001/B11001', tone: 'good' },
+  { lane: 'Demographics', status: 'Live snapshot + age + household + youth + veteran mix', source: 'Data Commons API / Census Reporter B01001/B09001/B11001/B21001', tone: 'good' },
   { lane: 'Economic mobility', status: 'ACS poverty + SNAP seeds', source: 'Census Reporter B17001/B22001', tone: 'good' },
   { lane: 'Language access', status: 'ACS communication seed', source: 'Census Reporter C16001', tone: 'good' },
   { lane: 'City documents', status: 'Index-ready', source: 'Agenda Center / Archive Center', tone: 'good' },

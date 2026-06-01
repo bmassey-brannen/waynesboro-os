@@ -74,6 +74,7 @@ import { localFinancialDocumentsSeed } from '../data/localFinancialDocumentsSeed
 import { householdSizeSeed } from '../data/householdSizeSeed.js';
 import { industryEmploymentSeed } from '../data/industryEmploymentSeed.js';
 import { schoolEnrollmentSeed } from '../data/schoolEnrollmentSeed.js';
+import { veteranStatusSeed } from '../data/veteranStatusSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -515,6 +516,52 @@ function HouseholdSizePanel() {
   );
 }
 
+function VeteranStatusPanel() {
+  const headline = veteranStatusSeed.headline;
+  return (
+    <section className="household-composition-panel veteran-status-panel" aria-label="ACS veteran-status planning context">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">VETERAN STATUS · ACS CONTEXT</span>
+          <h2>Veteran-service lens before outreach becomes guesswork</h2>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="household-composition-hero veteran-status-hero">
+        <article>
+          <span>{headline.label}</span>
+          <b>{headline.displayShare}</b>
+          <small>{headline.displayValue} veterans · MOE {headline.displayMoe} · universe {headline.universe.toLocaleString()}</small>
+        </article>
+        <div>
+          <h3>Why this belongs in the civic brief</h3>
+          <p>Veteran status adds a respectful service-planning lens for recognition, outreach, mobility, health-access, aging-services, and nonprofit partnership questions. It stays source-labeled and does not imply VA enrollment, benefits eligibility, or municipal caseload.</p>
+          <a href={veteranStatusSeed.sourceUrl} target="_blank" rel="noreferrer">Census Reporter B21001 source query</a>
+        </div>
+      </div>
+      <div className="household-composition-grid veteran-status-grid">
+        {veteranStatusSeed.metrics.map((metric) => (
+          <article key={metric.id}>
+            <span>{metric.label}</span>
+            <b>{metric.displayShare}</b>
+            <small>{metric.displayValue} estimate · MOE {metric.displayMoe} · {metric.planningUse}</small>
+          </article>
+        ))}
+      </div>
+      <div className="household-comparison-strip veteran-comparison-strip">
+        {veteranStatusSeed.comparison.map((row) => (
+          <article key={row.geography}>
+            <span>{row.geography}</span>
+            <b>{row.veteranShare}</b>
+            <small>{row.veterans.toLocaleString()} veterans · MOE ±{row.veteranMoe} · universe {row.universe.toLocaleString()}</small>
+          </article>
+        ))}
+      </div>
+      <p>{veteranStatusSeed.caveat} Release: {veteranStatusSeed.release.name} ({veteranStatusSeed.release.years}).</p>
+    </section>
+  );
+}
+
 function PovertyStatusPanel() {
   const headline = povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-total');
   const child = povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-child-under-18');
@@ -634,6 +681,7 @@ function ExecutiveDashboard() {
       <YouthProfilePanel />
       <HouseholdCompositionPanel />
       <HouseholdSizePanel />
+      <VeteranStatusPanel />
     </section>
   );
 }
@@ -3086,7 +3134,7 @@ function MeetingReadinessStrip() {
     { label: 'First-screen posture', value: 'Public demo', detail: 'White/silver civic surface, forest-green identity, no affiliation or trading language.' },
     { label: 'Claims discipline', value: 'Source-gated', detail: 'Verified baseline first; synthetic operating scores stay visibly labeled.' },
     { label: 'Presentation packet', value: 'Print aware', detail: 'Dense panels remain readable for PDF/meeting screenshots and council-style review.' },
-    { label: 'Next evidence lane', value: 'Poverty context', detail: `${povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-total')?.displayShare || 'N/A'} ACS B17001 poverty-status context is seeded; do not turn it into eligibility, program workload, or household-level claims.` }
+    { label: 'Next evidence lane', value: 'Veteran services', detail: `${veteranStatusSeed.headline.displayShare} ACS B21001 veteran-status context is seeded; pair it with VA, health, accessibility, and local organization sources before Council recommendations.` }
   ];
 
   return (

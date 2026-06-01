@@ -419,6 +419,10 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .household-composition-hero a { margin-top: 9px; color: var(--forest-2); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; text-decoration: none; }
 .household-composition-grid, .household-comparison-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
 .household-composition-grid article, .household-comparison-strip article { min-width: 0; padding: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.76); }
+.veteran-status-panel { border-left-color: var(--gold); background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(250,247,238,.96)); }
+.veteran-status-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.veteran-status-hero article { background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(249,242,220,.9)); }
+.veteran-comparison-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .household-composition-grid article { border-left: 3px solid var(--forest-2); }
 .household-comparison-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .household-comparison-strip article { border-left: 3px solid var(--gold-soft); background: rgba(165,128,49,.055); }
