@@ -484,6 +484,17 @@ export const sourceRegistry = [
     notes: 'Good candidate to connect the downtown command center to official redevelopment and board context before parcel-level data is available.'
   },
   {
+    name: 'City of Waynesboro Real Estate Locator / Downtown business routes',
+    url: 'https://www.waynesboroga.com/realestate.aspx',
+    dataType: 'Official public commercial-property listing route, Downtown Businesses directory category, DDA page, and Agenda Center DDA packet/minute trail',
+    geography: 'City of Waynesboro downtown commercial and redevelopment context',
+    accessMethod: 'Public CivicEngage pages; low-volume route and page-shape review only. Do not create accounts, submit forms, or treat null listings as a complete vacancy inventory.',
+    cadence: 'As city staff or directory/listing participants publish updates; DDA agendas update by meeting cycle',
+    difficulty: 'Medium',
+    status: 'Seed connector ready',
+    notes: 'Low-volume check reached the Real Estate Locator, official Downtown Businesses category, DDA page, and Agenda Center. Real Estate Locator text stated no available properties were posted at retrieval time, but the UI keeps that as a source-route/null-state only, not a vacancy count. Added src/data/downtownSourceSeed.js and a Downtown Source Check panel.'
+  },
+  {
     name: 'City of Waynesboro Water Department / About Our Water',
     url: 'https://www.waynesboroga.com/124/Water',
     dataType: 'Official city water department pages, water service context, water quality/public information surface',

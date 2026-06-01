@@ -86,6 +86,7 @@ import { publicWorksServiceSeed } from '../data/publicWorksServiceSeed.js';
 import { tenureIncomeSeed } from '../data/tenureIncomeSeed.js';
 import { parksFacilitiesSeed } from '../data/parksFacilitiesSeed.js';
 import { renterStructureSeed } from '../data/renterStructureSeed.js';
+import { downtownSourceSeed } from '../data/downtownSourceSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -1742,6 +1743,33 @@ function EconomicDevelopment() {
   );
 }
 
+function DowntownPublicSourcePanel() {
+  return (
+    <section className="panel downtown-source-panel" aria-label="downtown public source evidence stack">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">DOWNTOWN SOURCE CHECK</span>
+          <h2>Official routes now frame the storefront mock layer</h2>
+        </div>
+        <span className="terminal-badge gold">COUNT GATED</span>
+      </div>
+      <div className="downtown-source-grid">
+        {downtownSourceSeed.routes.map((route) => (
+          <a key={route.label} href={route.url} target="_blank" rel="noreferrer">
+            <span>{route.label}</span>
+            <b>{route.observedShape}</b>
+            <small>{route.integrationUse}</small>
+          </a>
+        ))}
+      </div>
+      <div className="downtown-action-strip">
+        {downtownSourceSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p className="source-note">{downtownSourceSeed.caveat} Retrieved {new Date(downtownSourceSeed.retrievedAt).toLocaleDateString()} from public city routes.</p>
+    </section>
+  );
+}
+
 function DowntownCommandCenter() {
   const civicAssets = osmCivicAssetsSeed.assets.slice(0, 5);
   const mapSources = cityMapSourceSeed.links.slice(0, 5);
@@ -1839,20 +1867,23 @@ function DowntownCommandCenter() {
           <p>{cityMapSourceSeed.caveat}</p>
         </div>
       </section>
-      <DataTable
-        title="Storefront Intelligence"
-        eyebrow="OCCUPANCY / OWNERSHIP / TRAFFIC"
-        rows={downtownProperties}
-        badge="SCHEMATIC MOCK"
-        note="Storefront rows are presentation placeholders until parcel, business-directory, DDA, qPublic/export, or field-verified records are attached."
-        columns={[
-          { key: 'name', label: 'Asset' },
-          { key: 'occupancy', label: 'Occupancy', render: (row) => <span className={`pill ${row.occupancy === 'Vacant' ? 'bad' : row.occupancy === 'Partial' ? 'watch' : 'good'}`}>{row.occupancy}</span> },
-          { key: 'owner', label: 'Owner' },
-          { key: 'footTraffic', label: 'Foot traffic', render: (row) => <ScoreBar score={row.footTraffic} /> },
-          { key: 'status', label: 'Readout' }
-        ]}
-      />
+      <div className="downtown-side-stack">
+        <DowntownPublicSourcePanel />
+        <DataTable
+          title="Storefront Intelligence"
+          eyebrow="OCCUPANCY / OWNERSHIP / TRAFFIC"
+          rows={downtownProperties}
+          badge="SCHEMATIC MOCK"
+          note="Storefront rows are presentation placeholders until parcel, business-directory, DDA, qPublic/export, or field-verified records are attached. The source check above shows official routes, not verified vacancy counts."
+          columns={[
+            { key: 'name', label: 'Asset' },
+            { key: 'occupancy', label: 'Occupancy', render: (row) => <span className={`pill ${row.occupancy === 'Vacant' ? 'bad' : row.occupancy === 'Partial' ? 'watch' : 'good'}`}>{row.occupancy}</span> },
+            { key: 'owner', label: 'Owner' },
+            { key: 'footTraffic', label: 'Foot traffic', render: (row) => <ScoreBar score={row.footTraffic} /> },
+            { key: 'status', label: 'Readout' }
+          ]}
+        />
+      </div>
     </section>
   );
 }
