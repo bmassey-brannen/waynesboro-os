@@ -1032,6 +1032,17 @@ export const sourceRegistry = [
     difficulty: 'Low',
     status: 'Official route index ready',
     notes: 'Runtime page review found the Facilities directory and five official facility routes: City Park, Mini Park, Park at Liberty and Ninth, Davis Park (Sixth Street Park), and the City of Waynesboro Ice Plant. Added src/data/parksFacilitiesSeed.js and an Operations parks/facilities panel. Treat as service-location/civic-asset source routing only; not condition, availability, attendance, reservation, accessibility, maintenance, or capital-need evidence.'
+  },
+  {
+    name: 'Census Reporter ACS B25032 tenure by units in structure',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B25032&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS occupied housing units by tenure and structure type, including renter-occupied single-family, 2-4 unit, 5+ unit, and mobile-home categories',
+    geography: 'Waynesboro city, Burke County, and Georgia comparison rows',
+    accessMethod: 'Public no-key Census Reporter API query; low-volume runtime request cached into src/data/renterStructureSeed.js.',
+    cadence: 'ACS 5-year release-based; current seed uses ACS 2024 5-year / 2020-2024.',
+    difficulty: 'Low',
+    status: 'No-key API seed ready',
+    notes: 'Runtime query returned Waynesboro B25032 context: 1,556 renter-occupied ACS units / 70.6% of occupied units, with 46.6% of renter units in 2-4 unit structures. Added an Operations renter-structure mix panel. Treat as ACS survey context only; not parcel inventory, rental registry, landlord ownership, zoning, permit history, rent roll, code-enforcement evidence, or municipal telemetry.'
   }
 ];
 
@@ -1049,7 +1060,7 @@ export const readinessStrip = [
   { lane: 'Utilities', status: 'Water + gas + energy context', source: 'City Water/Natural Gas pages / EPA SDWIS / Georgia EPD DWW / ACS B25040', tone: 'good' },
   { lane: 'Digital access', status: 'ACS context + FCC route', source: 'Census Reporter B28002 / FCC BDC', tone: 'good' },
   { lane: 'Mobility access', status: 'ACS vehicle + tenure + disability seeds', source: 'Census Reporter B08201 / B25044 / B18101', tone: 'good' },
-  { lane: 'Housing', status: 'ACS tenure + burden + monthly costs + tenure income + age + typology + crowding + values + LIHTC route', source: 'Census Reporter B25003/B25002/B25070/B25091/B25064/B25088/B25119/B25034/B25024/B25014/B25075 / City DocumentCenter / Georgia DCA', tone: 'good' },
+  { lane: 'Housing', status: 'ACS tenure + burden + monthly costs + tenure income + age + typology + renter mix + crowding + values + LIHTC route', source: 'Census Reporter B25003/B25002/B25070/B25091/B25064/B25088/B25119/B25034/B25024/B25032/B25014/B25075 / City DocumentCenter / Georgia DCA', tone: 'good' },
   { lane: 'Environmental', status: 'CWA + RCRA + TRI seeds ready', source: 'EPA ECHO / Envirofacts', tone: 'good' },
   { lane: 'Hydrology', status: 'USGS IV snapshot', source: 'USGS NWIS Site + Instantaneous Values', tone: 'good' },
   { lane: 'Resilience', status: 'Hazard source stack', source: 'FEMA NFHL / NOAA Storm Events', tone: 'watch' },
@@ -1247,6 +1258,14 @@ export const sourcePriorities = [
     source: 'Census Reporter ACS housing tables B25003/B25002/B25077/B25064',
     value: 'Adds source-labeled housing context and margins of error while keeping parcel vacancy, downtown occupancy, and affordability findings gated behind stronger local records.',
     nextStep: 'Compare Census Reporter values to Data Commons and city/DCA housing documents, then request/obtain parcel-level vacancy or ownership exports before promoting downtown or neighborhood claims.',
+    difficulty: 'Low'
+  },
+  {
+    lane: 'Housing / rental typology',
+    target: 'Use ACS B25032 as a bridge before parcel, rental-registry, or zoning claims',
+    source: 'Census Reporter ACS B25032 tenure by units in structure',
+    value: 'Adds source-labeled renter structure context so housing discussion can distinguish single-family rentals, small multifamily, and apartment-scale units without inventing a property inventory.',
+    nextStep: 'Pair B25032 with qPublic parcels, zoning maps/ordinances, permit history, code-enforcement aggregates, and any public rental/property-management evidence before Council housing recommendations.',
     difficulty: 'Low'
   },
   {

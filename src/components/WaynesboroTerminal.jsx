@@ -85,6 +85,7 @@ import { mentalHealthResourcesSeed } from '../data/mentalHealthResourcesSeed.js'
 import { publicWorksServiceSeed } from '../data/publicWorksServiceSeed.js';
 import { tenureIncomeSeed } from '../data/tenureIncomeSeed.js';
 import { parksFacilitiesSeed } from '../data/parksFacilitiesSeed.js';
+import { renterStructureSeed } from '../data/renterStructureSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -3328,6 +3329,54 @@ function HousingStructurePanel() {
   );
 }
 
+function RenterStructurePanel() {
+  const smallMultifamily = renterStructureSeed.metrics.find((metric) => metric.id === 'renter-2-4-unit');
+  const renterShare = renterStructureSeed.metrics.find((metric) => metric.id === 'renter-share');
+
+  return (
+    <section className="panel renter-structure-panel" aria-label="ACS renter structure mix context">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">RENTER STRUCTURE MIX · ACS CONTEXT</span>
+          <h2>Rental typology before parcel, zoning, or landlord claims</h2>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="renter-structure-hero">
+        <article>
+          <span>{smallMultifamily.label}</span>
+          <b>{smallMultifamily.displayShare}</b>
+          <small>{smallMultifamily.displayValue} of {renterStructureSeed.renterOccupiedUnits.toLocaleString()} renter-occupied ACS units · derived MOE approx. ±{smallMultifamily.moeApprox.toLocaleString()}</small>
+        </article>
+        <div>
+          <h3>Useful housing question, not a rental registry</h3>
+          <p>B25032 separates owner and renter units by structure type. It sharpens the housing lane by showing where renter context lives in single-family, small multifamily, and apartment-scale structures before any parcel or zoning claim is made.</p>
+          <a href={renterStructureSeed.sourceUrl} target="_blank" rel="noreferrer">Census Reporter B25032 source query</a>
+        </div>
+      </div>
+      <div className="renter-structure-grid">
+        {renterStructureSeed.metrics.map((metric) => (
+          <article key={metric.id}>
+            <div><span>{metric.label}</span><b>{metric.displayShare}</b></div>
+            <div className="mini-bar"><span style={{ width: metric.displayShare }} /></div>
+            <small>{metric.displayValue} units · {metric.moe ? `MOE ±${metric.moe.toLocaleString()}` : `derived MOE approx. ±${metric.moeApprox.toLocaleString()}`}</small>
+          </article>
+        ))}
+      </div>
+      <div className="renter-structure-comparison">
+        {renterStructureSeed.comparison.map((item) => (
+          <article key={item.geography}>
+            <span>{item.geography}</span>
+            <b>{item.renterShare}</b>
+            <small>renter share · {item.renterSmallMultifamilyShare} small multifamily · {item.renterDetachedShare} detached</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{renterStructureSeed.caveat} City renter share: {renterShare.displayShare}; release {renterStructureSeed.release.name} ({renterStructureSeed.release.years}); retrieved {new Date(renterStructureSeed.retrievedAt).toLocaleDateString()}.</p>
+    </section>
+  );
+}
+
 function HousingCrowdingPanel() {
   const headline = housingCrowdingSeed.derived.find((item) => item.id === 'all-overcrowded');
 
@@ -3468,6 +3517,7 @@ function InfrastructureSafetyHousing() {
       <TenureIncomePanel />
       <HousingAgeSourcePanel />
       <HousingStructurePanel />
+      <RenterStructurePanel />
       <HousingCrowdingPanel />
       <HomeValueDistributionPanel />
       <AffordableHousingSourcePanel />
@@ -3803,6 +3853,7 @@ function PageBriefStrip({ page }) {
       { label: 'Affordability', value: housingCostBurdenSeed.metrics.find((metric) => metric.id === 'renter-cost-burden')?.displayShare || 'ACS seeded', detail: 'Renter cost-burden survey context with MOE caveats.' },
       { label: 'Tenure income', value: tenureIncomeSeed.metrics.find((metric) => metric.id === 'renter-median-income')?.displayValue || 'ACS B25119', detail: 'Renter/owner median-income bridge; not payroll, tax, eligibility, or rent-roll data.' },
       { label: 'Housing type', value: housingStructureSeed.derived.find((item) => item.id === 'small-multifamily')?.displayShare || 'ACS seeded', detail: 'B25024 units-in-structure context; not parcels, zoning, or permits.' },
+      { label: 'Rental typology', value: renterStructureSeed.metrics.find((metric) => metric.id === 'renter-2-4-unit')?.displayShare || 'B25032', detail: 'Renter small-multifamily context; not parcel inventory, rental registry, landlord ownership, or zoning proof.' },
       { label: 'Crowding', value: housingCrowdingSeed.derived.find((item) => item.id === 'all-overcrowded')?.displayShare || 'ACS seeded', detail: 'B25014 occupants-per-room context; zero estimate carries MOE and is not an inspection or service record.' },
       { label: 'Mobility tenure', value: vehicleTenureSeed.metrics.find((metric) => metric.id === 'renter-zero-vehicle')?.displayShare || 'B25044', detail: 'Renter zero-vehicle context; pair with service locations, transit/nonprofit routes, commute, and GDOT before recommendations.' },
       { label: 'Home values', value: homeValueDistributionSeed.brackets.find((item) => item.id === '200k-299k')?.displayShare || 'ACS seeded', detail: 'B25075 value distribution; not assessments, sales, or tax records.' }
