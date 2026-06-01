@@ -110,6 +110,17 @@ export const sourceRegistry = [
     notes: 'Runtime query returned Waynesboro B17001 context: 5,507-person poverty-status universe, 1,433 / 26.0% estimated below poverty with MOE ±485, plus Burke County and Georgia comparison rows. Added an executive economic-mobility panel. Treat as ACS survey planning context only; not benefits eligibility, household-level records, program enrollment, tax data, school meal participation, or municipal service-demand telemetry.'
   },
   {
+    name: 'Census Reporter ACS race and Hispanic origin table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B03002&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS B03002 race and Hispanic/Latino origin estimates with margins of error for public communications, outreach, and demographic context',
+    geography: 'Waynesboro city, Burke County, and Georgia comparison rows; total population universe',
+    accessMethod: 'Public no-key Census Reporter API; low-volume request cached in src/data/raceEthnicitySeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Runtime query returned Waynesboro B03002 context: 5,644 total ACS population, 65.5% Black alone non-Hispanic, 22.1% White alone non-Hispanic, and 8.6% Hispanic/Latino, with MOE visible. Added an Executive demographic lens panel. Treat as ACS survey planning context only; not voter data, program enrollment, household identity records, policing data, eligibility data, or municipal service workload.'
+  },
+  {
     name: 'Census QuickFacts',
     url: 'https://www.census.gov/quickfacts/fact/table/waynesborocitygeorgia,burkecountygeorgia/PST045223',
     dataType: 'Public demographic and economic quick facts for city/county context',
@@ -948,7 +959,7 @@ export const sourceRegistry = [
 ];
 
 export const readinessStrip = [
-  { lane: 'Demographics', status: 'Live snapshot + age + household + youth + veteran mix', source: 'Data Commons API / Census Reporter B01001/B09001/B11001/B21001', tone: 'good' },
+  { lane: 'Demographics', status: 'Live snapshot + age + household + race/origin + youth + veteran mix', source: 'Data Commons API / Census Reporter B01001/B03002/B09001/B11001/B21001', tone: 'good' },
   { lane: 'Economic mobility', status: 'ACS poverty + SNAP seeds', source: 'Census Reporter B17001/B22001', tone: 'good' },
   { lane: 'Language access', status: 'ACS communication seed', source: 'Census Reporter C16001', tone: 'good' },
   { lane: 'City documents', status: 'Index-ready', source: 'Agenda Center / Archive Center', tone: 'good' },

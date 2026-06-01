@@ -77,6 +77,7 @@ import { schoolEnrollmentSeed } from '../data/schoolEnrollmentSeed.js';
 import { veteranStatusSeed } from '../data/veteranStatusSeed.js';
 import { occupationEmploymentSeed } from '../data/occupationEmploymentSeed.js';
 import { socialVulnerabilitySeed } from '../data/socialVulnerabilitySeed.js';
+import { raceEthnicitySeed } from '../data/raceEthnicitySeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -412,6 +413,52 @@ function YouthProfilePanel() {
   );
 }
 
+function RaceEthnicityPanel() {
+  const headline = raceEthnicitySeed.headline;
+  return (
+    <section className="household-composition-panel race-ethnicity-panel" aria-label="ACS race and ethnicity demographic planning context">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">DEMOGRAPHIC CONTEXT · ACS B03002</span>
+          <h2>Race / ethnicity lens before outreach assumptions</h2>
+        </div>
+        <span className="terminal-badge live">NO-KEY API SEED</span>
+      </div>
+      <div className="household-composition-hero">
+        <article>
+          <span>{headline.label}</span>
+          <b>{headline.displayShare}</b>
+          <small>{headline.estimate.toLocaleString()} residents · MOE ±{headline.moe.toLocaleString()} · total ACS population {raceEthnicitySeed.totalPopulation.toLocaleString()}</small>
+        </article>
+        <div>
+          <h3>Public-facing use: better questions, not identity files</h3>
+          <p>Use this panel to frame outreach, public notices, language-access pairing, service-location review, and grant narratives. It does not imply voter records, benefits files, household-level identity data, policing data, eligibility, or department workload.</p>
+          <a href={raceEthnicitySeed.sourceUrl} target="_blank" rel="noreferrer">Census Reporter B03002 source query</a>
+        </div>
+      </div>
+      <div className="household-composition-grid race-ethnicity-grid">
+        {raceEthnicitySeed.groups.map((group) => (
+          <article key={group.id}>
+            <span>{group.label}</span>
+            <b>{group.displayShare}</b>
+            <small>{group.estimate.toLocaleString()} residents · MOE ±{group.moe.toLocaleString()} · {group.planningUse}</small>
+          </article>
+        ))}
+      </div>
+      <div className="household-comparison-strip race-ethnicity-comparison">
+        {raceEthnicitySeed.comparison.map((item) => (
+          <article key={item.geography}>
+            <span>{item.geography}</span>
+            <b>{item.blackNonHispanicShare}</b>
+            <small>Black alone non-Hispanic · {item.whiteNonHispanicShare} White alone non-Hispanic · {item.hispanicShare} Hispanic/Latino</small>
+          </article>
+        ))}
+      </div>
+      <p className="source-note">{raceEthnicitySeed.caveat} Release: {raceEthnicitySeed.release.name} ({raceEthnicitySeed.release.years}); retrieved {new Date(raceEthnicitySeed.retrievedAt).toLocaleDateString()}.</p>
+    </section>
+  );
+}
+
 function HouseholdCompositionPanel() {
   const primaryMetrics = householdCompositionSeed.metrics.filter((metric) => ['family-households', 'living-alone', 'female-no-spouse-family', 'nonfamily-households'].includes(metric.id));
   const headline = householdCompositionSeed.metrics.find((metric) => metric.id === 'living-alone');
@@ -681,6 +728,7 @@ function ExecutiveDashboard() {
       <SnapAssistancePanel />
       <AgeProfilePanel />
       <YouthProfilePanel />
+      <RaceEthnicityPanel />
       <HouseholdCompositionPanel />
       <HouseholdSizePanel />
       <VeteranStatusPanel />
@@ -3399,6 +3447,7 @@ function PageBriefStrip({ page }) {
       { label: 'Claim posture', value: 'Hybrid mode', detail: 'Real baselines first; operating placeholders labeled.' },
       { label: 'Need lens', value: povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-total')?.displayShare || 'ACS seeded', detail: 'B17001 context visible with MOE and strict eligibility guardrails.' },
       { label: 'Food security', value: snapAssistanceSeed.metrics.find((metric) => metric.id === 'snap-households')?.displayShare || 'ACS seeded', detail: 'B22001 SNAP receipt context; not eligibility, benefits files, pantry demand, or service workload.' },
+      { label: 'Demographic lens', value: raceEthnicitySeed.headline.displayShare, detail: 'ACS B03002 race/origin context; not voter, household, eligibility, policing, or workload data.' },
       { label: 'Youth lens', value: youthProfileSeed.totalUnder18.displayShareOfPopulation, detail: 'B09001 splits under-18 cohorts for family-service planning only.' }
     ],
     sources: [
