@@ -988,6 +988,17 @@ export const sourceRegistry = [
     difficulty: 'Low',
     status: 'Public CSV seed ready',
     notes: 'Runtime download returned the Georgia SVI CSV and 7 Burke County tract rows. Added an Operations SVI resilience panel showing top tract context and strict caveats. Treat as county tract planning context only; not a Waynesboro city score, parcel risk finding, disaster-loss record, household-level data, or live emergency-management feed.'
+  },
+  {
+    name: 'City of Waynesboro official operations service-route index',
+    url: 'https://www.waynesboroga.com/sitemap.xml',
+    dataType: 'Official city public works, solid waste, trash collection, yard waste, streets, storm drainage, natural gas, gas safety, fire, and police service-route pages',
+    geography: 'City of Waynesboro public service-navigation pages',
+    accessMethod: 'Public CivicEngage sitemap/page review; low-volume HTTP 200 confirmation for listed routes; no forms submitted and no private systems accessed.',
+    cadence: 'As posted by city staff; sitemap/page updates are publication-driven.',
+    difficulty: 'Low',
+    status: 'Official route index ready',
+    notes: 'Runtime confirmed HTTP 200 for 10 city operations/service pages and cached src/data/publicWorksServiceSeed.js. Added a top Operations route-spine panel above synthetic health cards. Treat as service-navigation source context only; not work-order counts, complaint volume, staffing, asset condition, outage status, response time, or operating performance.'
   }
 ];
 
@@ -1002,7 +1013,7 @@ export const readinessStrip = [
   { lane: 'Education', status: 'GaDOE routes + ACS enrollment seed', source: 'Georgia Insights + Burke County Public Schools + Census Reporter B14001', tone: 'good' },
   { lane: 'Finance', status: 'Budget PDFs + sales-tax + digest routes', source: 'UGA CVIOG / Georgia DOR Distributions / Digest Compliance', tone: 'good' },
   { lane: 'Permits', status: 'City route index', source: 'City Building Permits / Open Records', tone: 'watch' },
-  { lane: 'Utilities', status: 'Water + energy context', source: 'City Water Rates / EPA SDWIS / Georgia EPD DWW / ACS B25040', tone: 'good' },
+  { lane: 'Utilities', status: 'Water + gas + energy context', source: 'City Water/Natural Gas pages / EPA SDWIS / Georgia EPD DWW / ACS B25040', tone: 'good' },
   { lane: 'Digital access', status: 'ACS context + FCC route', source: 'Census Reporter B28002 / FCC BDC', tone: 'good' },
   { lane: 'Mobility access', status: 'ACS vehicle + tenure + disability seeds', source: 'Census Reporter B08201 / B25044 / B18101', tone: 'good' },
   { lane: 'Housing', status: 'ACS tenure + burden + monthly costs + age + typology + crowding + values + LIHTC route', source: 'Census Reporter B25003/B25002/B25070/B25091/B25064/B25088/B25034/B25024/B25014/B25075 / City DocumentCenter / Georgia DCA', tone: 'good' },
@@ -1013,6 +1024,7 @@ export const readinessStrip = [
   { lane: 'Public safety', status: 'Crime source routing', source: 'GBI Crime Statistics / FBI CDE / E-911', tone: 'watch' },
   { lane: 'Civic participation', status: 'Reference routes', source: 'Burke Elections / Georgia SOS MVP', tone: 'watch' },
   { lane: 'Policy / zoning', status: 'Route index', source: 'City Community Development / DocumentCenter', tone: 'watch' },
+  { lane: 'Public works', status: 'Official service routes indexed', source: 'City Public Works / Solid Waste / Streets / Storm Drainage / Natural Gas', tone: 'good' },
   { lane: 'Transportation', status: 'GeoPI route verified', source: 'GDOT GeoPI Project Information', tone: 'watch' },
   { lane: 'Health access', status: 'ACS insurance + city resource route', source: 'Census Reporter B27010 / City Mental Health Resources', tone: 'good' },
   { lane: 'Health equity', status: 'PLACES + SVI + food access', source: 'CDC PLACES / CDC-ATSDR SVI / USDA ERS Food Access Atlas', tone: 'watch' }

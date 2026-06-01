@@ -677,6 +677,53 @@ tr:hover td { background: rgba(31,93,66,.045); }
 .ops-row { display: grid; grid-template-columns: 90px 110px minmax(0, 1fr); gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
 .ops-row span, .ops-row em, .heat-row em { color: var(--muted); font-size: 12px; font-style: normal; }
 .ops-row em { grid-column: 3; color: var(--gold); font-weight: 750; }
+.public-works-route-panel {
+  border-color: rgba(31,93,66,.26);
+  background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(235,244,238,.97));
+}
+.public-works-route-hero {
+  display: grid;
+  grid-template-columns: minmax(230px, .32fr) minmax(0, .68fr);
+  gap: 10px;
+  margin-top: 12px;
+  align-items: stretch;
+}
+.public-works-route-hero article,
+.public-works-route-hero > div {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.82);
+}
+.public-works-route-hero article { border-left: 4px solid var(--forest-2); }
+.public-works-route-hero span,
+.public-works-route-hero b,
+.public-works-route-hero small,
+.public-works-route-hero h3,
+.public-works-route-hero p,
+.public-works-route-hero a,
+.public-works-route-grid span,
+.public-works-route-grid b,
+.public-works-route-grid small,
+.public-works-next-actions span { display: block; overflow-wrap: anywhere; }
+.public-works-route-hero span,
+.public-works-route-grid span { color: var(--gold); font-size: 9px; text-transform: uppercase; letter-spacing: .11em; font-weight: 900; }
+.public-works-route-hero b { margin-top: 5px; color: var(--forest-2); font-size: 28px; line-height: 1; letter-spacing: -.04em; }
+.public-works-route-hero small,
+.public-works-route-grid small { margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.public-works-route-hero h3 { margin: 0 0 6px; color: #13251b; font-size: 15px; letter-spacing: -.02em; }
+.public-works-route-hero p { margin: 5px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+.public-works-route-hero a { margin-top: 10px; color: var(--forest-2); font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: .07em; text-decoration: none; }
+.public-works-route-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+.public-works-route-grid a { min-width: 0; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.8); text-decoration: none; }
+.public-works-route-grid b { margin-top: 4px; color: #13251b; font-size: 13px; line-height: 1.22; }
+.public-works-next-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.public-works-next-actions span { min-width: 0; padding: 8px; border: 1px solid rgba(165,128,49,.22); background: rgba(165,128,49,.07); color: #3b4031; font-size: 11px; line-height: 1.35; font-weight: 750; }
 .ops-source-ledger { background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(236,244,238,.97)); border-color: rgba(38,116,79,.24); }
 .ops-source-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; margin-top: 12px; }
 .ops-source-grid article { min-width: 0; padding: 11px; border: 1px solid var(--line); border-left: 3px solid var(--forest-2); background: rgba(255,255,255,.76); }
@@ -1039,6 +1086,8 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .source-queue-card .priority-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .economic-module > .intelligence-card, .economic-module .metric-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .operations-confidence-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .public-works-route-grid, .public-works-next-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .public-works-route-hero { grid-template-columns: 1fr; }
   .ops-source-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .weather-meta-grid, .weather-endpoint-list, .public-safety-source-grid, .health-equity-samples, .food-access-grid, .food-access-actions, .mental-health-shape-grid, .mental-health-link-grid, .mental-health-actions, .education-route-grid, .industry-summary-grid, .industry-next-actions, .occupation-summary-grid, .occupation-next-actions, .income-rollup-grid, .income-bracket-grid, .income-next-actions, .lehd-route-grid, .commute-route-grid, .commute-profile-grid, .housing-source-ladder, .housing-tenure-grid, .housing-derived-strip, .housing-cost-grid, .housing-cost-comparison, .housing-crowding-tenure, .housing-crowding-bands, .housing-crowding-comparison, .household-composition-grid, .household-comparison-strip, .youth-profile-grid, .youth-context-strip, .youth-comparison-strip, .poverty-context-grid, .poverty-comparison-strip, .funding-summary-grid, .funding-quarter-grid, .sales-tax-source-grid, .permit-route-grid, .community-route-grid, .community-next-steps, .internet-subscription-grid, .digital-next-actions, .broadband-source-grid, .housing-source-grid, .utility-energy-grid, .utility-energy-comparison, .vehicle-access-grid, .vehicle-comparison-strip, .vehicle-tenure-grid, .mobility-evidence-ladder, .disability-age-grid, .disability-comparison-strip, .language-access-grid, .language-comparison-strip, .health-insurance-grid, .health-insurance-comparison, .state-water-grid, .state-water-next, .transport-project-grid, .transport-project-actions, .hydrology-summary-grid, .hydrology-site-list, .hydrology-next-actions, .hydrology-observation-grid, .hydrology-observation-actions, .hazardous-waste-list, .hazardous-waste-actions, .local-finance-summary, .local-finance-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .housing-cost-hero, .housing-crowding-hero, .household-composition-hero, .youth-profile-hero, .poverty-status-hero, .utility-energy-hero, .vehicle-access-hero, .disability-access-hero, .language-access-hero, .health-insurance-hero, .mental-health-hero { grid-template-columns: 1fr; }
@@ -1083,7 +1132,8 @@ tr:hover td { background: rgba(31,93,66,.045); }
   .map-source-bar { grid-template-columns: 1fr; }
   .civic-asset-head { display: block; }
   .civic-asset-list, .city-map-source-list { grid-template-columns: 1fr; }
-  .ops-source-grid, .public-safety-source-grid, .public-safety-questions, .operations-confidence-grid, .health-equity-summary, .health-equity-samples, .food-access-grid, .food-access-actions, .mental-health-shape-grid, .mental-health-link-grid, .mental-health-actions { grid-template-columns: 1fr; }
+  .ops-source-grid, .public-works-route-grid, .public-works-next-actions, .public-safety-source-grid, .public-safety-questions, .operations-confidence-grid, .health-equity-summary, .health-equity-samples, .food-access-grid, .food-access-actions, .mental-health-shape-grid, .mental-health-link-grid, .mental-health-actions { grid-template-columns: 1fr; }
+  .public-works-route-hero { grid-template-columns: 1fr; }
   .weather-meta-grid, .weather-endpoint-list { grid-template-columns: 1fr; }
   .internet-subscription-grid, .digital-next-actions, .broadband-source-grid, .broadband-shape-strip, .housing-source-grid, .housing-shape-strip, .housing-source-ladder, .housing-cost-hero, .housing-cost-grid, .housing-cost-comparison, .household-composition-hero, .household-composition-grid, .household-comparison-strip, .youth-profile-hero, .youth-profile-grid, .youth-context-strip, .youth-comparison-strip, .poverty-status-hero, .housing-age-hero, .housing-age-bars, .housing-age-comparison, .housing-structure-hero, .housing-structure-bars, .housing-structure-comparison, .housing-crowding-hero, .housing-crowding-tenure, .housing-crowding-bands, .housing-crowding-comparison, .utility-energy-grid, .utility-energy-comparison, .vehicle-access-grid, .vehicle-comparison-strip, .vehicle-tenure-grid, .mobility-evidence-ladder, .disability-age-grid, .disability-comparison-strip, .language-access-grid, .language-comparison-strip, .health-insurance-grid, .health-insurance-comparison, .state-water-grid, .state-water-next, .meeting-readiness-strip, .transport-project-grid, .transport-project-actions, .hazardous-waste-summary, .hazardous-waste-list, .hazardous-waste-actions { grid-template-columns: 1fr; }
   .utility-energy-hero, .vehicle-access-hero, .disability-access-hero, .language-access-hero, .health-insurance-hero, .mental-health-hero { grid-template-columns: 1fr; }

@@ -81,6 +81,7 @@ import { socialVulnerabilitySeed } from '../data/socialVulnerabilitySeed.js';
 import { raceEthnicitySeed } from '../data/raceEthnicitySeed.js';
 import { vehicleTenureSeed } from '../data/vehicleTenureSeed.js';
 import { mentalHealthResourcesSeed } from '../data/mentalHealthResourcesSeed.js';
+import { publicWorksServiceSeed } from '../data/publicWorksServiceSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -2514,6 +2515,55 @@ function OperationsConfidenceStrip() {
   );
 }
 
+function PublicWorksServiceRoutePanel() {
+  const priorityRoutes = publicWorksServiceSeed.routes.filter((route) => [
+    'Public works hub',
+    'Solid waste',
+    'Streets',
+    'Storm drainage',
+    'Natural gas',
+    'Fire department'
+  ].includes(route.lane));
+
+  return (
+    <section className="panel public-works-route-panel" aria-label="official public works and service route index">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">OFFICIAL OPERATIONS ROUTES</span>
+          <h2>Public service pages now sit above synthetic system-health cards</h2>
+        </div>
+        <span className="terminal-badge gold">CITY ROUTE INDEX</span>
+      </div>
+      <div className="public-works-route-hero">
+        <article>
+          <span>{publicWorksServiceSeed.status}</span>
+          <b>{publicWorksServiceSeed.routes.length} verified routes</b>
+          <small>HTTP 200 confirmed · sitemap + department pages · {new Date(publicWorksServiceSeed.retrievedAt).toLocaleDateString()}</small>
+          <a href={publicWorksServiceSeed.sourceUrl} target="_blank" rel="noreferrer">Open official sitemap source</a>
+        </article>
+        <div>
+          <h3>What this fixes in the operations lane</h3>
+          <p>Before the platform shows infrastructure, safety, streets, drainage, sanitation, or utility health as operating scores, this panel gives the page a visible official-route spine and makes clear what records are still missing.</p>
+          <p>{publicWorksServiceSeed.posture}</p>
+        </div>
+      </div>
+      <div className="public-works-route-grid">
+        {priorityRoutes.map((route) => (
+          <a key={route.lane} href={route.url} target="_blank" rel="noreferrer">
+            <span>{route.lane}</span>
+            <b>{route.title}</b>
+            <small>{route.integrationUse}</small>
+          </a>
+        ))}
+      </div>
+      <div className="public-works-next-actions">
+        {publicWorksServiceSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
+      </div>
+      <p className="source-note">Access method: {publicWorksServiceSeed.accessMethod}</p>
+    </section>
+  );
+}
+
 function BroadbandAccessPanel() {
   const digitalMetrics = internetSubscriptionSeed.metrics.filter((metric) => [
     'with-internet-subscription',
@@ -3257,6 +3307,7 @@ function InfrastructureSafetyHousing() {
   return (
     <section id="operations" className="module operations-module">
       <OperationsConfidenceStrip />
+      <PublicWorksServiceRoutePanel />
       <div className="three-stack">
         <section className="panel">
           <div className="panel-head"><div><span className="eyebrow">INFRASTRUCTURE</span><h2>System health</h2></div><span className="terminal-badge">SYNTHETIC</span></div>
