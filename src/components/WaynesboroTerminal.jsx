@@ -71,6 +71,7 @@ import { povertyStatusSeed } from '../data/povertyStatusSeed.js';
 import { youthProfileSeed } from '../data/youthProfileSeed.js';
 import { snapAssistanceSeed } from '../data/snapAssistanceSeed.js';
 import { localFinancialDocumentsSeed } from '../data/localFinancialDocumentsSeed.js';
+import { householdSizeSeed } from '../data/householdSizeSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -454,6 +455,64 @@ function HouseholdCompositionPanel() {
   );
 }
 
+function HouseholdSizePanel() {
+  const average = householdSizeSeed.metrics.find((metric) => metric.id === 'average-household-size');
+  const tenureMetrics = householdSizeSeed.metrics.filter((metric) => metric.id !== 'average-household-size');
+
+  return (
+    <section className="household-composition-panel household-size-panel" aria-label="ACS average household size by tenure context">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">HOUSEHOLD SIZE · ACS CONTEXT</span>
+          <h2>Tenure-aware household-size context before service assumptions</h2>
+        </div>
+        <span className="terminal-badge gold">NO-KEY API SEED</span>
+      </div>
+      <div className="household-composition-hero">
+        <article>
+          <span>{average?.label || 'Average household size'}</span>
+          <b>{average?.displayValue || 'N/A'}</b>
+          <small>persons per occupied housing unit · MOE {average?.displayMoe || 'n/a'} · ACS B25010</small>
+        </article>
+        <div>
+          <h3>Why this improves the executive lane</h3>
+          <p>Average household size helps keep housing, recreation, emergency-readiness, and service-location conversations from defaulting to one-size-fits-all assumptions. It stays paired with household composition and crowding context, and it is not evidence of occupancy violations or department workload.</p>
+          <a href={householdSizeSeed.sourceUrl} target="_blank" rel="noreferrer">Census Reporter B25010 source query</a>
+        </div>
+      </div>
+      <div className="household-composition-grid household-size-grid">
+        {tenureMetrics.map((metric) => (
+          <article key={metric.id}>
+            <span>{metric.label}</span>
+            <b>{metric.displayValue}</b>
+            <small>persons/unit · MOE {metric.displayMoe} · {metric.note}</small>
+          </article>
+        ))}
+        <article>
+          <span>Release</span>
+          <b>{householdSizeSeed.release.name}</b>
+          <small>{householdSizeSeed.release.years} · retrieved {householdSizeSeed.retrievedAt}</small>
+        </article>
+        <article>
+          <span>Use posture</span>
+          <b>Survey context</b>
+          <small>No household-level records, occupancy certificates, code findings, or live service telemetry.</small>
+        </article>
+      </div>
+      <div className="household-comparison-strip">
+        {householdSizeSeed.comparison.map((row) => (
+          <article key={row.geography}>
+            <span>{row.geography}</span>
+            <b>{row.average}</b>
+            <small>avg household size · owner {row.owner} · renter {row.renter} · MOE {row.moe}</small>
+          </article>
+        ))}
+      </div>
+      <p>{householdSizeSeed.caveat}</p>
+    </section>
+  );
+}
+
 function PovertyStatusPanel() {
   const headline = povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-total');
   const child = povertyStatusSeed.metrics.find((metric) => metric.id === 'poverty-child-under-18');
@@ -572,6 +631,7 @@ function ExecutiveDashboard() {
       <AgeProfilePanel />
       <YouthProfilePanel />
       <HouseholdCompositionPanel />
+      <HouseholdSizePanel />
     </section>
   );
 }

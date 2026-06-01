@@ -66,6 +66,17 @@ export const sourceRegistry = [
     notes: 'Runtime query returned Waynesboro B11001 context including 2,204 households, 66.7% family households, 28.3% householders living alone, and 33.2% female householder/no spouse family households. Added an executive household-composition panel. Treat as ACS survey planning context only; not household-level records, benefits eligibility, school enrollment, homelessness, or municipal service telemetry.'
   },
   {
+    name: 'Census Reporter ACS average household size table',
+    url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=B25010&geo_ids=16000US1380984,05000US13033,04000US13',
+    dataType: 'ACS B25010 average household size by tenure with margins of error for service-demand and housing planning context',
+    geography: 'Waynesboro city, Burke County, and Georgia comparison rows; occupied housing-unit universe',
+    accessMethod: 'Public no-key Census Reporter API; low-volume request cached in src/data/householdSizeSeed.js.',
+    cadence: 'Annual ACS 5-year release as Census Reporter refreshes; current seed uses ACS 2024 5-year / 2020-2024',
+    difficulty: 'Low',
+    status: 'Seed connector ready',
+    notes: 'Runtime query returned Waynesboro B25010 context: average household size 2.53 ±0.27, owner-occupied average 2.31 ±0.57, renter-occupied average 2.62 ±0.34. Added an executive household-size panel. Treat as ACS survey context only; not occupancy certificates, code enforcement, school enrollment, homelessness data, utility account counts, or municipal service telemetry.'
+  },
+  {
     name: 'Census Reporter ACS language spoken at home table',
     url: 'https://api.censusreporter.org/1.0/data/show/latest?table_ids=C16001&geo_ids=16000US1380984,05000US13033,04000US13',
     dataType: 'ACS C16001 language spoken at home / English ability estimates for public communication and language-access planning context',
