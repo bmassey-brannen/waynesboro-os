@@ -1,0 +1,231 @@
+{
+  "generatedAt": "2026-06-01T22:44:40Z",
+  "purpose": "Public publication baseline snapshot for Waynesboro OS",
+  "policy": "Source-labeled public observations only; unverified claims withheld from public-facing fact surfaces.",
+  "snapshots": {
+    "dataCommons": {
+      "provider": "Data Commons",
+      "fetchedAt": "2026-05-30T21:10:27.316Z",
+      "status": "active",
+      "metrics": [
+        {
+          "id": "waynesboro-population",
+          "entity": "Waynesboro city, GA",
+          "variable": "Population",
+          "displayValue": "5,555",
+          "date": "2024",
+          "sourceName": "USCensusPEP_Annual_Population"
+        },
+        {
+          "id": "waynesboro-median-income",
+          "entity": "Waynesboro city, GA",
+          "variable": "Median household income",
+          "displayValue": "$41,620",
+          "date": "2024",
+          "sourceName": "CensusACS5YearSurvey"
+        },
+        {
+          "id": "waynesboro-housing-units",
+          "entity": "Waynesboro city, GA",
+          "variable": "Housing units",
+          "displayValue": "2,673",
+          "date": "2024",
+          "sourceName": "CensusACS5YearSurvey"
+        },
+        {
+          "id": "waynesboro-poverty-count",
+          "entity": "Waynesboro city, GA",
+          "variable": "People below poverty level",
+          "displayValue": "1,433",
+          "date": "2024",
+          "sourceName": "CensusACS5YearSurvey"
+        },
+        {
+          "id": "waynesboro-median-age",
+          "entity": "Waynesboro city, GA",
+          "variable": "Median age",
+          "displayValue": "29.1 yrs",
+          "date": "2024",
+          "sourceName": "CensusACS5YearSurvey"
+        },
+        {
+          "id": "waynesboro-unemployment",
+          "entity": "Waynesboro city, GA",
+          "variable": "Unemployment rate",
+          "displayValue": "No current value",
+          "date": null,
+          "sourceName": "Data Commons"
+        },
+        {
+          "id": "burke-county-population",
+          "entity": "Burke County, GA",
+          "variable": "Population",
+          "displayValue": "24,408",
+          "date": "2025",
+          "sourceName": "USCensusPEP_Annual_Population"
+        },
+        {
+          "id": "burke-county-median-income",
+          "entity": "Burke County, GA",
+          "variable": "Median household income",
+          "displayValue": "$53,014",
+          "date": "2024",
+          "sourceName": "CensusACS5YearSurvey"
+        },
+        {
+          "id": "burke-county-housing-units",
+          "entity": "Burke County, GA",
+          "variable": "Housing units",
+          "displayValue": "11,300",
+          "date": "2024",
+          "sourceName": "CensusACS5YearSurvey"
+        },
+        {
+          "id": "burke-county-poverty-count",
+          "entity": "Burke County, GA",
+          "variable": "People below poverty level",
+          "displayValue": "4,411",
+          "date": "2024",
+          "sourceName": "CensusACS5YearSurvey"
+        },
+        {
+          "id": "burke-county-median-age",
+          "entity": "Burke County, GA",
+          "variable": "Median age",
+          "displayValue": "38.3 yrs",
+          "date": "2024",
+          "sourceName": "CensusACS5YearSurvey"
+        },
+        {
+          "id": "burke-county-unemployment",
+          "entity": "Burke County, GA",
+          "variable": "Unemployment rate",
+          "displayValue": "4.3%",
+          "date": "2026-03",
+          "sourceName": "BLS_LAUS"
+        },
+        {
+          "id": "georgia-population",
+          "entity": "Georgia",
+          "variable": "Population",
+          "displayValue": "11,302,748",
+          "date": "2025",
+          "sourceName": "USCensusPEP_Annual_Population"
+        },
+        {
+          "id": "georgia-median-income",
+          "entity": "Georgia",
+          "variable": "Median household income",
+          "displayValue": "$77,353",
+          "date": "2024",
+          "sourceName": "CensusACS5YearSurvey"
+        },
+        {
+          "id": "georgia-housing-units",
+          "entity": "Georgia",
+          "variable": "Housing units",
+          "displayValue": "4,541,835",
+          "date": "2024",
+          "sourceName": "CensusACS5YearSurvey"
+        },
+        {
+          "id": "georgia-poverty-count",
+          "entity": "Georgia",
+          "variable": "People below poverty level",
+          "displayValue": "1,430,012",
+          "date": "2024",
+          "sourceName": "CensusACS5YearSurvey"
+        },
+        {
+          "id": "georgia-median-age",
+          "entity": "Georgia",
+          "variable": "Median age",
+          "displayValue": "37.6 yrs",
+          "date": "2024",
+          "sourceName": "CensusACS5YearSurvey"
+        },
+        {
+          "id": "georgia-unemployment",
+          "entity": "Georgia",
+          "variable": "Unemployment rate",
+          "displayValue": "2.8%",
+          "date": "2026-04",
+          "sourceName": "BLS_LAUS"
+        }
+      ]
+    },
+    "officialDocuments": {
+      "provider": "Official local government web pages",
+      "fetchedAt": "2026-05-30T21:41:55.559Z",
+      "status": "active",
+      "summary": {
+        "sourceCount": 4,
+        "documentCount": 498,
+        "byType": {
+          "agenda_or_packet": 35,
+          "city_document": 6,
+          "minutes": 129,
+          "agenda": 88,
+          "check_register": 191,
+          "document": 5,
+          "budget": 4,
+          "financial_report": 40
+        }
+      },
+      "sources": [
+        {
+          "id": "city-agenda-center",
+          "name": "City of Waynesboro Agenda Center",
+          "url": "https://www.waynesboroga.com/AgendaCenter",
+          "geography": "City of Waynesboro",
+          "sourceType": "city_agendas_minutes",
+          "fetchedStatus": 200,
+          "documentCount": 59
+        },
+        {
+          "id": "burke-commission-agendas-minutes",
+          "name": "Burke County Board of Commissioners agendas and minutes",
+          "url": "https://www.burkecounty-ga.gov/departments/board_of_commissioners/meetings_agendas_minutes.php",
+          "geography": "Burke County",
+          "sourceType": "county_agendas_minutes",
+          "fetchedStatus": 200,
+          "documentCount": 198
+        },
+        {
+          "id": "burke-check-registers",
+          "name": "Burke County Check Registers",
+          "url": "https://www.burkecounty-ga.gov/departments/administration/check_registers.php",
+          "geography": "Burke County",
+          "sourceType": "county_spending",
+          "fetchedStatus": 200,
+          "documentCount": 195
+        },
+        {
+          "id": "burke-budgets-financial-reports",
+          "name": "Burke County Budgets and Financial Reports",
+          "url": "https://www.burkecounty-ga.gov/departments/administration/budgets___financial_reports.php",
+          "geography": "Burke County",
+          "sourceType": "county_finance",
+          "fetchedStatus": 200,
+          "documentCount": 46
+        }
+      ]
+    },
+    "weather": {
+      "forecastFetchedAt": "2026-05-31T03:29:33+00:00",
+      "forecastGeneratedAt": "2026-05-31T03:29:16+00:00",
+      "periodCount": 5,
+      "alertsFetchedAt": "2026-05-31T01:18:07+00:00",
+      "activeAlertCount": 0
+    }
+  },
+  "withheldPublicLanes": [
+    "unverified project pipeline",
+    "unverified business/license counts",
+    "unverified public-safety cards",
+    "unverified infrastructure scores",
+    "unverified housing heat map",
+    "campaign language",
+    "personal/internal branding"
+  ]
+}
