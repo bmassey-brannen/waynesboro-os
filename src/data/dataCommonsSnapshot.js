@@ -3,7 +3,7 @@
 
 export const dataCommonsSnapshot = {
   "provider": "Data Commons",
-  "fetchedAt": "2026-05-30T21:10:27.316Z",
+  "fetchedAt": "2026-06-02T02:14:08.228Z",
   "status": "active",
   "apiVersion": "v2",
   "placeResolution": {

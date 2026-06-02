@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BINARY_SUFFIXES = {
     '.png', '.ico', '.jpg', '.jpeg', '.webp', '.gif', '.pdf', '.woff', '.woff2', '.ttf', '.eot', '.mp4', '.zip', '.gz'
 }
-SCAN_ROOTS = ('src/', 'public/', 'scripts/', '.github/', 'README.md', 'PUBLICATION_REVIEW.md', 'package.json')
+SCAN_ROOTS = ('src/', 'public/', 'scripts/', '.github/', 'docs/', 'README.md', 'PUBLICATION_REVIEW.md', 'package.json')
 SECRET_PATTERNS = [
     ('hardcoded secret assignment', re.compile(r'(?i)(api[_-]?key|secret|token|password|passwd|credential|private[_-]?key)\s*[:=]\s*["\']?([A-Za-z0-9_\-./+=]{16,})')),
     ('bearer token', re.compile(r'(?i)bearer\s+[A-Za-z0-9._\-]{24,}')),
