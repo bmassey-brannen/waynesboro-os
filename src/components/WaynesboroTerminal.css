@@ -21,9 +21,11 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--page); }
+html { scroll-behavior: smooth; background: var(--page); max-width: 100%; overflow-x: hidden; }
 body {
   margin: 0;
+  max-width: 100%;
+  overflow-x: hidden;
   color: var(--text);
   background:
     radial-gradient(circle at top right, rgba(31, 93, 66, .12), transparent 34rem),
@@ -60,7 +62,7 @@ a { color: inherit; }
 .sidebar-note b { display: block; color: #f3dda0; text-transform: uppercase; font-size: 11px; letter-spacing: .1em; margin-bottom: 8px; }
 .sidebar-note span { color: rgba(247,244,233,.78); font-size: 12px; line-height: 1.5; }
 
-.workspace { min-width: 0; max-width: 100%; padding: 18px; display: grid; gap: 18px; overflow-x: clip; align-content: start; }
+.workspace { min-width: 0; max-width: 100%; padding: 18px; display: grid; gap: 18px; overflow-x: hidden; align-content: start; }
 .paged-workspace > .module { margin-top: 0; }
 .page-switcher {
   display: flex;
@@ -1579,11 +1581,26 @@ th, td { font-size: 13px; }
 }
 
 @media (max-width: 860px) {
-  .terminal-shell { grid-template-columns: 1fr; }
-  .sidebar { position: relative; height: auto; }
+  .terminal-shell { width: 100%; grid-template-columns: minmax(0, 1fr); overflow-x: hidden; }
+  .terminal-shell > * { min-width: 0; }
+  .sidebar { min-width: 0; position: sticky; top: 0; z-index: 80; height: auto; padding: 10px; overflow-x: hidden; box-shadow: 0 8px 20px rgba(16,39,29,.16); }
+  .brand-mark { padding-bottom: 8px; }
+  .brand-mark > span { width: 34px; height: 34px; }
+  .brand-mark b { font-size: 13px; }
+  .brand-mark small { font-size: 10px; }
+  .sidebar nav { display: flex; gap: 7px; margin-top: 9px; padding-bottom: 2px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+  .sidebar a { flex: 0 0 auto; padding: 8px 10px; font-size: 10px; border-color: rgba(255,255,255,.16); background: rgba(255,255,255,.07); }
   .sidebar-note { position: static; margin-top: 16px; }
-  .workspace { padding: 10px; }
-  .topbar, .module-title { display: block; }
+  .workspace { grid-template-columns: minmax(0, 1fr); padding: 10px; }
+  .workspace > * { min-width: 0; width: 100%; }
+  .topbar, .module-title { display: block; padding: 12px; }
+  .topbar h1, .module-title h1 { font-size: clamp(24px, 9vw, 34px); line-height: .98; }
+  .public-disclaimer, .module-title p { font-size: 13px; }
+  .page-switcher { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 8px; }
+  .page-switcher a { flex: 0 0 auto; }
+  .panel { padding: 11px; }
+  .panel-head { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .terminal-badge { justify-self: start; }
   .calendar-toolbar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .calendar-toolbar strong { grid-column: 1 / -1; grid-row: 1; justify-self: start; }
   .meeting-month-grid { min-width: 620px; }
@@ -1626,6 +1643,66 @@ th, td { font-size: 13px; }
   .source-list { grid-template-columns: 1fr; }
   .source-difficulty, .source-status { justify-self: start; }
   .council-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  body { font-size: 15px; }
+  .terminal-shell, .workspace, .topbar, .weather-tape-bar, .page-switcher, .playbook-panel, .baseline-panel, .executive-context-details, .table-panel { max-width: 100%; }
+  .workspace { gap: 12px; padding: 8px; overflow-x: hidden; }
+  .topbar h1, .module-title h1 { overflow-wrap: normal; word-break: normal; hyphens: none; }
+  .public-disclaimer, .module-title p { overflow-wrap: anywhere; }
+  .sidebar-note { display: none; }
+  .topbar-side { gap: 7px; }
+  .trust-ribbon article, .source-chip, .kpi-card { min-height: auto; }
+  .kpi-value { font-size: 25px; }
+  .executive-kpi-strip .kpi-card { min-height: auto; }
+  .weather-ticker-track { grid-template-columns: repeat(5, minmax(132px, 1fr)); max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .weather-ticker-period { min-height: 72px; }
+  .meeting-calendar-panel { padding: 9px; }
+  .meeting-calendar-head { display: grid; grid-template-columns: 1fr; gap: 7px; }
+  .calendar-toolbar { gap: 6px; }
+  .calendar-toolbar button { min-height: 40px; padding: 8px; }
+  .meeting-calendar-shell { display: block; margin-left: -2px; margin-right: -2px; padding-bottom: 4px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .meeting-month-grid { min-width: 548px; }
+  .calendar-day { min-height: 70px; padding: 5px; }
+  .calendar-detail-card { margin-top: 8px; }
+  .calendar-month-list { margin-top: 8px; }
+  .month-list-row { min-height: 74px; }
+  .executive-context-details summary { display: block; padding: 11px 12px; }
+  .executive-context-details summary span,
+  .executive-context-details summary b,
+  .executive-context-details summary small { overflow-wrap: normal; word-break: normal; }
+  .executive-context-details summary span { letter-spacing: .08em; }
+  .executive-context-details summary b { margin-top: 5px; line-height: 1.12; }
+  .executive-context-details summary small { margin-top: 6px; line-height: 1.35; overflow-wrap: anywhere; }
+  .executive-context-details summary::after { margin-top: 9px; width: fit-content; }
+  .public-map-ui { min-height: 620px; margin-left: -4px; margin-right: -4px; }
+  .public-map-ui .town-map-frame { inset: 96px 8px 138px; overflow: auto; touch-action: pan-x pan-y; }
+  .map-zoom-controls { left: 8px; top: 8px; right: 8px; justify-content: space-between; }
+  .map-zoom-controls button { min-width: 42px; min-height: 34px; }
+  .map-wheel-hint { display: none; }
+  .north-arrow { top: 52px; right: 8px; width: 34px; height: 44px; }
+  .north-arrow span { border-left-width: 7px; border-right-width: 7px; border-bottom-width: 24px; }
+  .public-map-ui .parcel-map-legend { left: 8px; right: 8px; bottom: 76px; max-height: 64px; overflow: auto; }
+  .parcel-map-legend span { font-size: 8px; padding: 4px 6px; }
+  .public-map-ui .map-disclaimer { left: 8px; right: 8px; bottom: 8px; max-height: 62px; overflow: auto; font-size: 9px; line-height: 1.35; }
+  .town-map-note { left: 8px; right: 8px; bottom: 8px; grid-template-columns: 1fr; gap: 5px; }
+  .parcel-dot:hover, .parcel-dot:focus, .parcel-dot.active { transform: translate(-50%, -50%) scale(1.35); }
+  .parcel-dot span { max-width: min(230px, 72vw); }
+  .parcel-inspector-panel { grid-template-columns: 1fr; padding: 10px; }
+  .parcel-detail-grid { grid-template-columns: 1fr; }
+  .table-wrap { max-width: 100%; -webkit-overflow-scrolling: touch; }
+  th, td { padding: 8px; }
+}
+
+@media (max-width: 420px) {
+  .workspace { padding: 6px; }
+  .topbar, .module-title, .panel { padding: 10px; }
+  .page-switcher a, .sidebar a { font-size: 9px; letter-spacing: .06em; }
+  .meeting-month-grid { min-width: 500px; }
+  .calendar-event-chip { font-size: 7px; padding: 3px 4px; }
+  .public-map-ui { min-height: 560px; }
+  .public-map-ui .town-map-frame { inset: 92px 6px 128px; }
 }
 
 @media print {

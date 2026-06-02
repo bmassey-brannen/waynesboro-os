@@ -18,6 +18,7 @@
     "fetch:docs": "node scripts/fetch-official-documents.js",
     "import:qpublic": "python3 scripts/import-qpublic-parcels.py",
     "audit:public": "python3 scripts/publication-audit.py",
+    "qa:mobile-privacy": "node scripts/qa-mobile-privacy.mjs",
     "test:civic-ranking": "node src/lib/civicSourceRanking.test.mjs"
   },
   "dependencies": {

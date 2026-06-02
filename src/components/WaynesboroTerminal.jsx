@@ -202,10 +202,18 @@ const formatDelta = (value) => `${value > 0 ? '+' : ''}${(value * 100).toFixed(1
 const compactMoney = (value) => value == null ? 'N/A' : `$${Math.round(value / 1000).toLocaleString()}K`;
 const parcelClassTone = (parcelClass) => parcelClass === 'Commercial' ? 'good' : parcelClass === 'Exempt' ? 'neutral' : 'watch';
 const parcelClassCss = (parcelClass) => String(parcelClass || 'other').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+const isResidentialParcel = (parcel) => String(parcel?.parcelClass || '').toLowerCase() === 'residential';
+const publicParcelAssessmentLabel = (parcel) => isResidentialParcel(parcel)
+  ? 'Withheld for residential'
+  : compactMoney(parcel?.assessedValue);
+const parcelVisualizationValue = (parcel) => isResidentialParcel(parcel) ? 0 : (parcel.assessedValue || 0);
 const privacyLabel = (parcel) => parcel?.ownerPrivacy?.startsWith('masked')
   ? 'Owner masked for public preview'
   : 'Owner displayed from qPublic CSV';
 const clampPercent = (value) => Math.max(1.5, Math.min(98.5, value));
+const stylePercent = (value) => `${Number(value).toFixed(4)}%`;
+const stylePixels = (value) => `${Number(value).toFixed(3)}px`;
+const styleAlpha = (value) => `${Number(value).toFixed(3)}`;
 const lerp = (start, end, t) => start + (end - start) * t;
 const interpolateAxisPoint = (points, t) => {
   const safeT = Math.max(0, Math.min(1, Number.isFinite(t) ? t : 0));
@@ -265,10 +273,10 @@ const buildOsmTiles = () => {
       tiles.push({
         key: `${downtownTileZoom}-${x}-${y}`,
         src: `${osmTileHost}/${downtownTileZoom}/${x}/${y}.png`,
-        left: `${(((x / scale) - downtownMercatorFrame.minX) / (downtownMercatorFrame.maxX - downtownMercatorFrame.minX)) * 100}%`,
-        top: `${(((y / scale) - downtownMercatorFrame.minY) / (downtownMercatorFrame.maxY - downtownMercatorFrame.minY)) * 100}%`,
-        width: `${((1 / scale) / (downtownMercatorFrame.maxX - downtownMercatorFrame.minX)) * 100}%`,
-        height: `${((1 / scale) / (downtownMercatorFrame.maxY - downtownMercatorFrame.minY)) * 100}%`
+        left: stylePercent((((x / scale) - downtownMercatorFrame.minX) / (downtownMercatorFrame.maxX - downtownMercatorFrame.minX)) * 100),
+        top: stylePercent((((y / scale) - downtownMercatorFrame.minY) / (downtownMercatorFrame.maxY - downtownMercatorFrame.minY)) * 100),
+        width: stylePercent(((1 / scale) / (downtownMercatorFrame.maxX - downtownMercatorFrame.minX)) * 100),
+        height: stylePercent(((1 / scale) / (downtownMercatorFrame.maxY - downtownMercatorFrame.minY)) * 100)
       });
     }
   }
@@ -2411,7 +2419,7 @@ function DowntownCommandCenter() {
   const activeParcel = qpublicMapParcels.find((parcel) => parcel.parcelId === activeParcelId) || qpublicMapParcels[0];
   const geocodedAddressParcels = addressAxisParcels.filter((parcel) => Number.isFinite(Number(parcel.lat)) && Number.isFinite(Number(parcel.lon)));
   const fallbackAddressParcels = addressAxisParcels.length - geocodedAddressParcels.length;
-  const assessedValues = qpublicMapParcels.map((parcel) => parcel.assessedValue || 0);
+  const assessedValues = qpublicMapParcels.map((parcel) => parcelVisualizationValue(parcel));
   const maxAssessedValue = Math.max(...assessedValues, 1);
   const sixthWestNumbers = addressAxisParcels
     .filter((parcel) => parcel.streetAxes?.includes('6th Street') && String(parcel.address).toUpperCase().includes('W'))
@@ -2451,25 +2459,25 @@ function DowntownCommandCenter() {
       left = clampPercent(base.left + offset.left);
       top = clampPercent(base.top + offset.top);
     }
-    const assessedWeight = Math.max(0.42, Math.min(1, (parcel.assessedValue || 0) / maxAssessedValue));
+    const assessedWeight = Math.max(0.42, Math.min(1, parcelVisualizationValue(parcel) / maxAssessedValue));
     const size = Math.max(8, Math.min(17, 7 + assessedWeight * 12));
     return {
-      left: `${left}%`,
-      top: `${top}%`,
-      width: `${size}px`,
-      height: `${size}px`
+      left: stylePercent(left),
+      top: stylePercent(top),
+      width: stylePixels(size),
+      height: stylePixels(size)
     };
   };
   const projectHeatParcel = (parcel, index) => {
     const base = projectAddressParcel(parcel, index);
-    const assessedWeight = Math.max(0.18, Math.min(1, (parcel.assessedValue || 0) / maxAssessedValue));
+    const assessedWeight = Math.max(0.18, Math.min(1, parcelVisualizationValue(parcel) / maxAssessedValue));
     const isGeocoded = Number.isFinite(Number(parcel.lat)) && Number.isFinite(Number(parcel.lon));
     const heatSize = isGeocoded ? 34 + assessedWeight * 56 : 22 + assessedWeight * 30;
     return {
       ...base,
-      width: `${heatSize}px`,
-      height: `${heatSize}px`,
-      '--heat-alpha': isGeocoded ? `${0.16 + assessedWeight * 0.22}` : '0.08'
+      width: stylePixels(heatSize),
+      height: stylePixels(heatSize),
+      '--heat-alpha': isGeocoded ? styleAlpha(0.16 + assessedWeight * 0.22) : '0.080'
     };
   };
   const heatCells = Object.values(addressAxisParcels.reduce((cells, parcel, index) => {
@@ -2484,7 +2492,7 @@ function DowntownCommandCenter() {
     existing.left = ((existing.left * existing.count) + left) / nextCount;
     existing.top = ((existing.top * existing.count) + top) / nextCount;
     existing.count = nextCount;
-    existing.assessedValue += parcel.assessedValue || 0;
+    existing.assessedValue += parcelVisualizationValue(parcel);
     if (Number.isFinite(Number(parcel.lat)) && Number.isFinite(Number(parcel.lon))) existing.geocoded += 1;
     else existing.fallback += 1;
     existing.classes[parcel.parcelClass] = (existing.classes[parcel.parcelClass] || 0) + 1;
@@ -2497,11 +2505,11 @@ function DowntownCommandCenter() {
     const valueWeight = Math.min(1, cell.assessedValue / maxAssessedValue);
     const size = 76 + densityWeight * 138 + valueWeight * 38;
     return {
-      left: `${cell.left}%`,
-      top: `${cell.top}%`,
-      width: `${size}px`,
-      height: `${size}px`,
-      '--heat-alpha': `${0.2 + densityWeight * 0.34}`
+      left: stylePercent(cell.left),
+      top: stylePercent(cell.top),
+      width: stylePixels(size),
+      height: stylePixels(size),
+      '--heat-alpha': styleAlpha(0.2 + densityWeight * 0.34)
     };
   };
   const heatCellTone = (cell) => {
@@ -2537,7 +2545,7 @@ function DowntownCommandCenter() {
           <article>
             <span>Map status</span>
             <b>Census-geocoded qPublic address heat layer</b>
-            <small>{geocodedAddressParcels.length} rows glow from U.S. Census address geocodes · {fallbackAddressParcels} unmatched rows stay dashed/faint on fallback placement · intensity is parcel-record density/value context, not occupancy or condition.</small>
+            <small>{geocodedAddressParcels.length} rows glow from U.S. Census address geocodes · {fallbackAddressParcels} unmatched rows stay dashed/faint on fallback placement · residential assessed values are withheld in the public map.</small>
           </article>
         </div>
         <div
@@ -2596,9 +2604,9 @@ function DowntownCommandCenter() {
                       onMouseOver={() => setActiveParcelId(parcel.parcelId)}
                       onFocus={() => setActiveParcelId(parcel.parcelId)}
                       onClick={() => setActiveParcelId(parcel.parcelId)}
-                      title={`${parcel.address} · ${parcel.owner} · ${compactMoney(parcel.assessedValue)}`}
+                      title={`${parcel.address} · ${parcel.owner} · ${publicParcelAssessmentLabel(parcel)}`}
                     >
-                      <span><b>{parcel.address}</b><em>{parcel.owner} · {compactMoney(parcel.assessedValue)} · {parcel.parcelClass}</em></span>
+                      <span><b>{parcel.address}</b><em>{parcel.owner} · {publicParcelAssessmentLabel(parcel)} · {parcel.parcelClass}</em></span>
                     </button>
                   ))}
                 </div>
@@ -2619,7 +2627,7 @@ function DowntownCommandCenter() {
             <span className="exempt">Exempt / civic</span>
             <span className="unclassified">Unclassified</span>
           </div>
-          <div className="map-disclaimer">OpenStreetMap tile basemap · same Web-Mercator projection as overlay · {geocodedAddressParcels.length} qPublic rows glow from U.S. Census address geocodes · {fallbackAddressParcels} unmatched rows stay faint/dashed on fallback interpolation · heat is address-record concentration/context, not parcel boundaries, surveyed centroids, occupancy, vacancy, or condition.</div>
+          <div className="map-disclaimer">OpenStreetMap tile basemap · same Web-Mercator projection as overlay · {geocodedAddressParcels.length} qPublic rows glow from U.S. Census address geocodes · {fallbackAddressParcels} unmatched rows stay faint/dashed on fallback interpolation · residential assessed values are withheld from the public map/table display · heat is address-record concentration/context, not parcel boundaries, surveyed centroids, occupancy, vacancy, or condition.</div>
         </div>
         {activeParcel && (
           <aside className="parcel-inspector-panel" aria-live="polite">
@@ -2632,7 +2640,7 @@ function DowntownCommandCenter() {
             <div className="parcel-detail-grid">
               <div><span>Owner</span><b>{activeParcel.owner}</b></div>
               <div><span>Class</span><b>{activeParcel.parcelClass}</b></div>
-              <div><span>Assessed</span><b>{compactMoney(activeParcel.assessedValue)}</b></div>
+              <div><span>Assessed</span><b>{publicParcelAssessmentLabel(activeParcel)}</b></div>
               <div><span>Parcel ID</span><b>{activeParcel.parcelId || 'N/A'}</b></div>
               <div><span>Acres</span><b>{activeParcel.acres ?? 'N/A'}</b></div>
               <div><span>Axis</span><b>{activeParcel.streetAxes?.join(' + ')}</b></div>
@@ -2665,12 +2673,12 @@ function DowntownCommandCenter() {
           eyebrow="QPUBLIC / OWNERSHIP / ASSESSMENT"
           rows={downtownParcelSeed.parcels}
           badge="QPUBLIC CSV"
-          note={`${downtownParcelSeed.summary.uniqueParcels} unique parcel rows from uploaded Burke County qPublic Liberty Street + 6th Street exports · ${downtownParcelSeed.summary.geocodedMapParcels || 0} map rows placed from Census address geocodes · ${downtownParcelSeed.summary.maskedIndividualOwnerCount} individual-looking owners masked · parcel evidence only, not occupancy or vacancy.`}
+          note={`${downtownParcelSeed.summary.uniqueParcels} unique parcel rows from uploaded Burke County qPublic Liberty Street + 6th Street exports · ${downtownParcelSeed.summary.geocodedMapParcels || 0} map rows placed from Census address geocodes · ${downtownParcelSeed.summary.maskedIndividualOwnerCount} individual-looking owners masked · residential assessed values withheld from public display · parcel evidence only, not occupancy or vacancy.`}
           columns={[
             { key: 'address', label: 'Address' },
             { key: 'parcelClass', label: 'Class', render: (row) => <span className={`pill ${parcelClassTone(row.parcelClass)}`}>{row.parcelClass}</span> },
             { key: 'owner', label: 'Public owner display' },
-            { key: 'assessedValue', label: 'Assessed', render: (row) => compactMoney(row.assessedValue) },
+            { key: 'assessedValue', label: 'Assessed', render: (row) => publicParcelAssessmentLabel(row) },
             { key: 'parcelId', label: 'Parcel' },
             { key: 'legalDescription', label: 'qPublic note' }
           ]}

@@ -1,0 +1,79 @@
+import { chromium } from 'playwright';
+
+const baseUrl = process.argv[2] || 'http://127.0.0.1:4321';
+const browser = await chromium.launch({ headless: true });
+const findings = [];
+
+async function inspectPage(path, viewport, screenshotName) {
+  const page = await browser.newPage({ viewport });
+  const errors = [];
+  page.on('console', (msg) => {
+    if (msg.type() === 'error') errors.push(msg.text());
+  });
+  page.on('pageerror', (err) => errors.push(err.message));
+  await page.goto(`${baseUrl}${path}`, { waitUntil: 'networkidle' });
+  await page.screenshot({ path: screenshotName, fullPage: true });
+  const metrics = await page.evaluate(() => ({
+    title: document.title,
+    bodyTextLength: document.body.innerText.length,
+    innerWidth: window.innerWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+    clientWidth: document.documentElement.clientWidth,
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    navItems: [...document.querySelectorAll('.sidebar nav a')].map(a => a.textContent.trim()),
+    hasCalendar: Boolean(document.querySelector('.meeting-calendar-panel')),
+    hasMap: Boolean(document.querySelector('.public-map-ui')),
+    hasWithheld: document.body.innerText.includes('Withheld for residential'),
+    visibleDollarMatches: (document.body.innerText.match(/\$[0-9][0-9,.]*K/g) || []).slice(0, 12),
+  }));
+  findings.push({ path, viewport, screenshotName, errors, metrics });
+  await page.close();
+}
+
+await inspectPage('/', { width: 390, height: 844, isMobile: true }, '/tmp/waynesboro-home-mobile.png');
+await inspectPage('/downtown/', { width: 390, height: 844, isMobile: true }, '/tmp/waynesboro-downtown-mobile.png');
+await inspectPage('/downtown/', { width: 1440, height: 1000 }, '/tmp/waynesboro-downtown-desktop.png');
+
+const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+await page.goto(`${baseUrl}/downtown/`, { waitUntil: 'networkidle' });
+const privacy = await page.evaluate(() => {
+  const residentialDots = [...document.querySelectorAll('.parcel-dot.parcel-residential')];
+  const residentialTitles = residentialDots.map(dot => dot.getAttribute('title') || '');
+  const residentialTitleLeaks = residentialTitles.filter(title => /\$[0-9][0-9,.]*K/.test(title));
+  const tableRows = [...document.querySelectorAll('tbody tr')].map(row => [...row.cells].map(cell => cell.innerText.trim()));
+  const residentialRows = tableRows.filter(cells => cells.some(cell => cell === 'Residential'));
+  const residentialRowLeaks = residentialRows.filter(cells => cells.some(cell => /\$[0-9][0-9,.]*K/.test(cell)));
+  return {
+    residentialDotCount: residentialDots.length,
+    residentialTitleSample: residentialTitles.slice(0, 5),
+    residentialTitleLeaks,
+    residentialRowCount: residentialRows.length,
+    residentialRowLeakCount: residentialRowLeaks.length,
+    firstResidentialRow: residentialRows[0] || null,
+    bodyHasWithheld: document.body.innerText.includes('Withheld for residential'),
+    bodyHasPrivacyCopy: document.body.innerText.includes('residential assessed values withheld'),
+  };
+});
+findings.push({ path: '/downtown/', privacy });
+await page.close();
+
+await browser.close();
+console.log(JSON.stringify(findings, null, 2));
+
+const failures = [];
+for (const item of findings) {
+  if (item.errors?.length) failures.push(`${item.path} console errors: ${item.errors.join('; ')}`);
+  if (item.metrics?.overflow > 2) failures.push(`${item.path} horizontal document overflow ${item.metrics.overflow}px at ${item.viewport.width}px`);
+  if (item.path === '/' && item.metrics && !item.metrics.hasCalendar) failures.push('home mobile missing calendar panel');
+  if (item.path === '/downtown/' && item.metrics && !item.metrics.hasMap) failures.push('downtown mobile missing map');
+  if (item.privacy) {
+    if (item.privacy.residentialTitleLeaks.length) failures.push(`residential title leaks: ${item.privacy.residentialTitleLeaks.slice(0, 3).join(' | ')}`);
+    if (item.privacy.residentialRowLeakCount) failures.push(`residential table leaks: ${item.privacy.residentialRowLeakCount}`);
+    if (!item.privacy.bodyHasWithheld) failures.push('withheld label not rendered');
+    if (!item.privacy.bodyHasPrivacyCopy) failures.push('privacy copy not rendered');
+  }
+}
+if (failures.length) {
+  console.error(`QA FAIL\n${failures.join('\n')}`);
+  process.exit(1);
+}
