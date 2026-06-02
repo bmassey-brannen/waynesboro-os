@@ -1594,6 +1594,8 @@ th, td { font-size: 13px; }
   .workspace { grid-template-columns: minmax(0, 1fr); padding: 10px; }
   .workspace > * { min-width: 0; width: 100%; }
   .topbar, .module-title { display: block; padding: 12px; }
+  .playbook-hero { grid-template-columns: 1fr; align-items: start; }
+  .playbook-source-card { width: 100%; }
   .topbar h1, .module-title h1 { font-size: clamp(24px, 9vw, 34px); line-height: .98; }
   .public-disclaimer, .module-title p { font-size: 13px; }
   .page-switcher { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 8px; }
@@ -1603,8 +1605,8 @@ th, td { font-size: 13px; }
   .terminal-badge { justify-self: start; }
   .calendar-toolbar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .calendar-toolbar strong { grid-column: 1 / -1; grid-row: 1; justify-self: start; }
-  .meeting-month-grid { min-width: 620px; }
-  .meeting-calendar-shell { overflow-x: auto; }
+  .meeting-month-grid { min-width: 0; }
+  .meeting-calendar-shell { overflow-x: visible; }
   .calendar-month-list { grid-template-columns: 1fr; }
   .executive-context-details summary { grid-template-columns: 1fr; }
   .executive-context-details summary small { grid-column: auto; }
@@ -1662,10 +1664,15 @@ th, td { font-size: 13px; }
   .meeting-calendar-head { display: grid; grid-template-columns: 1fr; gap: 7px; }
   .calendar-toolbar { gap: 6px; }
   .calendar-toolbar button { min-height: 40px; padding: 8px; }
-  .meeting-calendar-shell { display: block; margin-left: -2px; margin-right: -2px; padding-bottom: 4px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .meeting-month-grid { min-width: 548px; }
-  .calendar-day { min-height: 70px; padding: 5px; }
-  .calendar-detail-card { margin-top: 8px; }
+  .meeting-calendar-shell { display: grid; grid-template-columns: 1fr; gap: 8px; margin-left: 0; margin-right: 0; padding-bottom: 0; overflow-x: visible; }
+  .meeting-month-grid { min-width: 0; gap: 3px; }
+  .weekday-label { padding: 4px 1px; font-size: 8px; letter-spacing: .04em; }
+  .calendar-day { min-height: 48px; padding: 4px 3px; }
+  .day-number { font-size: 11px; }
+  .day-event-stack { gap: 2px; margin-top: 3px; }
+  .calendar-event-chip { min-height: 16px; padding: 2px 1px; border-radius: 3px; font-size: 6px; line-height: 1.05; text-align: center; white-space: normal; }
+  .more-events { font-size: 8px; line-height: 1; }
+  .calendar-detail-card { margin-top: 0; }
   .calendar-month-list { margin-top: 8px; }
   .month-list-row { min-height: 74px; }
   .executive-context-details summary { display: block; padding: 11px 12px; }
@@ -1699,8 +1706,10 @@ th, td { font-size: 13px; }
   .workspace { padding: 6px; }
   .topbar, .module-title, .panel { padding: 10px; }
   .page-switcher a, .sidebar a { font-size: 9px; letter-spacing: .06em; }
-  .meeting-month-grid { min-width: 500px; }
-  .calendar-event-chip { font-size: 7px; padding: 3px 4px; }
+  .meeting-month-grid { gap: 2px; }
+  .calendar-day { min-height: 42px; padding: 3px 2px; }
+  .calendar-toolbar button { min-height: 38px; padding: 7px 6px; font-size: 9px; letter-spacing: .05em; }
+  .calendar-event-chip { min-height: 15px; font-size: 5.5px; }
   .public-map-ui { min-height: 560px; }
   .public-map-ui .town-map-frame { inset: 92px 6px 128px; }
 }

@@ -952,6 +952,34 @@ const meetingCalendarSeed = [
     tone: 'route'
   },
   {
+    id: 'door-boss-hog-2026-05-route',
+    isoDate: '2026-05-01',
+    displayDate: 'May watch window · exact date not confirmed',
+    body: 'D.O.O.R. / Downtown Events',
+    title: 'Boss Hog Cook-Off annual event route — verify 2026 date before publishing as scheduled',
+    status: 'Month watch',
+    lane: 'Downtown event watch',
+    source: 'FNB Community Development page identifies D.O.O.R. support; Burke County Chamber annual-events page lists Boss Hog Cook-Off in May.',
+    tone: 'route',
+    shortLabel: 'D.O.O.R.',
+    url: 'https://burkechamber.org/annual-events.php',
+    urlLabel: 'Open annual-events source'
+  },
+  {
+    id: 'door-thunder-liberty-2026-route',
+    isoDate: '2026-06-01',
+    displayDate: 'Date not confirmed · source route',
+    body: 'D.O.O.R. / Downtown Events',
+    title: 'Thunder on Liberty Classic Car Show route — date needs official event confirmation',
+    status: 'Source route',
+    lane: 'Downtown event watch',
+    source: 'FNB Community Development page names Thunder on Liberty Classic Car Show as a D.O.O.R.-supported downtown event; no date was found on that source page.',
+    tone: 'route',
+    shortLabel: 'D.O.O.R.',
+    url: 'https://www.fnbwaynesboro.com/community/community-development',
+    urlLabel: 'Open D.O.O.R. source route'
+  },
+  {
     id: 'dda-watch-2026-07-09',
     isoDate: '2026-07-09',
     body: 'Downtown Development Authority Meetings',
@@ -1000,6 +1028,48 @@ const meetingCalendarSeed = [
     lane: 'Future watch',
     source: 'Projected from monthly council cadence; not an official posted packet yet',
     tone: 'watch'
+  },
+  {
+    id: 'door-trick-or-treat-2026-route',
+    isoDate: '2026-10-01',
+    displayDate: 'October watch window · exact date not confirmed',
+    body: 'D.O.O.R. / Downtown Events',
+    title: 'Trick or Treat on Liberty Street annual event route — verify 2026 date before publishing as scheduled',
+    status: 'Month watch',
+    lane: 'Downtown event watch',
+    source: 'FNB Community Development page identifies D.O.O.R. support; Burke County Chamber annual-events page lists Trick or Treat on Liberty Street in October.',
+    tone: 'route',
+    shortLabel: 'D.O.O.R.',
+    url: 'https://burkechamber.org/annual-events.php',
+    urlLabel: 'Open annual-events source'
+  },
+  {
+    id: 'door-christmas-liberty-2026-route',
+    isoDate: '2026-12-01',
+    displayDate: 'December watch window · exact date not confirmed',
+    body: 'D.O.O.R. / Downtown Events',
+    title: 'Christmas on Liberty Square annual event route — verify 2026 date before publishing as scheduled',
+    status: 'Month watch',
+    lane: 'Downtown event watch',
+    source: 'FNB Community Development page identifies D.O.O.R. support; Burke County Chamber annual-events page lists Christmas on Liberty Square in December.',
+    tone: 'route',
+    shortLabel: 'D.O.O.R.',
+    url: 'https://burkechamber.org/annual-events.php',
+    urlLabel: 'Open annual-events source'
+  },
+  {
+    id: 'door-earth-day-2027-route',
+    isoDate: '2027-04-01',
+    displayDate: 'Date not confirmed · source route',
+    body: 'D.O.O.R. / Downtown Events',
+    title: 'Earth Day Festival route — date needs official event confirmation',
+    status: 'Source route',
+    lane: 'Downtown event watch',
+    source: 'FNB Community Development page names Earth Day Festival as a D.O.O.R.-supported downtown event; no date was found on that source page.',
+    tone: 'route',
+    shortLabel: 'D.O.O.R.',
+    url: 'https://www.fnbwaynesboro.com/community/community-development',
+    urlLabel: 'Open D.O.O.R. source route'
   }
 ];
 
@@ -1038,6 +1108,8 @@ function buildCalendarDays(monthDate) {
     };
   });
 }
+
+const formatEventDisplayDate = (event) => event.displayDate || dayLabelFormatter.format(dateFromIso(event.isoDate));
 
 function CivicPlaybookPanel() {
   const agendaRoute = civicAccessRoutesSeed.routes.find((route) => route.id === 'city-agenda-center-route');
@@ -1127,7 +1199,7 @@ function CivicPlaybookPanel() {
                         onClick={() => setSelectedEventId(event.id)}
                         aria-label={`Open ${event.body}: ${event.title}`}
                       >
-                        {event.body.replace(' Meetings', '').replace(' Meeting Agendas', '')}
+                        {event.shortLabel || event.body.replace(' Meetings', '').replace(' Meeting Agendas', '')}
                       </button>
                     ))}
                     {dayEvents.length > 2 && <span className="more-events">+{dayEvents.length - 2} more</span>}
@@ -1138,7 +1210,7 @@ function CivicPlaybookPanel() {
           </div>
 
           <aside className="calendar-detail-card" aria-label="selected meeting detail">
-            <span>{dayLabelFormatter.format(dateFromIso(selectedEvent.isoDate))}</span>
+            <span>{formatEventDisplayDate(selectedEvent)}</span>
             <h4>{selectedEvent.body}</h4>
             <b>{selectedEvent.title}</b>
             <div className="calendar-detail-meta">
@@ -1156,14 +1228,14 @@ function CivicPlaybookPanel() {
                 ))}
               </div>
             )}
-            <a href={agendaRoute?.url || 'https://www.waynesboroga.com/AgendaCenter'} target="_blank" rel="noreferrer">Check official packet / minutes</a>
+            <a href={selectedEvent.url || agendaRoute?.url || 'https://www.waynesboroga.com/AgendaCenter'} target="_blank" rel="noreferrer">{selectedEvent.urlLabel || 'Check official packet / minutes'}</a>
           </aside>
         </div>
 
         <div className="calendar-month-list" aria-label="active month agenda list">
           {(monthEvents.length ? monthEvents : [{ id: 'empty-month', isoDate: isoFromDate(activeMonth), body: 'No seeded event', title: 'No posted or watch-window item has been normalized for this month yet.', status: 'Connector gap', lane: 'Needs scrape', source: 'Calendar can still click month-to-month; connector should backfill official events.', tone: 'route' }]).map((event) => (
             <button type="button" key={event.id} onClick={() => event.id !== 'empty-month' && jumpToEvent(event)} className={`month-list-row ${event.tone}`}>
-              <span>{event.id === 'empty-month' ? monthLabelFormatter.format(activeMonth) : dayLabelFormatter.format(dateFromIso(event.isoDate))}</span>
+              <span>{event.id === 'empty-month' ? monthLabelFormatter.format(activeMonth) : formatEventDisplayDate(event)}</span>
               <b>{event.body}</b>
               <small>{event.title}</small>
               <em>{event.status}</em>

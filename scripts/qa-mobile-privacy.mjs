@@ -25,6 +25,25 @@ async function inspectPage(path, viewport, screenshotName) {
     hasMap: Boolean(document.querySelector('.public-map-ui')),
     hasWithheld: document.body.innerText.includes('Withheld for residential'),
     visibleDollarMatches: (document.body.innerText.match(/\$[0-9][0-9,.]*K/g) || []).slice(0, 12),
+    hasDoorEvents: document.body.innerText.includes('D.O.O.R. / Downtown Events'),
+    calendar: (() => {
+      const panel = document.querySelector('.meeting-calendar-panel');
+      const shell = document.querySelector('.meeting-calendar-shell');
+      const grid = document.querySelector('.meeting-month-grid');
+      if (!panel || !shell || !grid) return null;
+      const panelRect = panel.getBoundingClientRect();
+      const shellRect = shell.getBoundingClientRect();
+      const gridRect = grid.getBoundingClientRect();
+      return {
+        panelWidth: Math.round(panelRect.width),
+        shellWidth: Math.round(shellRect.width),
+        gridWidth: Math.round(gridRect.width),
+        shellScrollWidth: shell.scrollWidth,
+        gridOverPanel: Math.round(gridRect.width - panelRect.width),
+        minChipHeight: Math.round(Math.min(...[...document.querySelectorAll('.calendar-event-chip')].map((chip) => chip.getBoundingClientRect().height))),
+        doorDateCaveatPresent: /date not confirmed|exact date not confirmed/i.test(document.body.innerText),
+      };
+    })(),
   }));
   findings.push({ path, viewport, screenshotName, errors, metrics });
   await page.close();
@@ -65,6 +84,10 @@ for (const item of findings) {
   if (item.errors?.length) failures.push(`${item.path} console errors: ${item.errors.join('; ')}`);
   if (item.metrics?.overflow > 2) failures.push(`${item.path} horizontal document overflow ${item.metrics.overflow}px at ${item.viewport.width}px`);
   if (item.path === '/' && item.metrics && !item.metrics.hasCalendar) failures.push('home mobile missing calendar panel');
+  if (item.path === '/' && item.viewport?.width <= 430 && item.metrics?.calendar?.gridOverPanel > 2) failures.push(`home mobile calendar grid wider than panel by ${item.metrics.calendar.gridOverPanel}px`);
+  if (item.path === '/' && item.viewport?.width <= 430 && item.metrics?.calendar?.minChipHeight < 12) failures.push(`home mobile calendar chips too small: ${item.metrics.calendar.minChipHeight}px`);
+  if (item.path === '/' && item.metrics && !item.metrics.hasDoorEvents) failures.push('home mobile missing D.O.O.R. event watch rows');
+  if (item.path === '/' && item.metrics?.hasDoorEvents && !item.metrics?.calendar?.doorDateCaveatPresent) failures.push('D.O.O.R. source-route events missing date-confirmation caveat');
   if (item.path === '/downtown/' && item.metrics && !item.metrics.hasMap) failures.push('downtown mobile missing map');
   if (item.privacy) {
     if (item.privacy.residentialTitleLeaks.length) failures.push(`residential title leaks: ${item.privacy.residentialTitleLeaks.slice(0, 3).join(' | ')}`);
