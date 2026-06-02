@@ -23,7 +23,7 @@ export const cityMapSourceSeed = {
       label: 'Downtown Development Area map',
       type: 'PDF',
       url: 'https://www.waynesboroga.com/DocumentCenter/View/4',
-      integrationUse: 'Official downtown geography reference for DDA/downtown command center boundaries after manual PDF review.'
+      integrationUse: 'Official downtown geography reference for DDA/downtown boundary context after manual PDF review.'
     },
     {
       label: 'Ward Boundaries map',

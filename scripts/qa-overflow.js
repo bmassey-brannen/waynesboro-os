@@ -16,7 +16,7 @@ for (const width of widths) {
     scrollWidth: document.documentElement.scrollWidth,
     clientWidth: document.documentElement.clientWidth,
     horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
-    disclaimer: document.body.innerText.includes('synthetic operating placeholders') || document.body.innerText.includes('synthetic mock data'),
+    disclaimer: document.body.innerText.includes('source pending') || document.body.innerText.includes('public preview'),
     kpiCards: document.querySelectorAll('.kpi-card').length,
     tables: document.querySelectorAll('table').length,
     mapNodes: document.querySelectorAll('.map-node').length,

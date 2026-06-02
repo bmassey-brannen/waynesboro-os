@@ -14,7 +14,7 @@ Waynesboro OS is intended to be a public-presentable civic intelligence demo. Be
 - Static Astro site: no public backend and no server-side secrets served to the browser.
 - Public pages are route-level views: Executive, Sources, Economic, Downtown + Projects, Operations, Council.
 - Data Commons keys are used only by server-side fetch scripts to generate public snapshot data; the keys stay in `.env.local` and are ignored by git.
-- The UI labels verified baselines, source routes, synthetic placeholders, source-pending lanes, and no-scraping guardrails.
+- The UI labels verified baselines, source routes, synthetic placeholders, source pending lanes, and no-scraping guardrails.
 
 ## Prompt-injection posture
 

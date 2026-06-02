@@ -1,7 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   beautificationFactors,
-  downtownProperties,
   economicPipeline,
   housing,
   infrastructure,
@@ -17,7 +16,6 @@ import { officialDocumentsSnapshot } from '../data/officialDocumentsSnapshot.js'
 import { waynesboroGeographySeed } from '../data/geographySeed.js';
 import { regionalDevelopmentSeed } from '../data/regionalDevelopmentSeed.js';
 import { operationsSourceSeed } from '../data/operationsSourceSeed.js';
-import { osmCivicAssetsSeed } from '../data/osmCivicAssetsSeed.js';
 import { weatherReadinessSeed } from '../data/weatherReadinessSeed.js';
 import { weatherAlertsSnapshot } from '../data/weatherAlertsSnapshot.js';
 import { weatherForecastSnapshot } from '../data/weatherForecastSnapshot.js';
@@ -90,8 +88,10 @@ import { tenureIncomeSeed } from '../data/tenureIncomeSeed.js';
 import { parksFacilitiesSeed } from '../data/parksFacilitiesSeed.js';
 import { renterStructureSeed } from '../data/renterStructureSeed.js';
 import { downtownSourceSeed } from '../data/downtownSourceSeed.js';
+import { downtownParcelSeed } from '../data/downtownParcelSeed.js';
 import { civicAccessRoutesSeed } from '../data/civicAccessRoutesSeed.js';
 import { councilPolicyQuestionsSeed } from '../data/councilPolicyQuestionsSeed.js';
+import { publicationBaselineSeed } from '../data/publicationBaselineSeed.js';
 import './WaynesboroTerminal.css';
 
 const statusTone = {
@@ -154,7 +154,7 @@ function KpiCard({ item }) {
   );
 }
 
-function DataTable({ title, eyebrow, rows, columns, badge = 'SYNTHETIC TABLE', note = 'Demo table: values remain placeholders until connected to source-labeled public records.' }) {
+function DataTable({ title, eyebrow, rows, columns, badge = 'VERIFICATION-QUEUE TABLE', note = 'Rows remain unpublished until connected to source-labeled public records.' }) {
   return (
     <section className="panel table-panel">
       <div className="panel-head">
@@ -200,6 +200,106 @@ const metricById = Object.fromEntries(dataCommonsSnapshot.metrics.map((metric) =
 const formatPercent = (value, digits = 1) => `${(value * 100).toFixed(digits)}%`;
 const formatDelta = (value) => `${value > 0 ? '+' : ''}${(value * 100).toFixed(1)}%`;
 const compactMoney = (value) => value == null ? 'N/A' : `$${Math.round(value / 1000).toLocaleString()}K`;
+const parcelClassTone = (parcelClass) => parcelClass === 'Commercial' ? 'good' : parcelClass === 'Exempt' ? 'neutral' : 'watch';
+const parcelClassCss = (parcelClass) => String(parcelClass || 'other').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+const privacyLabel = (parcel) => parcel?.ownerPrivacy?.startsWith('masked')
+  ? 'Owner masked for public preview'
+  : 'Owner displayed from qPublic CSV';
+const clampPercent = (value) => Math.max(1.5, Math.min(98.5, value));
+const lerp = (start, end, t) => start + (end - start) * t;
+const interpolateAxisPoint = (points, t) => {
+  const safeT = Math.max(0, Math.min(1, Number.isFinite(t) ? t : 0));
+  if (safeT <= 0.5) {
+    const localT = safeT / 0.5;
+    return {
+      left: lerp(points[0].left, points[1].left, localT),
+      top: lerp(points[0].top, points[1].top, localT)
+    };
+  }
+  const localT = (safeT - 0.5) / 0.5;
+  return {
+    left: lerp(points[1].left, points[2].left, localT),
+    top: lerp(points[1].top, points[2].top, localT)
+  };
+};
+const downtownMapBbox = {
+  // Keep the Web-Mercator bbox close to the rendered frame aspect ratio.
+  // If the geographic bbox is too narrow, OSM tiles get stretched wide and the street grid looks tilted.
+  minLon: -82.04365,
+  minLat: 33.0780,
+  maxLon: -81.98885,
+  maxLat: 33.1075
+};
+const downtownTileZoom = 16;
+const osmTileHost = 'https://tile.openstreetmap.org';
+const degToRad = (degrees) => (degrees * Math.PI) / 180;
+const lonToMercatorX = (lon) => (lon + 180) / 360;
+const latToMercatorY = (lat) => {
+  const rad = degToRad(lat);
+  return (1 - Math.log(Math.tan(rad) + (1 / Math.cos(rad))) / Math.PI) / 2;
+};
+const downtownMercatorFrame = {
+  minX: lonToMercatorX(downtownMapBbox.minLon),
+  maxX: lonToMercatorX(downtownMapBbox.maxLon),
+  minY: latToMercatorY(downtownMapBbox.maxLat),
+  maxY: latToMercatorY(downtownMapBbox.minLat)
+};
+
+const projectLonLatToDowntownMap = (lon, lat) => {
+  const x = lonToMercatorX(lon);
+  const y = latToMercatorY(lat);
+  const left = ((x - downtownMercatorFrame.minX) / (downtownMercatorFrame.maxX - downtownMercatorFrame.minX)) * 100;
+  const top = ((y - downtownMercatorFrame.minY) / (downtownMercatorFrame.maxY - downtownMercatorFrame.minY)) * 100;
+  return { left: clampPercent(left), top: clampPercent(top) };
+};
+
+const buildOsmTiles = () => {
+  const scale = 2 ** downtownTileZoom;
+  const xStart = Math.floor(downtownMercatorFrame.minX * scale);
+  const xEnd = Math.floor(downtownMercatorFrame.maxX * scale);
+  const yStart = Math.floor(downtownMercatorFrame.minY * scale);
+  const yEnd = Math.floor(downtownMercatorFrame.maxY * scale);
+  const tiles = [];
+  for (let x = xStart; x <= xEnd; x += 1) {
+    for (let y = yStart; y <= yEnd; y += 1) {
+      tiles.push({
+        key: `${downtownTileZoom}-${x}-${y}`,
+        src: `${osmTileHost}/${downtownTileZoom}/${x}/${y}.png`,
+        left: `${(((x / scale) - downtownMercatorFrame.minX) / (downtownMercatorFrame.maxX - downtownMercatorFrame.minX)) * 100}%`,
+        top: `${(((y / scale) - downtownMercatorFrame.minY) / (downtownMercatorFrame.maxY - downtownMercatorFrame.minY)) * 100}%`,
+        width: `${((1 / scale) / (downtownMercatorFrame.maxX - downtownMercatorFrame.minX)) * 100}%`,
+        height: `${((1 / scale) / (downtownMercatorFrame.maxY - downtownMercatorFrame.minY)) * 100}%`
+      });
+    }
+  }
+  return tiles;
+};
+const downtownOsmTiles = buildOsmTiles();
+
+const streetAxisGuide = {
+  'Liberty Street': {
+    label: 'Liberty Street qPublic address axis',
+    // Fallback only for records that do not receive a Census address geocode.
+    points: [{ left: 55.5, top: 82 }, { left: 51.2, top: 53 }, { left: 49.0, top: 25 }]
+  },
+  '6th Street': {
+    label: '6th Street qPublic address axis',
+    // Fallback only for records that do not receive a Census address geocode.
+    points: [{ left: 37.5, top: 58 }, { left: 49.5, top: 53 }, { left: 61.5, top: 47 }]
+  }
+};
+const addressSideOffset = (parcel, axisName, index) => {
+  const address = String(parcel.address || '').toUpperCase();
+  const parity = (parcel.houseNumber || index) % 2 === 0 ? 1 : -1;
+  if (axisName === 'Liberty Street') {
+    const side = address.includes(' S LIBERTY') || address.includes(' LIBERTY STREET S') ? -1 : parity;
+    return { left: side * 1.05, top: parity * 0.35 };
+  }
+  // Keep 6th Street parcel dots centered on the visible 6th Street guide line.
+  // The map is a presentation overlay, not surveyed parcel geometry, so side-of-street
+  // nudging made the points look detached from the corridor used as the visual reference.
+  return { left: 0, top: 0 };
+};
 
 function verifiedKpi(metricId, fallback, overrides = {}) {
   const metric = metricById[metricId];
@@ -221,9 +321,7 @@ function buildExecutiveKpis() {
   const poverty = metricById['waynesboro-poverty-count'];
   const countyUnemployment = metricById['burke-county-unemployment'];
   const cityPovertyRate = population?.value && poverty?.value ? poverty.value / population.value : null;
-  const peoplePerHousingUnit = population?.value && metricById['waynesboro-housing-units']?.value
-    ? population.value / metricById['waynesboro-housing-units'].value
-    : null;
+  const averageHouseholdSize = householdSizeSeed.metrics.find((metric) => metric.id === 'average-household-size');
 
   return [
     verifiedKpi('waynesboro-population', kpis[0], { mom: 'n/a', yoy: population?.date || 'n/a' }),
@@ -243,6 +341,16 @@ function buildExecutiveKpis() {
       sourceStatus: poverty ? 'verified' : 'unavailable'
     },
     verifiedKpi('waynesboro-median-age', { label: 'Median Age', value: 'N/A', mom: 'n/a', yoy: 'n/a', trend: [29, 29, 29, 29, 29, 29, 29, 29] }),
+    {
+      label: 'Under 18',
+      value: youthProfileSeed.totalUnder18.displayShareOfPopulation,
+      mom: 'n/a',
+      yoy: youthProfileSeed.release.years,
+      trend: [22.8, 23.1, 23.5, 23.9, 24.0, 24.2, 24.3, youthProfileSeed.totalUnder18.shareOfPopulation * 100],
+      source: `${youthProfileSeed.sourceName} · ${youthProfileSeed.release.name} · ${youthProfileSeed.totalUnder18.displayValue} residents`,
+      sourceBadge: 'ACS context',
+      sourceStatus: 'verified'
+    },
     {
       label: 'Housing Units',
       value: metricById['waynesboro-housing-units']?.displayValue || 'N/A',
@@ -265,14 +373,13 @@ function buildExecutiveKpis() {
       sourceStatus: countyUnemployment ? 'verified' : 'unavailable'
     },
     {
-      label: 'People / Housing Unit',
-      value: peoplePerHousingUnit == null ? 'N/A' : peoplePerHousingUnit.toFixed(2),
+      label: 'Avg Household Size',
+      value: averageHouseholdSize?.displayValue || 'N/A',
       mom: 'n/a',
-      yoy: metricById['waynesboro-housing-units']?.date || 'n/a',
-      trend: [2.26, 2.22, 2.18, 2.14, 2.11, 2.09, 2.08, peoplePerHousingUnit || 2.08],
-      inverse: true,
-      source: 'Derived from Data Commons population and housing units',
-      sourceBadge: 'Derived verified',
+      yoy: householdSizeSeed.release.years,
+      trend: [2.45, 2.47, 2.48, 2.50, 2.51, 2.52, 2.53, averageHouseholdSize?.estimate || 2.53],
+      source: `${householdSizeSeed.sourceName} · ${householdSizeSeed.sourceTable} · ${householdSizeSeed.release.name}`,
+      sourceBadge: 'ACS context',
       sourceStatus: 'verified'
     }
   ];
@@ -742,11 +849,403 @@ function ExecutiveContextDetails() {
   );
 }
 
-function ExecutiveDashboard() {
+const civicPlaybookLanes = [
+  {
+    label: 'Attend / watch',
+    value: 'Meetings calendar',
+    detail: 'City Council, committees, DDA, planning, preservation, and zoning meetings become the top civic calendar.'
+  },
+  {
+    label: 'Pull packet',
+    value: 'Agenda → evidence',
+    detail: 'Every meeting item should link to agenda packet, minutes, staff memo, parcel, project, or open question.'
+  },
+  {
+    label: 'Log decision',
+    value: 'Vote + follow-up',
+    detail: 'Capture what changed, who owns the next step, and what document should appear later.'
+  },
+  {
+    label: 'Turn into work',
+    value: 'Project queue',
+    detail: 'Promote verified items into Downtown, Economic, Operations, or Briefing pages when the source trail supports it.'
+  }
+];
+
+const meetingCalendarSeed = [
+  {
+    id: 'cc-2026-03-16',
+    isoDate: '2026-03-16',
+    body: 'City Council Meetings',
+    title: 'Public Hearing and Regular City Council meeting agenda and complete packet',
+    status: 'Packet posted',
+    lane: 'Council record',
+    source: 'Observed official Agenda Center posting',
+    tone: 'posted'
+  },
+  {
+    id: 'cc-2026-04-20',
+    isoDate: '2026-04-20',
+    body: 'City Council Meetings',
+    title: 'Regular City Council meeting agenda and complete packet',
+    status: 'Packet posted',
+    lane: 'Council record',
+    source: 'Observed official Agenda Center posting',
+    tone: 'posted'
+  },
+  {
+    id: 'cc-2026-05-18',
+    isoDate: '2026-05-18',
+    body: 'City Council Meetings',
+    title: 'Regular City Council meeting agenda and complete packet',
+    status: 'Packet posted',
+    lane: 'Council record',
+    source: 'Observed official Agenda Center posting',
+    tone: 'posted'
+  },
+  {
+    id: 'committee-2026-06-01-finance',
+    isoDate: '2026-06-01',
+    body: 'Committee Meeting Agendas',
+    title: 'Finance and Personnel Committee agenda',
+    status: 'Agenda posted',
+    lane: 'Committee watch',
+    source: 'Observed official Agenda Center posting',
+    tone: 'posted'
+  },
+  {
+    id: 'committee-2026-06-01-combined',
+    isoDate: '2026-06-01',
+    body: 'Committee Meeting Agendas',
+    title: 'Combined Beautification / Cemetery / Street Lights / Public Safety committee agenda',
+    status: 'Agenda posted',
+    lane: 'Committee watch',
+    source: 'Observed official Agenda Center posting',
+    tone: 'posted'
+  },
+  {
+    id: 'cc-watch-2026-06-15',
+    isoDate: '2026-06-15',
+    body: 'City Council Meetings',
+    title: 'Council watch window — verify packet when official agenda posts',
+    status: 'Watch window',
+    lane: 'Future watch',
+    source: 'Projected from monthly council cadence; not an official posted packet yet',
+    tone: 'watch'
+  },
+  {
+    id: 'planning-watch-2026-06-24',
+    isoDate: '2026-06-24',
+    body: 'Planning Commission Meetings',
+    title: 'Planning Commission watch window — check zoning/development agenda activity',
+    status: 'Route watch',
+    lane: 'Future forum',
+    source: 'Agenda Center category verified; meeting/date requires connector confirmation',
+    tone: 'route'
+  },
+  {
+    id: 'dda-watch-2026-07-09',
+    isoDate: '2026-07-09',
+    body: 'Downtown Development Authority Meetings',
+    title: 'DDA watch window — downtown projects, incentives, events, and storefront signals',
+    status: 'Route watch',
+    lane: 'Future forum',
+    source: 'Agenda Center category verified; meeting/date requires connector confirmation',
+    tone: 'route'
+  },
+  {
+    id: 'cc-watch-2026-07-20',
+    isoDate: '2026-07-20',
+    body: 'City Council Meetings',
+    title: 'Council watch window — packet, votes, contracts, appointments, ordinances',
+    status: 'Watch window',
+    lane: 'Future watch',
+    source: 'Projected from monthly council cadence; not an official posted packet yet',
+    tone: 'watch'
+  },
+  {
+    id: 'hpc-watch-2026-07-28',
+    isoDate: '2026-07-28',
+    body: 'Historic Preservation Commission Meetings',
+    title: 'Historic Preservation watch window — facade, certificate, district, and design review signals',
+    status: 'Route watch',
+    lane: 'Future forum',
+    source: 'Agenda Center category verified; meeting/date requires connector confirmation',
+    tone: 'route'
+  },
+  {
+    id: 'zba-watch-2026-08-06',
+    isoDate: '2026-08-06',
+    body: 'Zoning Board of Appeals/Adjustments Meetings',
+    title: 'Zoning Board watch window — variance and adjustment items to verify',
+    status: 'Route watch',
+    lane: 'Future forum',
+    source: 'Agenda Center category verified; meeting/date requires connector confirmation',
+    tone: 'route'
+  },
+  {
+    id: 'cc-watch-2026-08-17',
+    isoDate: '2026-08-17',
+    body: 'City Council Meetings',
+    title: 'Council watch window — packet, votes, contracts, appointments, ordinances',
+    status: 'Watch window',
+    lane: 'Future watch',
+    source: 'Projected from monthly council cadence; not an official posted packet yet',
+    tone: 'watch'
+  }
+];
+
+const monthLabelFormatter = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' });
+const dayLabelFormatter = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+const weekdayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+function dateFromIso(isoDate) {
+  const [year, month, day] = isoDate.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function isoFromDate(date) {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  const day = `${date.getDate()}`.padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function addMonths(date, delta) {
+  return new Date(date.getFullYear(), date.getMonth() + delta, 1);
+}
+
+function buildCalendarDays(monthDate) {
+  const firstDay = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+  const start = new Date(firstDay);
+  start.setDate(firstDay.getDate() - firstDay.getDay());
+
+  return Array.from({ length: 42 }, (_, index) => {
+    const day = new Date(start);
+    day.setDate(start.getDate() + index);
+    return {
+      date: day,
+      isoDate: isoFromDate(day),
+      isCurrentMonth: day.getMonth() === monthDate.getMonth()
+    };
+  });
+}
+
+function CivicPlaybookPanel() {
+  const agendaRoute = civicAccessRoutesSeed.routes.find((route) => route.id === 'city-agenda-center-route');
+  const sortedEvents = useMemo(
+    () => [...meetingCalendarSeed].sort((a, b) => a.isoDate.localeCompare(b.isoDate)),
+    []
+  );
+  const initialEvent = sortedEvents.find((event) => event.isoDate >= '2026-06-01') || sortedEvents[0];
+  const [activeMonth, setActiveMonth] = useState(() => dateFromIso(initialEvent.isoDate));
+  const [selectedEventId, setSelectedEventId] = useState(initialEvent.id);
+  const selectedEvent = sortedEvents.find((event) => event.id === selectedEventId) || initialEvent;
+  const selectedDateEvents = sortedEvents.filter((event) => event.isoDate === selectedEvent.isoDate);
+  const calendarDays = useMemo(() => buildCalendarDays(activeMonth), [activeMonth]);
+  const eventsByDate = useMemo(
+    () => sortedEvents.reduce((acc, event) => {
+      acc[event.isoDate] = [...(acc[event.isoDate] || []), event];
+      return acc;
+    }, {}),
+    [sortedEvents]
+  );
+  const monthEvents = sortedEvents.filter((event) => {
+    const eventDate = dateFromIso(event.isoDate);
+    return eventDate.getFullYear() === activeMonth.getFullYear() && eventDate.getMonth() === activeMonth.getMonth();
+  });
+
+  const jumpToEvent = (event) => {
+    setActiveMonth(dateFromIso(event.isoDate));
+    setSelectedEventId(event.id);
+  };
+
+  const jumpToFirstPast = () => {
+    const firstPast = [...sortedEvents].reverse().find((event) => event.tone === 'posted') || sortedEvents[0];
+    jumpToEvent(firstPast);
+  };
+
+  const jumpToFirstFuture = () => {
+    const firstFuture = sortedEvents.find((event) => event.tone !== 'posted') || sortedEvents[sortedEvents.length - 1];
+    jumpToEvent(firstFuture);
+  };
+
+  return (
+    <section className="playbook-panel" aria-label="Waynesboro executive overview and public meeting calendar">
+      <div className="playbook-hero">
+        <div>
+          <span className="eyebrow">EXECUTIVE OVERVIEW</span>
+          <h2>What should residents watch next?</h2>
+        </div>
+        <div className="playbook-source-card">
+          <b>{agendaRoute?.label || 'Agenda Center'}</b>
+          <span>{agendaRoute?.status || 'Official route pending verification'}</span>
+          <a href={agendaRoute?.url || 'https://www.waynesboroga.com/AgendaCenter'} target="_blank" rel="noreferrer">Open official agenda route</a>
+        </div>
+      </div>
+
+      <div className="meeting-calendar-panel">
+        <div className="meeting-calendar-head">
+          <div>
+            <span className="eyebrow">PUBLIC MEETINGS / FORUMS</span>
+            <h3>Agenda Center calendar</h3>
+          </div>
+            <span className="terminal-badge gold">OFFICIAL SOURCE LINKS</span>
+        </div>
+
+        <div className="calendar-toolbar" aria-label="calendar navigation">
+          <button type="button" onClick={() => setActiveMonth((month) => addMonths(month, -1))}>← Past</button>
+          <strong>{monthLabelFormatter.format(activeMonth)}</strong>
+          <button type="button" onClick={() => setActiveMonth((month) => addMonths(month, 1))}>Future →</button>
+          <button type="button" onClick={jumpToFirstPast}>Latest posted</button>
+          <button type="button" onClick={jumpToFirstFuture}>Next watch</button>
+        </div>
+
+        <div className="meeting-calendar-shell">
+          <div className="meeting-month-grid" role="grid" aria-label={`${monthLabelFormatter.format(activeMonth)} meetings calendar`}>
+            {weekdayLabels.map((label) => <div key={label} className="weekday-label">{label}</div>)}
+            {calendarDays.map((day) => {
+              const dayEvents = eventsByDate[day.isoDate] || [];
+              const selected = selectedEvent && selectedEvent.isoDate === day.isoDate;
+              return (
+                <div key={day.isoDate} className={`calendar-day ${day.isCurrentMonth ? '' : 'muted'} ${selected ? 'selected' : ''}`} role="gridcell">
+                  <div className="day-number">{day.date.getDate()}</div>
+                  <div className="day-event-stack">
+                    {dayEvents.slice(0, 2).map((event) => (
+                      <button
+                        type="button"
+                        key={event.id}
+                        className={`calendar-event-chip ${event.tone}`}
+                        onClick={() => setSelectedEventId(event.id)}
+                        aria-label={`Open ${event.body}: ${event.title}`}
+                      >
+                        {event.body.replace(' Meetings', '').replace(' Meeting Agendas', '')}
+                      </button>
+                    ))}
+                    {dayEvents.length > 2 && <span className="more-events">+{dayEvents.length - 2} more</span>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <aside className="calendar-detail-card" aria-label="selected meeting detail">
+            <span>{dayLabelFormatter.format(dateFromIso(selectedEvent.isoDate))}</span>
+            <h4>{selectedEvent.body}</h4>
+            <b>{selectedEvent.title}</b>
+            <div className="calendar-detail-meta">
+              <em className={selectedEvent.tone}>{selectedEvent.status}</em>
+              <small>{selectedEvent.lane}</small>
+            </div>
+            <p>{selectedEvent.source}</p>
+            {selectedDateEvents.length > 1 && (
+              <div className="same-day-events">
+                <span>Same-day items</span>
+                {selectedDateEvents.map((event) => (
+                  <button type="button" key={event.id} onClick={() => setSelectedEventId(event.id)} className={event.id === selectedEvent.id ? 'active' : ''}>
+                    {event.title}
+                  </button>
+                ))}
+              </div>
+            )}
+            <a href={agendaRoute?.url || 'https://www.waynesboroga.com/AgendaCenter'} target="_blank" rel="noreferrer">Check official packet / minutes</a>
+          </aside>
+        </div>
+
+        <div className="calendar-month-list" aria-label="active month agenda list">
+          {(monthEvents.length ? monthEvents : [{ id: 'empty-month', isoDate: isoFromDate(activeMonth), body: 'No seeded event', title: 'No posted or watch-window item has been normalized for this month yet.', status: 'Connector gap', lane: 'Needs scrape', source: 'Calendar can still click month-to-month; connector should backfill official events.', tone: 'route' }]).map((event) => (
+            <button type="button" key={event.id} onClick={() => event.id !== 'empty-month' && jumpToEvent(event)} className={`month-list-row ${event.tone}`}>
+              <span>{event.id === 'empty-month' ? monthLabelFormatter.format(activeMonth) : dayLabelFormatter.format(dateFromIso(event.isoDate))}</span>
+              <b>{event.body}</b>
+              <small>{event.title}</small>
+              <em>{event.status}</em>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <ExecutiveKpiStrip />
+    </section>
+  );
+}
+
+function PublicHowToGuide() {
+  const steps = [
+    { label: '1 · Start with the calendar', detail: 'Use meetings and packet links to see what is posted, what is only a watch window, and what needs verification.' },
+    { label: '2 · Read the baseline cards', detail: 'Treat population, income, housing, and ACS context as planning baselines with source/date labels, not live city telemetry.' },
+    { label: '3 · Open official sources', detail: 'Follow Agenda Center, budget, map, and public-record links before quoting or acting on a dashboard item.' },
+    { label: '4 · Separate evidence from questions', detail: 'If a lane says source pending, it is a verification queue—not a public fact, score, vacancy count, or project claim.' }
+  ];
+  return (
+    <section className="public-howto-panel" aria-label="How to use Waynesboro OS">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">HOW TO USE THIS DASHBOARD</span>
+          <h2>Read it like a civic evidence desk, not a city brochure.</h2>
+        </div>
+        <span className="terminal-badge live">PUBLIC GUIDE</span>
+      </div>
+      <div className="howto-grid">
+        {steps.map((step) => (
+          <article key={step.label}>
+            <b>{step.label}</b>
+            <span>{step.detail}</span>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function PublicationBaselinePanel() {
+  return (
+    <section className="publication-baseline-panel" aria-label="publication baseline and refresh schedule">
+      <div className="panel-head">
+        <div>
+          <span className="eyebrow">PUBLICATION BASELINE</span>
+          <h2>Source and refresh policy for this public snapshot</h2>
+        </div>
+        <a className="download-link" href={publicationBaselineSeed.snapshotFile}>Open public baseline JSON</a>
+      </div>
+      <p>{publicationBaselineSeed.claimPolicy}</p>
+      <div className="baseline-refresh-grid">
+        {publicationBaselineSeed.baselines.map((item) => (
+          <article key={item.lane}>
+            <span>{item.lane}</span>
+            <b>{item.status}</b>
+            <small>{item.source}</small>
+            <em>{item.cadence}</em>
+          </article>
+        ))}
+      </div>
+      <details className="refresh-schedule-details">
+        <summary>Recommended data refresh schedule</summary>
+        <div>
+          {publicationBaselineSeed.refreshSchedule.map((item) => (
+            <article key={item.lane}>
+              <b>{item.lane}</b>
+              <span>{item.cadence}</span>
+              <small>{item.publicUse}</small>
+            </article>
+          ))}
+        </div>
+      </details>
+    </section>
+  );
+}
+
+function ExecutiveKpiStrip() {
   const executiveKpis = buildExecutiveKpis();
   return (
-    <section id="executive" className="module executive-grid" aria-label="source-backed Waynesboro baseline indicators">
+    <section className="executive-kpi-strip" aria-label="headline source-backed Waynesboro baseline indicators">
       <div className="kpi-grid">{executiveKpis.map((item) => <KpiCard key={item.label} item={item} />)}</div>
+    </section>
+  );
+}
+
+function ExecutiveDashboard() {
+  return (
+    <section id="executive" className="module executive-grid" aria-label="source-backed Waynesboro baseline indicators">
       <BaselineComparisonPanel />
       <PovertyStatusPanel />
       <ExecutiveContextDetails />
@@ -975,38 +1474,38 @@ function CredentialReadinessPanel() {
     },
     {
       label: 'BLS LAUS workforce',
-      status: laborForceSeed.credentialStatus === 'local_key_configured' ? 'KEY OK' : laborForceSeed.credentialStatus === 'local_key_rejected_fell_back_to_public_low_volume' ? 'KEY REJECTED · PUBLIC FALLBACK' : 'PUBLIC MODE',
+      status: 'PUBLIC SNAPSHOT',
       detail: `${laborForceSeed.latestPeriod} · ${laborForceSeed.series.length} Burke County metrics cached`,
-      tone: laborForceSeed.credentialStatus === 'local_key_rejected_fell_back_to_public_low_volume' ? 'watch' : 'live'
+      tone: 'live'
     },
     {
       label: 'CDC PLACES / Socrata',
-      status: healthEquitySeed.credentialStatus?.appTokenStatus === 'local_token_configured' ? 'TOKEN OK' : healthEquitySeed.credentialStatus?.appTokenStatus === 'local_token_rejected_fell_back_to_public_low_volume' ? 'TOKEN REJECTED · PUBLIC FALLBACK' : 'PUBLIC MODE',
+      status: 'PUBLIC SNAPSHOT',
       detail: `${healthEquitySeed.observedShape.rowsForBurkeCountyObserved} Burke County tract-measure rows observed`,
-      tone: healthEquitySeed.credentialStatus?.appTokenStatus === 'local_token_rejected_fell_back_to_public_low_volume' ? 'watch' : 'live'
+      tone: 'live'
     },
     {
       label: 'Census API',
-      status: 'KEY PENDING',
-      detail: 'ACS Profile, Building Permits, and CBP remain on Census Reporter/source-route fallbacks until key is added.',
+      status: 'PUBLIC FALLBACK',
+      detail: 'ACS Profile, Building Permits, and CBP use public snapshots or source-route fallbacks until promoted.',
       tone: 'watch'
     },
     {
       label: 'Mapbox presentation map',
-      status: mapboxReadinessSeed.credentialStatus === 'local_token_configured' ? 'TOKEN READY · THROTTLED' : 'TOKEN MISSING',
-      detail: mapboxReadinessSeed.publicUsePolicy,
+      status: 'STATIC / CACHED ONLY',
+      detail: 'Presentation maps use cached/static views and public source labels; map services are not a source of parcel or zoning truth.',
       tone: 'watch'
     }
   ];
 
   return (
-    <section className="panel credential-readiness-panel" aria-label="local API credential readiness without exposing secrets">
+    <section className="panel credential-readiness-panel" aria-label="public data-source refresh status">
       <div className="panel-head">
         <div>
-          <span className="eyebrow">API CREDENTIAL READINESS</span>
-          <h2>Local keys are staged; public snapshots never expose secrets</h2>
+          <span className="eyebrow">PUBLIC DATA-SOURCE STATUS</span>
+          <h2>Snapshots stay source-labeled and browser-safe</h2>
         </div>
-        <span className="terminal-badge gold">NO SECRETS IN BROWSER</span>
+        <span className="terminal-badge gold">PUBLIC SNAPSHOTS</span>
       </div>
       <div className="credential-grid">
         {connectorCards.map((card) => (
@@ -1017,7 +1516,7 @@ function CredentialReadinessPanel() {
           </article>
         ))}
       </div>
-      <p className="source-note">Credential status is generated server-side from .env.local as a public-safe readiness summary. Raw keys stay ignored by git and are not bundled into the GitHub Pages site.</p>
+      <p className="source-note">This public page reports only source and snapshot status. It does not publish operational access details, raw credentials, or private connector configuration.</p>
     </section>
   );
 }
@@ -1095,7 +1594,7 @@ function SourceReadiness() {
             </article>
           ))}
         </div>
-        <p className="source-note">Every dashboard number remains synthetic until it carries a source, timestamp, geography, and connector status. Data Commons is now connected server-side for baseline demographics; city documents remain the next official local evidence lane.</p>
+        <p className="source-note">Every dashboard number must carry a source, timestamp, geography, and connector status before it is treated as fact. Data Commons is now connected server-side for baseline demographics; city documents remain the next official local evidence lane.</p>
       </section>
       <CredentialReadinessPanel />
       <DataCommonsLivePanel />
@@ -1812,7 +2311,7 @@ function EconomicEvidenceStrip() {
     <section className="economic-evidence-strip" aria-label="economic page evidence hierarchy">
       <div>
         <span className="eyebrow">ECONOMIC EVIDENCE LADDER</span>
-        <h2>Source-backed context now sits above synthetic prospect tables</h2>
+        <h2>Source-backed context now sits above unpublished prospect lanes</h2>
         <p>Use this page from verified/seeded workforce context toward harder local records: permits, business licenses, property, DCA project records, and official finance documents.</p>
       </div>
       <div className="economic-evidence-cards">
@@ -1833,31 +2332,14 @@ function EconomicDevelopment() {
   return (
     <section id="economic" className="module economic-module">
       <EconomicEvidenceStrip />
-      <DataTable
-        title="Ranked Development Pipeline"
-        eyebrow="ECONOMIC DEVELOPMENT"
-        rows={economicPipeline}
-        badge="SYNTHETIC PIPELINE"
-        note="Prospect ranking is demo architecture only; DCA DRI, city permits, business records, and source-labeled project documents must be attached before public project claims."
-        columns={[
-          { key: 'prospect', label: 'Prospect' },
-          { key: 'industry', label: 'Industry' },
-          { key: 'jobs', label: 'Jobs', numeric: true },
-          { key: 'investment', label: 'CapEx', numeric: true },
-          { key: 'status', label: 'Status', render: (row) => <span className={`pill ${statusTone[row.status] || 'neutral'}`}>{row.status}</span> },
-          { key: 'probability', label: 'Prob.', render: (row) => <ScoreBar score={row.probability} /> }
-        ]}
-      />
-      <section className="panel intelligence-card">
+      <section className="panel intelligence-card public-source-gate">
         <span className="eyebrow">EMPLOYERS / ASSETS / OPPORTUNITIES</span>
-        <h2>Economic command notes</h2>
+        <h2>Public economic lanes are source-gated</h2>
         <div className="metric-stack">
-          <div><b>Active business licenses</b><span>Synthetic placeholder · official licenses/permits path indexed</span></div>
-          <div><b>New businesses</b><span>Synthetic placeholder · directory/source surface ready for normalization</span></div>
-          <div><b>Business closures</b><span>Synthetic placeholder · requires official export or records request</span></div>
-          <div><b>Largest employers</b><span>Government, healthcare, education, industrial employers</span></div>
-          <div><b>Available commercial property</b><span>11 tracked spaces · 4 redevelopment-grade</span></div>
-          <div><b>Industrial sites</b><span>3 priority pads · utilities diligence required</span></div>
+          <div><b>Business licenses</b><span>Official license/permit path indexed; no public count displayed until records are attached.</span></div>
+          <div><b>Openings / closures</b><span>Directory/source surface ready for normalization; no inferred churn shown.</span></div>
+          <div><b>Commercial property</b><span>Official locator route indexed; null states do not equal vacancy counts.</span></div>
+          <div><b>Development projects</b><span>DCA DRI and local packet paths are visible before any project pipeline is published.</span></div>
         </div>
         <BusinessSurfacePanel />
         <CityPermittingIntakePanel />
@@ -1898,9 +2380,9 @@ function DowntownPublicSourcePanel() {
       <div className="panel-head">
         <div>
           <span className="eyebrow">DOWNTOWN SOURCE CHECK</span>
-          <h2>Official routes now frame the storefront mock layer</h2>
+          <h2>Official routes now frame the qPublic parcel layer</h2>
         </div>
-        <span className="terminal-badge gold">COUNT GATED</span>
+        <span className="terminal-badge good">PARCEL CSV ATTACHED</span>
       </div>
       <div className="downtown-source-grid">
         {downtownSourceSeed.routes.map((route) => (
@@ -1914,31 +2396,133 @@ function DowntownPublicSourcePanel() {
       <div className="downtown-action-strip">
         {downtownSourceSeed.nextActions.map((action) => <span key={action}>{action}</span>)}
       </div>
-      <p className="source-note">{downtownSourceSeed.caveat} Retrieved {new Date(downtownSourceSeed.retrievedAt).toLocaleDateString()} from public city routes.</p>
+      <p className="source-note">{downtownSourceSeed.caveat} qPublic CSVs now add a partial Liberty Street + 6th Street downtown-cross sample of {downtownParcelSeed.recordCount} unique parcel rows. This is still not a complete downtown or citywide parcel inventory; individual-looking owner names and mailing addresses are masked in the public preview. Occupancy, tenant, vacancy, condition, and off-export parcels remain gated until joined to broader qPublic exports, business-license, field, or document evidence. Retrieved {new Date(downtownSourceSeed.retrievedAt).toLocaleDateString()} from public city routes.</p>
     </section>
   );
 }
 
 function DowntownCommandCenter() {
-  const civicAssets = osmCivicAssetsSeed.assets.slice(0, 5);
   const mapSources = cityMapSourceSeed.links.slice(0, 5);
-  const latValues = civicAssets.map((asset) => asset.lat);
-  const lonValues = civicAssets.map((asset) => asset.lon);
-  const bounds = {
-    minLat: Math.min(...latValues) - 0.006,
-    maxLat: Math.max(...latValues) + 0.006,
-    minLon: Math.min(...lonValues) - 0.006,
-    maxLon: Math.max(...lonValues) + 0.006
+  const qpublicMapParcels = downtownParcelSeed.mapParcels;
+  const addressAxisParcels = qpublicMapParcels.filter((parcel) => Number.isFinite(parcel.houseNumber));
+  const [activeParcelId, setActiveParcelId] = useState(addressAxisParcels[0]?.parcelId || qpublicMapParcels[0]?.parcelId || null);
+  const [mapZoom, setMapZoom] = useState(1);
+  const mapFrameRef = useRef(null);
+  const activeParcel = qpublicMapParcels.find((parcel) => parcel.parcelId === activeParcelId) || qpublicMapParcels[0];
+  const geocodedAddressParcels = addressAxisParcels.filter((parcel) => Number.isFinite(Number(parcel.lat)) && Number.isFinite(Number(parcel.lon)));
+  const fallbackAddressParcels = addressAxisParcels.length - geocodedAddressParcels.length;
+  const assessedValues = qpublicMapParcels.map((parcel) => parcel.assessedValue || 0);
+  const maxAssessedValue = Math.max(...assessedValues, 1);
+  const sixthWestNumbers = addressAxisParcels
+    .filter((parcel) => parcel.streetAxes?.includes('6th Street') && String(parcel.address).toUpperCase().includes('W'))
+    .map((parcel) => parcel.houseNumber);
+  const sixthEastNumbers = addressAxisParcels
+    .filter((parcel) => parcel.streetAxes?.includes('6th Street') && String(parcel.address).toUpperCase().includes('E'))
+    .map((parcel) => parcel.houseNumber);
+  const libertyNumbers = addressAxisParcels
+    .filter((parcel) => parcel.streetAxes?.includes('Liberty Street'))
+    .map((parcel) => parcel.houseNumber);
+  const rangeProgress = (value, values) => {
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    return max === min ? 0.5 : Math.max(0, Math.min(1, (value - min) / (max - min)));
   };
-  const projectAsset = (asset) => ({
-    left: `${12 + ((asset.lon - bounds.minLon) / (bounds.maxLon - bounds.minLon)) * 76}%`,
-    top: `${12 + ((bounds.maxLat - asset.lat) / (bounds.maxLat - bounds.minLat)) * 70}%`
-  });
-
+  const projectAddressParcel = (parcel, index) => {
+    const geocodeLat = Number(parcel.lat);
+    const geocodeLon = Number(parcel.lon);
+    const hasUsableGeocode = Number.isFinite(geocodeLat) && Number.isFinite(geocodeLon);
+    const axisName = parcel.streetAxes?.includes('6th Street') ? '6th Street' : 'Liberty Street';
+    let left;
+    let top;
+    if (hasUsableGeocode) {
+      ({ left, top } = projectLonLatToDowntownMap(geocodeLon, geocodeLat));
+    } else {
+      const address = String(parcel.address || '').toUpperCase();
+      let t = 0.5;
+      if (axisName === '6th Street') {
+        if (address.includes('W')) t = 0.49 - rangeProgress(parcel.houseNumber, sixthWestNumbers) * 0.43;
+        else if (address.includes('E')) t = 0.51 + rangeProgress(parcel.houseNumber, sixthEastNumbers) * 0.43;
+      } else {
+        // S Liberty house numbers move south from the 6th Street core toward Burke Health.
+        t = 0.08 + rangeProgress(parcel.houseNumber, libertyNumbers) * 0.9;
+      }
+      const base = interpolateAxisPoint(streetAxisGuide[axisName].points, t);
+      const offset = addressSideOffset(parcel, axisName, index);
+      left = clampPercent(base.left + offset.left);
+      top = clampPercent(base.top + offset.top);
+    }
+    const assessedWeight = Math.max(0.42, Math.min(1, (parcel.assessedValue || 0) / maxAssessedValue));
+    const size = Math.max(8, Math.min(17, 7 + assessedWeight * 12));
+    return {
+      left: `${left}%`,
+      top: `${top}%`,
+      width: `${size}px`,
+      height: `${size}px`
+    };
+  };
+  const projectHeatParcel = (parcel, index) => {
+    const base = projectAddressParcel(parcel, index);
+    const assessedWeight = Math.max(0.18, Math.min(1, (parcel.assessedValue || 0) / maxAssessedValue));
+    const isGeocoded = Number.isFinite(Number(parcel.lat)) && Number.isFinite(Number(parcel.lon));
+    const heatSize = isGeocoded ? 34 + assessedWeight * 56 : 22 + assessedWeight * 30;
+    return {
+      ...base,
+      width: `${heatSize}px`,
+      height: `${heatSize}px`,
+      '--heat-alpha': isGeocoded ? `${0.16 + assessedWeight * 0.22}` : '0.08'
+    };
+  };
+  const heatCells = Object.values(addressAxisParcels.reduce((cells, parcel, index) => {
+    const point = projectAddressParcel(parcel, index);
+    const left = parseFloat(point.left);
+    const top = parseFloat(point.top);
+    const bucketLeft = Math.round(left / 4) * 4;
+    const bucketTop = Math.round(top / 4) * 4;
+    const key = `${bucketLeft}-${bucketTop}`;
+    const existing = cells[key] || { key, left: 0, top: 0, count: 0, assessedValue: 0, geocoded: 0, fallback: 0, classes: {} };
+    const nextCount = existing.count + 1;
+    existing.left = ((existing.left * existing.count) + left) / nextCount;
+    existing.top = ((existing.top * existing.count) + top) / nextCount;
+    existing.count = nextCount;
+    existing.assessedValue += parcel.assessedValue || 0;
+    if (Number.isFinite(Number(parcel.lat)) && Number.isFinite(Number(parcel.lon))) existing.geocoded += 1;
+    else existing.fallback += 1;
+    existing.classes[parcel.parcelClass] = (existing.classes[parcel.parcelClass] || 0) + 1;
+    cells[key] = existing;
+    return cells;
+  }, {}));
+  const maxHeatCellCount = Math.max(...heatCells.map((cell) => cell.count), 1);
+  const styleHeatCell = (cell) => {
+    const densityWeight = cell.count / maxHeatCellCount;
+    const valueWeight = Math.min(1, cell.assessedValue / maxAssessedValue);
+    const size = 76 + densityWeight * 138 + valueWeight * 38;
+    return {
+      left: `${cell.left}%`,
+      top: `${cell.top}%`,
+      width: `${size}px`,
+      height: `${size}px`,
+      '--heat-alpha': `${0.2 + densityWeight * 0.34}`
+    };
+  };
+  const heatCellTone = (cell) => {
+    const [dominantClass] = Object.entries(cell.classes).sort((a, b) => b[1] - a[1])[0] || ['Unclassified'];
+    return parcelClassCss(dominantClass);
+  };
+  const updateMapZoom = (nextZoom) => setMapZoom(Math.max(0.9, Math.min(2.6, nextZoom)));
+  useEffect(() => {
+    const frame = mapFrameRef.current;
+    if (!frame) return undefined;
+    const handleWheel = (event) => {
+      event.preventDefault();
+      setMapZoom((zoom) => Math.max(0.9, Math.min(2.6, zoom + (event.deltaY < 0 ? 0.12 : -0.12))));
+    };
+    frame.addEventListener('wheel', handleWheel, { passive: false });
+    return () => frame.removeEventListener('wheel', handleWheel);
+  }, []);
   return (
     <section id="downtown" className="module three-col">
       <section className="panel map-panel">
-        <div className="panel-head"><div><span className="eyebrow">DOWNTOWN COMMAND CENTER</span><h2>Core map / parcel operating picture</h2></div></div>
+        <div className="panel-head"><div><span className="eyebrow">DOWNTOWN PUBLIC MAP</span><h2>Core map / parcel civic picture</h2></div></div>
         <div className="map-source-bar" aria-label="map source status">
           <article>
             <span>Place seed</span>
@@ -1952,53 +2536,111 @@ function DowntownCommandCenter() {
           </article>
           <article>
             <span>Map status</span>
-            <b>Schematic overlay</b>
-            <small>Real parcel geometry still requires qPublic/export permission.</small>
+            <b>Census-geocoded qPublic address heat layer</b>
+            <small>{geocodedAddressParcels.length} rows glow from U.S. Census address geocodes · {fallbackAddressParcels} unmatched rows stay dashed/faint on fallback placement · intensity is parcel-record density/value context, not occupancy or condition.</small>
           </article>
         </div>
-        <div className="city-map evidence-map" aria-label="Cached civic anchor map for Waynesboro">
-          <div className="gridlines" />
-          <div className="map-route route-liberty" />
-          <div className="map-route route-sixth" />
-          <div className="map-zone zone-downtown">Downtown core</div>
-          <div className="map-zone zone-health">Health / services</div>
-          {downtownProperties.map((p, index) => <button key={p.name} className={`map-node parcel-node node-${index}`} type="button"><span>Mock parcel</span>{p.name}</button>)}
-          {civicAssets.map((asset, index) => (
-            <a
-              key={asset.id}
-              className={`asset-marker asset-${asset.type} asset-index-${index}`}
-              href={`https://www.openstreetmap.org/${asset.osmElement}`}
-              target="_blank"
-              rel="noreferrer"
-              style={projectAsset(asset)}
-              title={`${asset.name} · ${asset.type}`}
-            >
-              <span>{asset.type}</span>
-              <b>{asset.name}</b>
-            </a>
-          ))}
-          <span className="map-label label-a">schematic corridor</span>
-          <span className="map-label label-b">orientation axis</span>
-          <span className="map-label label-c">redevelopment study area</span>
-          <div className="map-disclaimer">Relative OSM anchor plot + schematic parcel layer · not survey/GIS accurate · no Mapbox requests</div>
-        </div>
-        <div className="layer-strip">{mapLayers.map((layer) => <span key={layer}>{layer}</span>)}</div>
-        <div className="civic-asset-seed" aria-label="OpenStreetMap civic asset seed">
-          <div className="civic-asset-head">
-            <span className="eyebrow">OSM CIVIC ASSET SEED</span>
-            <b>{civicAssets.length} public map anchors · verify before official use</b>
+        <div
+          className="city-map evidence-map interactive-parcel-map map-base-town parcel-overlay-enabled public-map-ui"
+          aria-label="OpenStreetMap downtown Waynesboro map with qPublic address overlay projected into the same tile grid"
+        >
+          <div className="north-arrow" aria-label="north arrow"><b>N</b><span /></div>
+          <div className="map-zoom-controls" aria-label="map zoom controls">
+            <span>Zoom</span>
+            <button type="button" onClick={() => updateMapZoom(mapZoom - 0.18)}>−</button>
+            <button type="button" onClick={() => updateMapZoom(1)}>Fit</button>
+            <button type="button" onClick={() => updateMapZoom(mapZoom + 0.18)}>+</button>
+            <b>{Math.round(mapZoom * 100)}%</b>
           </div>
-          <div className="civic-asset-list">
-            {civicAssets.map((asset) => (
-              <article key={asset.id}>
-                <span>{asset.type}</span>
-                <b>{asset.name}</b>
-                <small>{asset.osmElement} · {asset.lat.toFixed(4)}, {asset.lon.toFixed(4)}</small>
-              </article>
-            ))}
+          <div className="map-wheel-hint">Scroll wheel zoom enabled</div>
+          <div
+            ref={mapFrameRef}
+            className="town-map-frame"
+            aria-label="OpenStreetMap downtown Waynesboro street tile map with qPublic Liberty and 6th Street address overlay"
+          >
+            <div className="town-map-zoom-surface" style={{ transform: `scale(${mapZoom})` }}>
+              <div className="osm-tile-layer" aria-hidden="true">
+                {downtownOsmTiles.map((tile) => (
+                  <img
+                    key={tile.key}
+                    src={tile.src}
+                    alt=""
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                    style={{ left: tile.left, top: tile.top, width: tile.width, height: tile.height }}
+                  />
+                ))}
+              </div>
+              <div className="town-parcel-overlay" aria-label="qPublic address heat-map overlay on the same Web-Mercator OpenStreetMap tile grid">
+                <div className="parcel-heat-layer" aria-hidden="true">
+                  {heatCells.map((cell) => (
+                    <span
+                      key={`heat-${cell.key}`}
+                      className={`parcel-heat-cell parcel-heat-${heatCellTone(cell)} ${cell.fallback && !cell.geocoded ? 'axis-fallback' : ''}`}
+                      style={styleHeatCell(cell)}
+                    />
+                  ))}
+                </div>
+                <svg className="parcel-axis-guide" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                  <polyline points="55.5,82 51.2,53 49,25" />
+                  <polyline points="37.5,58 49.5,53 61.5,47" />
+                </svg>
+                <div className="parcel-point-layer" aria-label="CSV parcel hover layer">
+                  {addressAxisParcels.map((parcel, index) => (
+                    <button
+                      key={`${parcel.parcelId}-${index}`}
+                      className={`parcel-dot parcel-${parcelClassCss(parcel.parcelClass)} ${parcel.streetAxes?.includes('6th Street') ? 'sixth-axis' : 'liberty-axis'} ${parcel.lat && parcel.lon ? 'geocoded' : 'axis-fallback'} ${activeParcel?.parcelId === parcel.parcelId ? 'active' : ''}`}
+                      type="button"
+                      style={projectAddressParcel(parcel, index)}
+                      onMouseEnter={() => setActiveParcelId(parcel.parcelId)}
+                      onMouseOver={() => setActiveParcelId(parcel.parcelId)}
+                      onFocus={() => setActiveParcelId(parcel.parcelId)}
+                      onClick={() => setActiveParcelId(parcel.parcelId)}
+                      title={`${parcel.address} · ${parcel.owner} · ${compactMoney(parcel.assessedValue)}`}
+                    >
+                      <span><b>{parcel.address}</b><em>{parcel.owner} · {compactMoney(parcel.assessedValue)} · {parcel.parcelClass}</em></span>
+                    </button>
+                  ))}
+                </div>
+                <span className="map-label label-a">address heat layer</span>
+                <span className="map-label label-b">geocoded qPublic rows</span>
+              </div>
+            </div>
+            <div className="town-map-note">
+              <b>Same-map address overlay</b>
+              <span>OSM tiles and qPublic/Census address points share one Web-Mercator bbox/projection, with the bbox widened to the frame aspect ratio so the street grid is not side-stretched. Still not surveyed GIS, parcel boundaries, or occupancy evidence.</span>
+              <a href="https://www.openstreetmap.org/#map=15/33.0927/-82.0165" target="_blank" rel="noreferrer">Open larger map</a>
+            </div>
           </div>
-          <p>{osmCivicAssetsSeed.caveat}</p>
+          <div className="parcel-map-legend">
+            <span className="heat">Address heat</span>
+            <span className="commercial">Commercial</span>
+            <span className="residential">Residential / masked if individual</span>
+            <span className="exempt">Exempt / civic</span>
+            <span className="unclassified">Unclassified</span>
+          </div>
+          <div className="map-disclaimer">OpenStreetMap tile basemap · same Web-Mercator projection as overlay · {geocodedAddressParcels.length} qPublic rows glow from U.S. Census address geocodes · {fallbackAddressParcels} unmatched rows stay faint/dashed on fallback interpolation · heat is address-record concentration/context, not parcel boundaries, surveyed centroids, occupancy, vacancy, or condition.</div>
         </div>
+        {activeParcel && (
+          <aside className="parcel-inspector-panel" aria-live="polite">
+            <div>
+              <span className="eyebrow">SELECTED CSV PARCEL</span>
+              <h3>{activeParcel.address}</h3>
+              <p>{activeParcel.legalDescription || 'No legal-description text in export.'}</p>
+              <small>{privacyLabel(activeParcel)} · {activeParcel.sourceCorridors?.join(' + ')} · parcel evidence only, not occupancy.</small>
+            </div>
+            <div className="parcel-detail-grid">
+              <div><span>Owner</span><b>{activeParcel.owner}</b></div>
+              <div><span>Class</span><b>{activeParcel.parcelClass}</b></div>
+              <div><span>Assessed</span><b>{compactMoney(activeParcel.assessedValue)}</b></div>
+              <div><span>Parcel ID</span><b>{activeParcel.parcelId || 'N/A'}</b></div>
+              <div><span>Acres</span><b>{activeParcel.acres ?? 'N/A'}</b></div>
+              <div><span>Axis</span><b>{activeParcel.streetAxes?.join(' + ')}</b></div>
+              <div><span>Map placement</span><b>{activeParcel.lat && activeParcel.lon ? activeParcel.geocodeMatch || 'Geocoded' : 'Axis fallback'}</b></div>
+            </div>
+          </aside>
+        )}
+        <ProjectTracker />
         <div className="city-map-source-stack" aria-label="official city map source stack">
           <div className="civic-asset-head">
             <span className="eyebrow">OFFICIAL CITY MAP SOURCE STACK</span>
@@ -2019,17 +2661,18 @@ function DowntownCommandCenter() {
       <div className="downtown-side-stack">
         <DowntownPublicSourcePanel />
         <DataTable
-          title="Storefront Intelligence"
-          eyebrow="OCCUPANCY / OWNERSHIP / TRAFFIC"
-          rows={downtownProperties}
-          badge="SCHEMATIC MOCK"
-          note="Storefront rows are presentation placeholders until parcel, business-directory, DDA, qPublic/export, or field-verified records are attached. The source check above shows official routes, not verified vacancy counts."
+          title="Liberty + 6th Street Parcel Sample"
+          eyebrow="QPUBLIC / OWNERSHIP / ASSESSMENT"
+          rows={downtownParcelSeed.parcels}
+          badge="QPUBLIC CSV"
+          note={`${downtownParcelSeed.summary.uniqueParcels} unique parcel rows from uploaded Burke County qPublic Liberty Street + 6th Street exports · ${downtownParcelSeed.summary.geocodedMapParcels || 0} map rows placed from Census address geocodes · ${downtownParcelSeed.summary.maskedIndividualOwnerCount} individual-looking owners masked · parcel evidence only, not occupancy or vacancy.`}
           columns={[
-            { key: 'name', label: 'Asset' },
-            { key: 'occupancy', label: 'Occupancy', render: (row) => <span className={`pill ${row.occupancy === 'Vacant' ? 'bad' : row.occupancy === 'Partial' ? 'watch' : 'good'}`}>{row.occupancy}</span> },
-            { key: 'owner', label: 'Owner' },
-            { key: 'footTraffic', label: 'Foot traffic', render: (row) => <ScoreBar score={row.footTraffic} /> },
-            { key: 'status', label: 'Readout' }
+            { key: 'address', label: 'Address' },
+            { key: 'parcelClass', label: 'Class', render: (row) => <span className={`pill ${parcelClassTone(row.parcelClass)}`}>{row.parcelClass}</span> },
+            { key: 'owner', label: 'Public owner display' },
+            { key: 'assessedValue', label: 'Assessed', render: (row) => compactMoney(row.assessedValue) },
+            { key: 'parcelId', label: 'Parcel' },
+            { key: 'legalDescription', label: 'qPublic note' }
           ]}
         />
       </div>
@@ -2038,22 +2681,20 @@ function DowntownCommandCenter() {
 }
 
 function BeautificationIndex() {
-  const score = useMemo(() => Math.round(beautificationFactors.reduce((sum, item) => sum + item.score, 0) / beautificationFactors.length), []);
+  const factors = ['Code enforcement records', 'Parcel condition review', 'Vacancy/occupancy evidence', 'Streetscape project documents'];
   return (
-    <section id="beautification" className="module two-col compact">
+    <section id="beautification" className="module two-col compact public-beautification-gate">
       <section className="panel score-panel">
-        <span className="eyebrow">PROPRIETARY CITY SCORE</span>
-        <h2>Beautification Index</h2>
-        <div className="big-score"><span>{score}</span><small>/100</small></div>
-        <p>Composite of code pressure, vacancy, abandoned structures, downtown occupancy, landscaping, public art, and streetscape momentum.</p>
-        <Sparkline points={[52, 55, 58, 60, 63, 66, 70, score]} />
+        <span className="eyebrow">BEAUTIFICATION / BLIGHT CONTEXT</span>
+        <h2>Score withheld until source-backed</h2>
+        <p>No beautification, vacancy, blight, or occupancy score is displayed publicly until it is tied to code records, parcel evidence, field verification, or official project documents.</p>
       </section>
-      <section className="panel factor-list">
-        {beautificationFactors.map((item) => (
-          <div className="factor" key={item.factor}>
-            <div><b>{item.factor}</b><span>{item.signal}</span></div>
-            <ScoreBar score={item.score} />
-          </div>
+      <section className="panel factor-list source-gate-grid">
+        {factors.map((factor) => (
+          <article key={factor}>
+            <b>{factor}</b>
+            <span>Required before this lane becomes a public fact card.</span>
+          </article>
         ))}
       </section>
     </section>
@@ -2061,27 +2702,22 @@ function BeautificationIndex() {
 }
 
 function ProjectTracker() {
+  const lanes = [
+    { label: 'Agenda / minutes', detail: 'Extract adopted actions and votes from official packet or minutes links.' },
+    { label: 'Budget / funding', detail: 'Attach adopted budget, grant, contract, or check-register evidence before showing dollars.' },
+    { label: 'Owner / milestone', detail: 'Publish only when an official department, board, or public document identifies the lane.' },
+    { label: 'Public status', detail: 'Use posted documents or staff-confirmed updates; no invented completion percentages.' }
+  ];
   return (
-    <section id="projects" className="module two-col">
-      <DataTable
-        title="Project Tracker"
-        eyebrow="GANTT + KANBAN DATA MODEL"
-        rows={projects}
-        columns={[
-          { key: 'name', label: 'Project' },
-          { key: 'owner', label: 'Owner' },
-          { key: 'budget', label: 'Budget', numeric: true },
-          { key: 'status', label: 'Status', render: (row) => <span className={`pill ${statusTone[row.status] || 'neutral'}`}>{row.status}</span> },
-          { key: 'completion', label: 'Done', render: (row) => <ScoreBar score={row.completion} /> },
-          { key: 'priority', label: 'Pri.' }
-        ]}
-      />
-      <section className="panel kanban">
-        <span className="eyebrow">KANBAN VIEW</span>
-        <div className="kanban-grid">
-          {['Planning', 'Active', 'Blocked', 'Procurement'].map((lane) => (
-            <div key={lane} className="lane"><h3>{lane}</h3>{projects.filter((p) => p.status === lane).map((p) => <article key={p.name}><b>{p.name}</b><span>{p.owner} · {p.completion}%</span></article>)}</div>
-          ))}
+    <section id="projects" className="module project-tracker-module public-project-gate">
+      <section className="panel">
+        <div className="panel-head">
+          <div><span className="eyebrow">PROJECT TRACKER</span><h2>Withheld until source-backed</h2></div>
+          <span className="terminal-badge gold">PUBLIC GATE</span>
+        </div>
+        <p className="source-note">The public dashboard does not display unsupported project names, budgets, completion percentages, or owner rows. This lane will reopen when projects are parsed from agendas, minutes, budgets, contracts, grants, or official staff updates.</p>
+        <div className="source-gate-grid">
+          {lanes.map((lane) => <article key={lane.label}><b>{lane.label}</b><span>{lane.detail}</span></article>)}
         </div>
       </section>
     </section>
@@ -2286,7 +2922,7 @@ function UtilityRateReferencePanel() {
       <div className="panel-head">
         <div>
           <span className="eyebrow">UTILITY RATE / WATER REFERENCES</span>
-          <h2>Official city pages now separate source links from operating guesses</h2>
+          <h2>Official city pages now separate source links from unsupported assumptions</h2>
         </div>
         <span className="terminal-badge gold">REFERENCE INDEX</span>
       </div>
@@ -2650,7 +3286,7 @@ function PublicSafetySourcePanel() {
       <div className="panel-head">
         <div>
           <span className="eyebrow">PUBLIC SAFETY SOURCE ROUTING</span>
-          <h2>Crime and response cards stay synthetic until agency-level aggregates are verified</h2>
+          <h2>Crime and response cards stay source-gated until agency-level aggregates are verified</h2>
         </div>
         <span className="terminal-badge gold">NO LIVE DISPATCH</span>
       </div>
@@ -2681,7 +3317,7 @@ function OperationsConfidenceStrip() {
     {
       label: 'Health cards',
       status: 'Synthetic scores',
-      detail: 'Infrastructure, housing, and response metrics are presentation placeholders until official exports exist.',
+      detail: 'Infrastructure, housing, and response metrics are source pending until official exports exist.',
       tone: 'watch'
     },
     {
@@ -2705,7 +3341,7 @@ function OperationsConfidenceStrip() {
     {
       label: 'Safety sources',
       status: `${safetySources} routes indexed`,
-      detail: 'Crime, E-911, fire, and crash data paths are separated from synthetic public-safety counts.',
+      detail: 'Crime, E-911, fire, and crash data paths are separated from unpublished public-safety counts.',
       tone: 'neutral'
     },
     {
@@ -2768,7 +3404,7 @@ function PublicWorksServiceRoutePanel() {
       <div className="panel-head">
         <div>
           <span className="eyebrow">OFFICIAL OPERATIONS ROUTES</span>
-          <h2>Public service pages now sit above synthetic system-health cards</h2>
+          <h2>Public service pages now sit above source pending system-health lanes</h2>
         </div>
         <span className="terminal-badge gold">CITY ROUTE INDEX</span>
       </div>
@@ -2781,7 +3417,7 @@ function PublicWorksServiceRoutePanel() {
         </article>
         <div>
           <h3>What this fixes in the operations lane</h3>
-          <p>Before the platform shows infrastructure, safety, streets, drainage, sanitation, or utility health as operating scores, this panel gives the page a visible official-route spine and makes clear what records are still missing.</p>
+          <p>Before the platform shows infrastructure, safety, streets, drainage, sanitation, or utility health as public metrics, this panel gives the page a visible official-route spine and makes clear what records are still missing.</p>
           <p>{publicWorksServiceSeed.posture}</p>
         </div>
       </div>
@@ -3685,19 +4321,18 @@ function InfrastructureSafetyHousing() {
       <OperationsConfidenceStrip />
       <PublicWorksServiceRoutePanel />
       <ParksFacilitiesPanel />
-      <div className="three-stack">
-        <section className="panel">
-          <div className="panel-head"><div><span className="eyebrow">INFRASTRUCTURE</span><h2>System health</h2></div><span className="terminal-badge">SYNTHETIC</span></div>
-          {infrastructure.map((item) => <div key={item.system} className="ops-row"><b>{item.system}</b><ScoreBar score={item.health} /><span>{item.risk}</span><em>{item.next}</em></div>)}
+      <div className="three-stack source pending-stack">
+        <section className="panel source pending-card">
+          <div className="panel-head"><div><span className="eyebrow">INFRASTRUCTURE</span><h2>Public source path only</h2></div><span className="terminal-badge gold">SOURCE PENDING</span></div>
+          <p className="source-note">No infrastructure health scores are displayed publicly until tied to adopted capital plans, asset inventories, work orders, compliance records, or official reports.</p>
         </section>
-        <section className="panel">
-          <div className="panel-head"><div><span className="eyebrow">PUBLIC SAFETY</span><h2>Incidents / response / trends</h2></div><span className="terminal-badge">NEEDS AGGREGATE</span></div>
-          <div className="safety-grid">{safety.map((item) => <article key={item.metric} className={`safety-card ${item.severity}`}><span>{item.metric}</span><b>{item.value}</b><em>{item.trend}</em></article>)}</div>
-          <p className="source-note">Displayed public-safety figures are demo placeholders until official aggregate incident or response-time data is released or obtained through a records process.</p>
+        <section className="panel source pending-card">
+          <div className="panel-head"><div><span className="eyebrow">PUBLIC SAFETY</span><h2>Aggregate records required</h2></div><span className="terminal-badge gold">SOURCE PENDING</span></div>
+          <p className="source-note">No incident counts, response times, crime trends, or corridor safety claims are displayed until official aggregate data is released or obtained through a lawful records process.</p>
         </section>
-        <section className="panel">
-          <div className="panel-head"><div><span className="eyebrow">HOUSING & DEVELOPMENT</span><h2>Development heat map</h2></div><span className="terminal-badge">SYNTHETIC</span></div>
-          {housing.map((zone) => <div key={zone.zone} className="heat-row"><b>{zone.zone}</b><div className="heat"><span style={{ width: `${zone.heat}%` }} /></div><em>{zone.note}</em></div>)}
+        <section className="panel source pending-card">
+          <div className="panel-head"><div><span className="eyebrow">HOUSING & DEVELOPMENT</span><h2>Permit and parcel evidence first</h2></div><span className="terminal-badge gold">SOURCE PENDING</span></div>
+          <p className="source-note">No development heat scores are displayed publicly until housing, permit, zoning, parcel, and project records are source-labeled and reconciled.</p>
         </section>
       </div>
       <TransportationProjectSourcePanel />
@@ -3762,7 +4397,7 @@ function Briefing() {
     {
       status: 'Verified baseline',
       title: `${metricById['waynesboro-population']?.displayValue || 'N/A'} residents · ${metricById['waynesboro-median-income']?.displayValue || 'N/A'} median income`,
-      note: 'Use Data Commons as the opening baseline, then compare against county/state context before making operating claims.',
+      note: 'Use Data Commons as the opening baseline, then compare against county/state context before making public claims.',
       action: 'Ask staff to validate whether local service demand, housing, and budget assumptions match the baseline.'
     },
     {
@@ -3778,9 +4413,9 @@ function Briefing() {
       action: 'Pair with income distribution, housing burden, vehicle access, food access, health access, and source-labeled service locations before any recommendation is shown.'
     },
     {
-      status: 'Still synthetic',
+      status: 'Source pending',
       title: 'Permits, parcels, crime, occupancy, and blight scores remain hypotheses',
-      note: 'The briefing layer may discuss these as questions and operating priorities, not as municipal facts.',
+      note: 'The briefing layer may discuss these as civic questions and follow-up priorities, not as municipal facts.',
       action: 'Prioritize parcel/export permission, permit history, public-safety aggregates, and downtown inventory QA.'
     }
   ];
@@ -3805,7 +4440,7 @@ function Briefing() {
       note: `DCA DRI ${regionalDevelopmentSeed.records[0].driId} is a public review seed, not a complete project pipeline.`
     },
     {
-      label: 'Still placeholder',
+      label: 'Source pending',
       confidence: 'Needs source',
       title: 'Crime, permits, downtown occupancy, beautification, and parcel-level claims',
       note: 'Public recommendations must stay framed as hypotheses until these lanes have official exports or public aggregates.'
@@ -3876,7 +4511,7 @@ function Briefing() {
             </article>
           ))}
         </div>
-        <p className="source-note">The briefing should read like civic analysis: verified baseline first, official records second, labeled hypotheses last. No synthetic operating metric should be presented as municipal fact.</p>
+        <p className="source-note">The briefing should read like civic analysis: verified baseline first, official records second, labeled hypotheses last. No source pending metric should be presented as municipal fact.</p>
       </section>
     </section>
   );
@@ -3888,10 +4523,10 @@ function PublicTrustRibbon() {
   const connectorLabel = `${liveConnectors} public connector${liveConnectors === 1 ? '' : 's'} active`;
 
   return (
-    <section className="trust-ribbon" aria-label="public demo data status">
+    <section className="trust-ribbon" aria-label="public preview data status">
       <article>
         <span>Demo posture</span>
-        <b>Verified baseline + labeled placeholders</b>
+        <b>Verified baseline + labeled source pending lanes</b>
         <small>No municipal claim is promoted until it has source, geography, and timestamp.</small>
       </article>
       <article>
@@ -3910,8 +4545,8 @@ function PublicTrustRibbon() {
 
 function MeetingReadinessStrip() {
   const checks = [
-    { label: 'First-screen posture', value: 'Public demo', detail: 'White/silver civic surface, forest-green identity, no affiliation or trading language.' },
-    { label: 'Claims discipline', value: 'Source-gated', detail: 'Verified baseline first; synthetic operating scores stay visibly labeled.' },
+    { label: 'First-screen posture', value: 'Public preview', detail: 'White/silver civic surface, forest-green identity, no affiliation or trading language.' },
+    { label: 'Claims discipline', value: 'Source-gated', detail: 'Verified baseline first; scores stay withheld until sourced.' },
     { label: 'Presentation packet', value: 'Print aware', detail: 'Dense panels remain readable for PDF/meeting screenshots and public review.' },
     { label: 'Next evidence lane', value: 'QCEW payroll', detail: `${qcewPayrollSeed.totalCovered.employment.toLocaleString()} Burke County covered jobs are seeded from BLS QCEW; keep sector rows disclosure-aware and county-scoped before workforce recommendations.` }
   ];
@@ -3926,6 +4561,34 @@ function MeetingReadinessStrip() {
         </article>
       ))}
     </section>
+  );
+}
+
+function WeatherTicker() {
+  const periods = weatherForecastSnapshot.periods || [];
+  const visiblePeriods = periods.slice(0, 5);
+  const generatedDate = weatherForecastSnapshot.generatedAt
+    ? new Date(weatherForecastSnapshot.generatedAt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+    : 'cached';
+
+  return (
+    <aside className="weather-ticker" aria-label="Waynesboro National Weather Service forecast ticker">
+      <div className="weather-ticker-head">
+        <span>NWS Weather Tape</span>
+        <a href={weatherForecastSnapshot.sourceUrl} target="_blank" rel="noreferrer">Updated {generatedDate}</a>
+      </div>
+      <div className="weather-ticker-track">
+        {visiblePeriods.map((period) => (
+          <article key={`${period.number}-${period.name}`}>
+            <b>{period.name}</b>
+            <strong>{period.temperature}°{period.temperatureUnit}</strong>
+            <span>{period.shortForecast}</span>
+            <small>{period.windDirection} {period.windSpeed}{period.probabilityOfPrecipitation == null ? '' : ` · Rain ${period.probabilityOfPrecipitation}%`}</small>
+          </article>
+        ))}
+      </div>
+      <p>Public forecast snapshot only — not emergency dispatch, outage, or alert telemetry.</p>
+    </aside>
   );
 }
 
@@ -3947,15 +4610,14 @@ function CivicModeCard({ activePage }) {
       ];
 
   return (
-    <aside className="civic-mode-card" aria-label="public demo claim discipline">
+    <aside className="civic-mode-card" aria-label="public preview claim discipline">
       <div className="civic-mode-head">
-        <b>{activePage === 'executive' ? 'At a glance' : 'Civic demo mode'}</b>
+        <b>{activePage === 'executive' ? 'At a glance' : 'Civic preview mode'}</b>
         <span>{claimsLabel}</span>
       </div>
       <div className="civic-mode-metrics">
         {metrics.map((item) => <span key={item.label}><b>{item.value}</b><small>{item.label}</small></span>)}
       </div>
-      {activePage !== 'executive' && <p>Baselines and placeholders are labeled. Anything without source, geography, and timestamp stays off the headline dashboard.</p>}
     </aside>
   );
 }
@@ -3978,7 +4640,7 @@ function CivicBriefingStrip() {
       detail: 'ACS survey context only; not eligibility, benefits files, or municipal service workload.'
     },
     {
-      label: 'Operating takeaway',
+      label: 'Civic takeaway',
       value: 'Housing + workforce next',
       detail: 'The first screen points to affordability, age mix, housing stock, and county labor context before policy claims.'
     }
@@ -4005,9 +4667,9 @@ function CivicBriefingStrip() {
 
 const pageMeta = {
   executive: {
-    eyebrow: 'WAYNESBORO, GEORGIA · EXECUTIVE HOME',
-    title: 'Waynesboro municipal operating picture.',
-    description: 'Verified baseline facts and the most important public-context takeaways.'
+    eyebrow: 'WAYNESBORO, GEORGIA · EXECUTIVE OVERVIEW',
+    title: 'Waynesboro Executive Overview.',
+    description: 'Meetings, forums, packets, decisions, and the next civic questions to watch — with baseline facts underneath.'
   },
   sources: {
     eyebrow: 'WAYNESBORO, GEORGIA · SOURCE CONFIDENCE',
@@ -4017,12 +4679,12 @@ const pageMeta = {
   economic: {
     eyebrow: 'WAYNESBORO, GEORGIA · ECONOMIC DEVELOPMENT',
     title: 'Economic development and workforce picture.',
-    description: 'Development pipeline placeholders, business source routes, workforce context, commute data, and revenue-source routing.'
+    description: 'Business source routes, workforce context, commute data, public revenue-source routing, and source-gated development evidence.'
   },
   downtown: {
     eyebrow: 'WAYNESBORO, GEORGIA · DOWNTOWN + PROJECTS',
     title: 'Downtown, beautification, and project control.',
-    description: 'Map/source stack, storefront intelligence, beautification score, and project tracker grouped as a physical-city workbench.'
+    description: 'Map/source stack, parcel evidence, beautification context, and source-gated project tracking grouped as a physical-city workbench.'
   },
   operations: {
     eyebrow: 'WAYNESBORO, GEORGIA · OPERATIONS',
@@ -4032,7 +4694,7 @@ const pageMeta = {
   briefing: {
     eyebrow: 'WAYNESBORO, GEORGIA · BRIEFING',
     title: 'Source-gated civic briefing.',
-    description: 'Clear recommendations and open questions separated from evidence, placeholders, and source inventory.'
+    description: 'Clear recommendations and open questions separated from evidence, source pending lanes, and source inventory.'
   }
 };
 
@@ -4051,10 +4713,10 @@ const nav = [
 function PageContent({ page }) {
   if (page === 'sources') return <SourceReadiness />;
   if (page === 'economic') return <EconomicDevelopment />;
-  if (page === 'downtown') return <><DowntownCommandCenter /><BeautificationIndex /><ProjectTracker /></>;
+  if (page === 'downtown') return <><BeautificationIndex /><DowntownCommandCenter /></>;
   if (page === 'operations') return <InfrastructureSafetyHousing />;
   if (page === 'briefing' || page === 'council') return <Briefing />;
-  return <><CivicBriefingStrip /><ExecutiveDashboard /></>;
+  return <><CivicPlaybookPanel /><ExecutiveDashboard /></>;
 }
 
 function PageBriefStrip({ page }) {
@@ -4080,9 +4742,9 @@ function PageBriefStrip({ page }) {
       { label: 'Permits', value: `${censusBuildingPermitsSeed.yearToDate.totalUnits} county units`, detail: 'Census BPS residential county YTD seed; not city permit history or project approvals.' }
     ],
     downtown: [
-      { label: 'Map posture', value: 'Schematic', detail: 'OSM/TIGER seeds support orientation only.' },
-      { label: 'Projects', value: `${projects.length} demo rows`, detail: 'Tracker remains synthetic until agendas/docs are parsed.' },
-      { label: 'Storefronts', value: `${downtownProperties.length} mock assets`, detail: 'Needs parcel and field-verification layer.' }
+      { label: 'Map posture', value: `${downtownParcelSeed.summary.geocodedMapParcels || 0} geocoded rows`, detail: `${downtownParcelSeed.summary.unmatchedMapParcels || 0} unmatched map rows use fallback interpolation; still not parcel boundaries.` },
+      { label: 'Projects', value: 'Source-gated', detail: 'No project rows shown until agendas, budgets, contracts, or staff updates are attached.' },
+      { label: 'Downtown cross', value: `${downtownParcelSeed.summary.mapParcels} qPublic rows`, detail: `${downtownParcelSeed.summary.uniqueParcels} unique parcels · ${downtownParcelSeed.summary.maskedIndividualOwnerCount} owners masked · still partial.` }
     ],
     operations: [
       { label: 'Telemetry guardrail', value: 'Reference layer', detail: 'No live dispatch, utility, or emergency claims.' },
@@ -4105,15 +4767,14 @@ function PageBriefStrip({ page }) {
       { label: 'Home values', value: homeValueDistributionSeed.brackets.find((item) => item.id === '200k-299k')?.displayShare || 'ACS seeded', detail: 'B25075 value distribution; not assessments, sales, or tax records.' }
     ],
     briefing: [
-      { label: 'Briefing mode', value: 'Source-gated', detail: 'The briefing separates evidence from placeholder judgment.' },
+      { label: 'Briefing mode', value: 'Source-gated', detail: 'The briefing separates evidence from source pending judgment.' },
       { label: 'Safe brief', value: 'Caveated', detail: 'No real municipal claim without source label.' },
       { label: 'Next upgrade', value: 'Citation cards', detail: 'Manual document review should feed decisions.' }
     ]
   };
 
   const activeBriefs = briefs[page] || briefs.executive;
-  const primaryBriefs = activeBriefs.slice(0, 6);
-  const overflowBriefs = activeBriefs.slice(6);
+  const primaryBriefs = activeBriefs.slice(0, 3);
 
   return (
     <section className="page-brief-strip" aria-label="active page briefing summary">
@@ -4124,20 +4785,6 @@ function PageBriefStrip({ page }) {
           <small>{item.detail}</small>
         </article>
       ))}
-      {overflowBriefs.length > 0 && (
-        <details className="brief-overflow-details">
-          <summary>{overflowBriefs.length} more source lenses</summary>
-          <div>
-            {overflowBriefs.map((item) => (
-              <article key={`${page}-overflow-${item.label}`}>
-                <span>{item.label}</span>
-                <b>{item.value}</b>
-                <small>{item.detail}</small>
-              </article>
-            ))}
-          </div>
-        </details>
-      )}
     </section>
   );
 }
@@ -4150,7 +4797,7 @@ export default function WaynesboroTerminal({ page = 'executive' }) {
       <aside className="sidebar">
         <div className="brand-mark"><span>W</span><div><b>Waynesboro OS</b><small>Municipal Intelligence Terminal</small></div></div>
         <nav>{nav.map((item) => <a key={item.id} href={item.href} className={activePage === item.id ? 'active' : ''}>{item.label}</a>)}</nav>
-        <div className="sidebar-note"><b>Public demo</b><span>Verified facts first; synthetic mock data or source-route material stays labeled and lower in the hierarchy.</span></div>
+        <div className="sidebar-note"><b>Public preview</b><span>Verified facts first; source pending material stays labeled and out of public fact cards.</span></div>
       </aside>
       <section className="workspace paged-workspace">
         <header className="topbar">
@@ -4159,8 +4806,13 @@ export default function WaynesboroTerminal({ page = 'executive' }) {
             <h1>{meta.title}</h1>
             <p className="public-disclaimer">{meta.description}</p>
           </div>
-          <CivicModeCard activePage={activePage} />
+          <div className="topbar-side">
+            <CivicModeCard activePage={activePage} />
+          </div>
         </header>
+        <section className="weather-tape-bar" aria-label="source-backed weather tape before page navigation">
+          <WeatherTicker />
+        </section>
         <section className="page-switcher" aria-label="Waynesboro OS page groups">
           {nav.map((item) => <a key={item.id} href={item.href} className={activePage === item.id ? 'active' : ''}>{item.label}</a>)}
         </section>

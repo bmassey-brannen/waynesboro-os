@@ -54,7 +54,7 @@ export const usgsHydrologySeed = {
   ],
   nextActions: [
     'Test USGS instantaneous-values endpoint for the Brier Creek and Savannah River site numbers before showing any current-stage or flow cards.',
-    'Cross-check gauges against city/county storm-drainage and emergency-management source routes before The Council cites drainage or flood context.',
+    'Cross-check gauges against city/county storm-drainage and emergency-management source routes before the public dashboard cites drainage or flood context.',
     'Keep the panel as a source inventory until observation timestamps, units, and station availability flags are cached.'
   ],
   caveat: 'USGS NWIS site inventory is a public hydrology source route only. It does not prove flooding, drainage performance, water quality, utility service, or emergency conditions for Waynesboro.'

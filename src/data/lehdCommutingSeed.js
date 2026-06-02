@@ -62,7 +62,7 @@ export const lehdCommutingSeed = {
   nextActions: [
     'Download the Georgia crosswalk first and verify block-to-place coverage for GEOID 1380984 before any city job count appears in KPI cards.',
     'Aggregate WAC/RAC/OD only into public, non-identifying counts; keep block-level rows out of presentation panels unless explicitly needed for maps.',
-    'Compare LEHD job counts against Census CBP county context and local business-license records before The Council cites workforce or commuter-flow conclusions.'
+    'Compare LEHD job counts against Census CBP county context and local business-license records before the public dashboard cites workforce or commuter-flow conclusions.'
   ],
   caveat: 'LEHD/LODES is a public workforce/commuting source route, not a live employer list, payroll record, business license file, or official City of Waynesboro economic-development claim.'
 };

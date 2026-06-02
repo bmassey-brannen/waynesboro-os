@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 """Public-release audit for Waynesboro OS.
 
-Checks tracked source files and built dist/ output for obvious secrets and public-hosting hazards.
+Checks tracked and untracked source/release files plus built dist/ output for
+obvious secrets, risky client rendering, and blocked public-release terms.
 This is a heuristic gate, not a substitute for human review.
 """
 from __future__ import annotations
 
-import os
 import re
 import subprocess
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BINARY_SUFFIXES = {
     '.png', '.ico', '.jpg', '.jpeg', '.webp', '.gif', '.pdf', '.woff', '.woff2', '.ttf', '.eot', '.mp4', '.zip', '.gz'
 }
+SCAN_ROOTS = ('src/', 'public/', 'scripts/', '.github/', 'README.md', 'PUBLICATION_REVIEW.md', 'package.json')
 SECRET_PATTERNS = [
     ('hardcoded secret assignment', re.compile(r'(?i)(api[_-]?key|secret|token|password|passwd|credential|private[_-]?key)\s*[:=]\s*["\']?([A-Za-z0-9_\-./+=]{16,})')),
     ('bearer token', re.compile(r'(?i)bearer\s+[A-Za-z0-9._\-]{24,}')),
@@ -28,6 +28,11 @@ DANGEROUS_CLIENT_PATTERNS = [
     ('raw innerHTML assignment', re.compile(r'\.innerHTML\s*=')),
     ('eval/new Function', re.compile(r'\beval\s*\(|new\s+Function\s*\(')),
 ]
+PUBLIC_RISK_PATTERNS = [
+    ('private/operator branding', re.compile(r'(?i)\b(King Beemo|Small Town Capital|Command Center|Odysseus)\b')),
+    ('investigation/person-specific term', re.compile(r'(?i)\b(Abebe|charity integrity)\b')),
+    ('unsupported-data posture term', re.compile(r'(?i)(source-pending|invented project|private/internal)')),
+]
 
 
 def run(cmd: list[str]) -> str:
@@ -36,6 +41,10 @@ def run(cmd: list[str]) -> str:
 
 def tracked_files() -> list[Path]:
     return [ROOT / line for line in run(['git', 'ls-files']).splitlines() if line.strip()]
+
+
+def untracked_files() -> list[Path]:
+    return [ROOT / line for line in run(['git', 'ls-files', '--others', '--exclude-standard']).splitlines() if line.strip()]
 
 
 def dist_files() -> list[Path]:
@@ -60,7 +69,11 @@ def read_text(path: Path) -> str | None:
 
 def scan_patterns(paths: list[Path], patterns: list[tuple[str, re.Pattern[str]]]) -> list[str]:
     findings: list[str] = []
+    seen: set[Path] = set()
     for path in paths:
+        if path in seen or not path.exists():
+            continue
+        seen.add(path)
         text = read_text(path)
         if text is None:
             continue
@@ -79,15 +92,30 @@ def scan_patterns(paths: list[Path], patterns: list[tuple[str, re.Pattern[str]]]
     return findings
 
 
+def public_release_candidates(tracked: list[Path], untracked: list[Path]) -> list[Path]:
+    candidates = []
+    for path in tracked + untracked:
+        rel = str(path.relative_to(ROOT))
+        if any(rel.startswith(prefix) or rel == prefix for prefix in SCAN_ROOTS):
+            candidates.append(path)
+    return candidates
+
+
 def main() -> int:
     tracked = tracked_files()
+    untracked = untracked_files()
+    source_candidates = public_release_candidates(tracked, untracked)
+    built = dist_files()
     env_tracked = [str(p.relative_to(ROOT)) for p in tracked if p.name.startswith('.env') and p.name != '.env.example']
-    secret_findings = scan_patterns(tracked + dist_files(), SECRET_PATTERNS)
-    client_findings = scan_patterns([p for p in tracked if str(p.relative_to(ROOT)).startswith('src/')], DANGEROUS_CLIENT_PATTERNS)
+    secret_findings = scan_patterns(source_candidates + built, SECRET_PATTERNS)
+    client_findings = scan_patterns([p for p in source_candidates if str(p.relative_to(ROOT)).startswith('src/')], DANGEROUS_CLIENT_PATTERNS)
+    public_risk_paths = [p for p in source_candidates + built if str(p.relative_to(ROOT)) != 'scripts/publication-audit.py']
+    public_risk_findings = scan_patterns(public_risk_paths, PUBLIC_RISK_PATTERNS)
 
     print('Waynesboro OS public-release audit')
     print(f'- tracked files checked: {len(tracked)}')
-    print(f'- dist files checked: {len(dist_files())}')
+    print(f'- untracked source/release files checked: {len(untracked)}')
+    print(f'- dist files checked: {len(built)}')
 
     failed = False
     if env_tracked:
@@ -98,21 +126,27 @@ def main() -> int:
 
     if secret_findings:
         failed = True
-        print('\nFAIL: possible secrets in tracked/dist files:')
-        for item in secret_findings[:50]:
+        print('\nFAIL: possible secrets in source/dist files:')
+        for item in secret_findings[:80]:
             print(f'  - {item}')
 
     if client_findings:
         failed = True
         print('\nFAIL: risky client rendering/execution patterns:')
-        for item in client_findings[:50]:
+        for item in client_findings[:80]:
+            print(f'  - {item}')
+
+    if public_risk_findings:
+        failed = True
+        print('\nFAIL: public-release risk terms in source/dist files:')
+        for item in public_risk_findings[:80]:
             print(f'  - {item}')
 
     if failed:
         print('\nAudit failed. Fix findings before public push.')
         return 1
 
-    print('\nPASS: no tracked env files, obvious secrets, or risky client rendering patterns found.')
+    print('\nPASS: no tracked env files, obvious secrets, risky client rendering patterns, or blocked public-risk terms found.')
     return 0
 
 

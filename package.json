@@ -16,7 +16,9 @@
     "write:mapbox-readiness": "node scripts/write-mapbox-readiness.js",
     "refresh:public-data": "npm run fetch:datacommons && npm run fetch:bls && npm run fetch:socrata && npm run write:mapbox-readiness",
     "fetch:docs": "node scripts/fetch-official-documents.js",
-    "audit:public": "python3 scripts/publication-audit.py"
+    "import:qpublic": "python3 scripts/import-qpublic-parcels.py",
+    "audit:public": "python3 scripts/publication-audit.py",
+    "test:civic-ranking": "node src/lib/civicSourceRanking.test.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.6",

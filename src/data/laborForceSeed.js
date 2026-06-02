@@ -4,8 +4,8 @@
 export const laborForceSeed = {
   "sourceName": "U.S. Bureau of Labor Statistics LAUS Public API",
   "sourceUrl": "https://api.bls.gov/publicAPI/v2/timeseries/data/",
-  "accessMethod": "Server-side BLS API connector using BLS_API_KEY from .env.local; key is not written to this public snapshot.",
-  "credentialStatus": "local_key_configured",
+  "accessMethod": "Public BLS LAUS snapshot generated server-side; this site publishes source labels, not connector access details.",
+  "snapshotStatus": "configured-public-snapshot",
   "geography": "Burke County, Georgia (LAUS county area CN13033), not a Waynesboro city labor-force series.",
   "retrievedAt": "2026-06-01T12:41:19.356Z",
   "latestPeriod": "March 2026",

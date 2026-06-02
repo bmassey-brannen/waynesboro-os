@@ -107,7 +107,7 @@ export const housingMonthlyCostsSeed = {
     }
   ],
   caveat: 'ACS B25064/B25088 monthly housing-cost estimates are survey planning context only. They are not rent rolls, lease records, mortgage-servicing records, property-tax bills, utility hardship records, household eligibility data, or municipal housing telemetry.',
-  posture: 'Useful beside cost burden, tenure, home values, utility rates, LIHTC/DCA, and parcel/tax records to frame affordability questions before The Council makes any recommendation.',
+  posture: 'Useful beside cost burden, tenure, home values, utility rates, LIHTC/DCA, and parcel/tax records to frame affordability questions before the public dashboard supports any recommendation.',
   nextActions: [
     'Pair monthly cost medians with ACS cost-burden and income-distribution context before describing affordability pressure.',
     'Cross-check rent and owner-cost context against qPublic parcels, tax digest, local utility/rate documents, DCA/LIHTC records, and any official housing-program aggregates.',

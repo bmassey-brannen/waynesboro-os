@@ -23,3 +23,8 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# local investigation/source-cache artifacts not meant for public release
+screenshots/
+data/sources/
+research/waynesboro-charity-integrity-*

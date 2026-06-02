@@ -4,7 +4,7 @@ export const sourceRegistry = [
     url: 'https://docs.datacommons.org/api/rest/v2/',
     dataType: 'Normalized public demographic, housing, income, labor, and place-identifier observations',
     geography: 'Waynesboro city, Burke County, Georgia',
-    accessMethod: 'Server-side API connector using .env.local credentials; never expose keys in browser code.',
+    accessMethod: 'Public snapshot generated server-side; this site publishes source labels, not connector access details.',
     cadence: 'Depends on upstream source/facet; snapshot records observation dates and provenance.',
     difficulty: 'Low',
     status: 'Live connector active',
@@ -547,7 +547,7 @@ export const sourceRegistry = [
     cadence: 'As posted by city',
     difficulty: 'Low',
     status: 'Source hub identified',
-    notes: 'Good candidate to connect the downtown command center to official redevelopment and board context before parcel-level data is available.'
+    notes: 'Good candidate to connect the downtown public dashboard to official redevelopment and board context before parcel-level data is available.'
   },
   {
     name: 'City of Waynesboro Real Estate Locator / Downtown business routes',
@@ -1359,7 +1359,7 @@ export const sourcePriorities = [
     lane: 'Ordinances / policy',
     target: 'Build a citation-only ordinance reference panel',
     source: 'City of Waynesboro Code of Ordinances / Municode Library',
-    value: 'Gives The Council and code/blight modules an official regulatory baseline without inventing policy claims.',
+    value: 'Gives public code/blight modules an official regulatory baseline without inventing policy claims.',
     nextStep: 'Create a curated index of relevant ordinance sections after manual verification; cite Municode URLs and retrieval dates.',
     difficulty: 'Medium'
   },
@@ -1416,7 +1416,7 @@ export const sourcePriorities = [
     target: 'Cross-check ACS structure-age context before rehab or blight recommendations',
     source: 'Census Reporter ACS B25034 year structure built table',
     value: 'Adds a public city-level planning signal for older housing, weatherization, and parcel-export prioritization without making parcel condition or code-enforcement claims.',
-    nextStep: 'Pair pre-1980 housing context with qPublic/parcel exports, code-enforcement aggregates, LIHTC/DCA records, and permit history before The Council recommends rehabilitation priorities.',
+    nextStep: 'Pair pre-1980 housing context with qPublic/parcel exports, code-enforcement aggregates, LIHTC/DCA records, and permit history before the public dashboard supports rehabilitation priorities.',
     difficulty: 'Low'
   },
   {

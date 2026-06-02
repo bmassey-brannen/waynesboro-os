@@ -92,6 +92,6 @@ export const internetSubscriptionSeed = {
   nextActions: [
     'Cross-check ACS household subscription estimates against FCC BDC availability exports before any broadband-coverage conclusion.',
     'Keep margins of error visible when briefing digital inclusion, remote-work readiness, or grant context.',
-    'Pair with school, library, and workforce-program sources before The Council recommends connectivity interventions.'
+    'Pair with school, library, and workforce-program sources before the public dashboard supports connectivity interventions.'
   ]
 };

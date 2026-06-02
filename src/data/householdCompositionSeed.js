@@ -72,7 +72,7 @@ export const householdCompositionSeed = {
     { geography: 'Georgia', familyShare: '66.2%', livingAloneShare: '27.7%', femaleNoSpouseFamilyShare: '14.9%', totalHouseholds: 4074366 }
   ],
   nextActions: [
-    'Pair with ACS age, disability, vehicle access, internet access, school-district, and recreation/service-location sources before The Council makes service-demand recommendations.',
+    'Pair with ACS age, disability, vehicle access, internet access, school-district, and recreation/service-location sources before the public dashboard supports service-demand recommendations.',
     'Propagate margins of error for derived comparison shares before public narrative claims.',
     'Keep household composition separate from benefits eligibility, case management, homelessness, school enrollment, and household-level records unless official aggregate sources are added.'
   ]

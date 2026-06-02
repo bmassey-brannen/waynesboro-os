@@ -88,7 +88,7 @@ export const raceEthnicitySeed = {
   caveat: 'ACS B03002 is survey demographic context. It is not voter data, program enrollment, household-level identity records, policing data, eligibility data, or a municipal service-demand measure. Small categories can have margins of error larger than estimates; keep MOE and source labels visible before using in public narratives.',
   nextSources: [
     'Pair with ACS C16001 language access before public-notice or translation recommendations.',
-    'Pair with meeting attendance, service-location maps, recreation/library program data, and official outreach records before The Council recommends interventions.',
+    'Pair with meeting attendance, service-location maps, recreation/library program data, and official outreach records before the public dashboard supports interventions.',
     'Cross-check Census Reporter values against official ACS API/Data Commons before using in public presentation packets.'
   ]
 };

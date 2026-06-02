@@ -8,11 +8,11 @@ export const healthEquitySeed = {
   "referenceUrl": "https://www.cdc.gov/places/measure-definitions/index.html",
   "geography": "Burke County census tracts including Waynesboro-area tracts; not a citywide Waynesboro aggregate",
   "retrievedAt": "2026-06-01T12:47:19.061Z",
-  "accessMethod": "Server-side Socrata connector using HTTP Basic Auth with the local API key ID/secret pair from .env.local; credentials are not written to this public snapshot.",
-  "credentialStatus": {
-    "authStatus": "local_api_key_basic_auth_configured",
-    "apiKeyIdStatus": "local_key_id_configured",
-    "apiSecretStatus": "local_secret_configured"
+  "accessMethod": "Public CDC PLACES snapshot generated server-side; this site publishes source labels, not connector access details.",
+  "snapshotStatus": {
+    "authStatus": "configured-public-snapshot",
+    "apiKeyIdStatus": "configured-public-snapshot",
+    "apiSecretStatus": "configured-public-snapshot"
   },
   "observedShape": {
     "datasetName": "PLACES: Local Data for Better Health, Census Tract Data, 2025 release",

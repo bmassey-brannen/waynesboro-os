@@ -44,7 +44,7 @@ export const qcewPayrollSeed = {
   nextActions: [
     'Join BLS QCEW area rows to NAICS titles and disclosure flags before any full sector ranking is shown.',
     'Use QCEW as Burke County payroll context only; pair with city business licenses, DCA project records, and employer/source documents before Waynesboro-specific claims.',
-    'Add prior-year annual pulls after the first parser so The Council can distinguish revisions, nondisclosure, and real local job changes.'
+    'Add prior-year annual pulls after the first parser so the public dashboard can distinguish revisions, nondisclosure, and real local job changes.'
   ],
   caveat: 'QCEW is a covered-employment and wage source for Burke County. Some sector rows are suppressed or not displayed because of disclosure rules, and the seed does not identify individual employers, city jobs, business licenses, vacancies, or project impacts.'
 };

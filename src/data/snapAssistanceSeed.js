@@ -52,7 +52,7 @@ export const snapAssistanceSeed = {
   caveat: 'Treat ACS B22001 as household survey context for food-security and benefit-access planning only. Do not present it as program enrollment administration, household eligibility, school-meal participation, nonprofit demand, agency caseload, or municipal service telemetry.',
   nextActions: [
     'Pair B22001 with USDA Food Access Research Atlas tract extracts before any grocery-access or nutrition-access recommendation.',
-    'Cross-check against poverty status, household income distribution, vehicle access, and local service-location maps before The Council suggests interventions.',
+    'Cross-check against poverty status, household income distribution, vehicle access, and local service-location maps before the public dashboard suggests interventions.',
     'If official aggregate benefits, school-meal, pantry, or nonprofit service data is obtained later, keep those records source-labeled and separate from ACS survey estimates.'
   ]
 };

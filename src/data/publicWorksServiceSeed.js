@@ -99,6 +99,6 @@ export const publicWorksServiceSeed = {
   nextActions: [
     'Manually review each service page for adopted schedules, fees, contacts, forms, and document links before quoting operational rules.',
     'Request or obtain aggregate service records only: monthly work orders, missed pickups, street maintenance requests, drainage complaints, and response-time summaries if public.',
-    'Pair public works route metadata with budgets, capital projects, weather/hydrology context, and GDOT road data before The Council recommends operations priorities.'
+    'Pair public works route metadata with budgets, capital projects, weather/hydrology context, and GDOT road data before the public dashboard supports operations priorities.'
   ]
 };

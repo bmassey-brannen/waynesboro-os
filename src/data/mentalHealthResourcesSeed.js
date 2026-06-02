@@ -7,7 +7,7 @@ export const mentalHealthResourcesSeed = {
   geography: 'Waynesboro, Georgia residents; local, state, and national resource links listed by the city.',
   caveat: 'Source route only. This panel is not a clinical recommendation, provider endorsement, utilization count, emergency dispatch tool, eligibility finding, or measure of local mental-health burden.',
   observedShape: [
-    { label: 'Local resource page', value: 'HTTP 200', detail: 'City-hosted page with mayoral/resource framing and local/national links.' },
+    { label: 'Local resource page', value: 'HTTP 200', detail: 'City-hosted page with community-resource framing and local/national links.' },
     { label: 'Local provider examples', value: 'Address/phone text', detail: 'Page text lists local/regional counseling and treatment resources; manual QA required before structured provider display.' },
     { label: 'Crisis routes', value: '988 / GCAL', detail: 'Links include 988 Georgia, Georgia Crisis and Access Line, and national crisis/help resources.' }
   ],
@@ -39,7 +39,7 @@ export const mentalHealthResourcesSeed = {
   ],
   nextActions: [
     'Manually QA the city page and linked providers before exposing any structured provider names, addresses, or phone numbers.',
-    'Pair with ACS health insurance, CDC PLACES, local clinic/hospital/service-location data, and public-health partners before The Council makes health-access recommendations.',
+    'Pair with ACS health insurance, CDC PLACES, local clinic/hospital/service-location data, and public-health partners before the public dashboard supports health-access recommendations.',
     'Keep crisis links as public reference routes only; never scrape, infer, or display private help-seeking, call, patient, or eligibility data.'
   ]
 };

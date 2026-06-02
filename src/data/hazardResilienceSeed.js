@@ -19,7 +19,7 @@ export const hazardResilienceSeed = {
       url: 'https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/',
       dataType: 'County-level historical severe-weather event CSV files including event type, date, location narrative, injuries, deaths, and property/crop damage fields',
       accessMethod: 'Public NOAA/NCEI bulk CSV/GZIP downloads; use low-volume annual file pulls or manually downloaded extracts filtered to Georgia / Burke County. A 2026 details-file filter now has a cached connector-shape seed in stormEventsSeed.js.',
-      integrationUse: 'Create a source-labeled historical hazard context panel for The Council and public works planning.',
+      integrationUse: 'Create a source-labeled historical hazard context panel for public public works planning.',
       difficulty: 'Medium',
       status: 'Seed connector ready'
     },

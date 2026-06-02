@@ -27,7 +27,7 @@ export const affordableHousingSeed = {
       label: 'Georgia DCA program cross-check',
       url: 'https://dca.georgia.gov/',
       dataType: 'State housing-program authority and LIHTC context route',
-      integrationUse: 'Cross-check state terminology, application-cycle calendars, award records, and compliance context before The Council cites housing-credit policy.'
+      integrationUse: 'Cross-check state terminology, application-cycle calendars, award records, and compliance context before the public dashboard cites housing-credit policy.'
     }
   ],
   normalizedShape: [

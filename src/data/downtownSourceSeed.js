@@ -3,9 +3,16 @@ export const downtownSourceSeed = {
   name: 'Waynesboro downtown public source stack',
   retrievedAt: '2026-06-01T09:05:23Z',
   geography: 'City of Waynesboro downtown / public commercial-property and DDA context',
-  sourceStatus: 'Official routes indexed; operational counts not promoted',
-  caveat: 'This seed is a public source-routing layer only. It does not verify storefront occupancy, ownership, asking price, license status, parcel condition, foot traffic, redevelopment eligibility, or DDA action. Keep the downtown table schematic until parcel, business-directory, agenda/minutes, qPublic/export, or field-verified records are attached.',
+  sourceStatus: 'Official routes indexed; qPublic Liberty Street parcel CSV attached; operational occupancy counts not promoted',
+  caveat: 'This seed combines public downtown source routes with a user-provided Burke County qPublic Liberty Street parcel CSV. Parcel rows support ownership/class/assessment inventory only. They do not verify storefront occupancy, tenant, asking price, license status, parcel condition, foot traffic, redevelopment eligibility, or DDA action. Keep vacancy and tenant claims gated until business-directory, agenda/minutes, field-verification, or other records are attached.',
   routes: [
+    {
+      label: 'Burke County qPublic Liberty Street parcel export',
+      url: 'https://qpublic.schneidercorp.com/',
+      accessMethod: 'User-provided qPublic CSV export loaded as a local source-labeled parcel seed; no automated scraping performed.',
+      observedShape: '150 Liberty Street parcel rows with parcel ID, alternate ID, class, acreage, address, owner text, legal description, and assessed value.',
+      integrationUse: 'Parcel backbone for downtown ownership/assessment analysis; not occupancy, tenant, vacancy, or condition proof.'
+    },
     {
       label: 'Real Estate Locator / Available Downtown Properties route',
       url: 'https://www.waynesboroga.com/realestate.aspx',
@@ -36,9 +43,10 @@ export const downtownSourceSeed = {
     }
   ],
   nextActions: [
+    'Attach qPublic parcel-report URLs or stable parcel identifiers to the loaded Liberty Street inventory where permitted.',
     'Manually review latest DDA agendas/minutes before summarizing board action.',
     'Decide whether official Business Directory rows can be cached with source timestamps.',
     'Keep Real Estate Locator null-state visible but do not treat it as a vacancy count.',
-    'Pair downtown source routes with qPublic/export permission before parcel ownership claims.'
+    'Join parcel rows to business-license, field-verification, or agenda/minute records before displaying occupancy or tenant claims.'
   ]
 };
