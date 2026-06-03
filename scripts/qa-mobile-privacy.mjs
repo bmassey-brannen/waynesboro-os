@@ -12,10 +12,15 @@ const findings = [];
 async function inspectPage(path, viewport, screenshotName) {
   const page = await browser.newPage({ viewport });
   const errors = [];
+  const networkErrors = [];
   page.on('console', (msg) => {
-    if (msg.type() === 'error') errors.push(msg.text());
+    const text = msg.text();
+    if (msg.type() === 'error' && !text.startsWith('Failed to load resource:')) errors.push(text);
   });
   page.on('pageerror', (err) => errors.push(err.message));
+  page.on('response', (response) => {
+    if (response.status() >= 400) networkErrors.push(`${response.status()} ${response.url()}`);
+  });
   await page.goto(`${baseUrl}${path}`, { waitUntil: 'networkidle' });
   await page.screenshot({ path: screenshotName, fullPage: true });
   const metrics = await page.evaluate(() => ({
@@ -50,7 +55,7 @@ async function inspectPage(path, viewport, screenshotName) {
       };
     })(),
   }));
-  findings.push({ path, viewport, screenshotName, errors, metrics });
+  findings.push({ path, viewport, screenshotName, errors, networkErrors, metrics });
   await page.close();
 }
 
@@ -87,6 +92,7 @@ console.log(JSON.stringify(findings, null, 2));
 const failures = [];
 for (const item of findings) {
   if (item.errors?.length) failures.push(`${item.path} console errors: ${item.errors.join('; ')}`);
+  if (item.networkErrors?.length) failures.push(`${item.path} network errors: ${item.networkErrors.join('; ')}`);
   if (item.metrics?.overflow > 2) failures.push(`${item.path} horizontal document overflow ${item.metrics.overflow}px at ${item.viewport.width}px`);
   if (item.path === '/' && item.metrics && !item.metrics.hasCalendar) failures.push('home mobile missing calendar panel');
   if (item.path === '/' && item.viewport?.width <= 430 && item.metrics?.calendar?.gridOverPanel > 2) failures.push(`home mobile calendar grid wider than panel by ${item.metrics.calendar.gridOverPanel}px`);
