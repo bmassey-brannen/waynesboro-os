@@ -40,13 +40,16 @@ jobs:
       - name: Verify weather tape freshness
         run: npm run qa:weather-fresh
 
+      - name: Run public-release audit before build
+        run: npm run audit:public
+
       - name: Build public site
         run: npm run build
         env:
           ASTRO_SITE: https://bmassey-brannen.github.io
           ASTRO_BASE: /waynesboro-os
 
-      - name: Run public-release audit
+      - name: Run public-release audit after build
         run: npm run audit:public
 
       - name: Setup Pages

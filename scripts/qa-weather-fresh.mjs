@@ -20,15 +20,13 @@ function hoursOld(date) {
   return (now.getTime() - date.getTime()) / 36e5;
 }
 
-const forecastFetchedAt = parseDate(
-  weatherForecastSnapshot.generatedAt || weatherForecastSnapshot.fetchedAt,
-  'weatherForecastSnapshot generated/fetched timestamp'
-);
+const forecastSnapshotAt = weatherForecastSnapshot.fetchedAt || weatherForecastSnapshot.generatedAt;
+const forecastFetchedAt = parseDate(forecastSnapshotAt, 'weatherForecastSnapshot fetched/generated timestamp');
 const alertsFetchedAt = parseDate(weatherAlertsSnapshot.fetchedAt, 'weatherAlertsSnapshot fetchedAt');
 
 assert(
   hoursOld(forecastFetchedAt) <= MAX_SNAPSHOT_AGE_HOURS,
-  `NWS forecast snapshot is stale: ${weatherForecastSnapshot.generatedAt || weatherForecastSnapshot.fetchedAt}`
+  `NWS forecast snapshot is stale: ${forecastSnapshotAt}`
 );
 assert(
   hoursOld(alertsFetchedAt) <= MAX_SNAPSHOT_AGE_HOURS,
@@ -57,5 +55,5 @@ const staleLabel = forbiddenStaleLabels.find((label) =>
 assert(!staleLabel, `NWS forecast tape starts with stale-looking ${staleLabel} label`);
 
 console.log(
-  `Weather freshness QA passed: forecast ${weatherForecastSnapshot.generatedAt || weatherForecastSnapshot.fetchedAt}; alerts ${weatherAlertsSnapshot.fetchedAt}; first period ${firstPeriod.name}`
+  `Weather freshness QA passed: forecast ${forecastSnapshotAt}; alerts ${weatherAlertsSnapshot.fetchedAt}; first period ${firstPeriod.name}`
 );

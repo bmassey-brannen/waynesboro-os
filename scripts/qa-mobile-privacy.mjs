@@ -1,7 +1,12 @@
 import { chromium } from 'playwright';
+import fs from 'node:fs';
 
 const baseUrl = process.argv[2] || 'http://127.0.0.1:4321';
-const browser = await chromium.launch({ headless: true });
+const bundledExecutable = chromium.executablePath();
+const browser = await chromium.launch({
+  headless: true,
+  ...(fs.existsSync(bundledExecutable) ? { executablePath: bundledExecutable } : {})
+});
 const findings = [];
 
 async function inspectPage(path, viewport, screenshotName) {
