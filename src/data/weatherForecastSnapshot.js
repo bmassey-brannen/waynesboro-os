@@ -7,7 +7,7 @@ export const weatherForecastSnapshot = {
   "sourceUrl": "https://api.weather.gov/gridpoints/CAE/32,17/forecast",
   "geography": "Waynesboro, Georgia point forecast routed to WFO CAE grid 32,17",
   "accessMethod": "Public NWS API with required User-Agent header; cached low-volume forecast periods only.",
-  "fetchedAt": "2026-06-03T17:11:10.474Z",
+  "fetchedAt": "2026-06-03T17:23:13.734Z",
   "generatedAt": "2026-06-03T17:11:10+00:00",
   "updated": null,
   "status": "verified_public_snapshot",

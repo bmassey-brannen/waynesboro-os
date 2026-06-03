@@ -7,11 +7,11 @@ export const weatherAlertsSnapshot = {
   "sourceUrl": "https://api.weather.gov/alerts/active?zone=GAC033",
   "geography": "Burke County, Georgia alert zone GAC033",
   "accessMethod": "Public NWS API with required User-Agent header; low-volume cached snapshot only.",
-  "fetchedAt": "2026-06-03T17:11:10.474Z",
+  "fetchedAt": "2026-06-03T17:23:13.734Z",
   "status": "verified_public_snapshot",
   "featureCount": 0,
   "title": "Current watches, warnings, and advisories for Burke County (GAC033) GA",
   "activeAlerts": [],
-  "summary": "No active NWS watches, warnings, or advisories were returned for Burke County zone GAC033 at 2026-06-03T17:11:10.474Z.",
+  "summary": "No active NWS watches, warnings, or advisories were returned for Burke County zone GAC033 at 2026-06-03T17:23:13.734Z.",
   "caveat": "This is a cached public alert snapshot. It is not dispatch telemetry; use the linked NWS endpoint for the latest official alert status."
 };

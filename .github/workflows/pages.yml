@@ -37,6 +37,9 @@ jobs:
       - name: Refresh nightly public weather snapshot
         run: npm run fetch:weather
 
+      - name: Verify weather tape freshness
+        run: npm run qa:weather-fresh
+
       - name: Build public site
         run: npm run build
         env:

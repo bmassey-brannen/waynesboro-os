@@ -2869,7 +2869,7 @@ function WeatherReadinessPanel() {
             <h3>{weatherForecastSnapshot.periodCount} NWS periods cached for source-labeled public works / event readiness</h3>
           </div>
           <div className="forecast-meta">
-            <b>{new Date(weatherForecastSnapshot.generatedAt || weatherForecastSnapshot.fetchedAt).toLocaleString()}</b>
+            <b>{new Date(weatherForecastSnapshot.fetchedAt || weatherForecastSnapshot.generatedAt).toLocaleString()}</b>
             <small>{weatherForecastSnapshot.geography}</small>
             <a href={weatherForecastSnapshot.sourceUrl} target="_blank" rel="noreferrer">Open NWS forecast endpoint</a>
           </div>
@@ -4647,8 +4647,9 @@ function MeetingReadinessStrip() {
 function WeatherTicker() {
   const periods = weatherForecastSnapshot.periods || [];
   const visiblePeriods = periods.slice(0, 5);
-  const generatedDate = weatherForecastSnapshot.generatedAt
-    ? new Date(weatherForecastSnapshot.generatedAt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+  const snapshotUpdatedAt = weatherForecastSnapshot.fetchedAt || weatherForecastSnapshot.generatedAt;
+  const generatedDate = snapshotUpdatedAt
+    ? new Date(snapshotUpdatedAt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
     : 'cached';
 
   return (
