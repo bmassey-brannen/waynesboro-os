@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]
   schedule:
-    # 6:30 AM Eastern during daylight time; GitHub cron runs in UTC.
-    - cron: '30 10 * * *'
+    # Nightly public-data refresh/build. GitHub cron runs in UTC (4:30 AM Eastern during daylight time).
+    - cron: '30 8 * * *'
   workflow_dispatch:
 
 permissions:
@@ -33,6 +33,9 @@ jobs:
 
       - name: Run civic source-ranking tests
         run: npm run test:civic-ranking
+
+      - name: Refresh nightly public weather snapshot
+        run: npm run fetch:weather
 
       - name: Build public site
         run: npm run build
