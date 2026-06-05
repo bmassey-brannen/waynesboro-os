@@ -4876,7 +4876,7 @@ export default function WaynesboroTerminal({ page = 'executive' }) {
   return (
     <main className={`terminal-shell terminal-page-${activePage}`}>
       <aside className="sidebar">
-        <div className="brand-mark"><span>W</span><div><b>Waynesboro OS</b><small>Municipal Intelligence Terminal</small></div></div>
+        <div className="brand-mark"><span>W</span><div><b>Waynesboro OS</b><small>Civic Intelligence Dashboard</small></div></div>
         <nav>{nav.map((item) => <a key={item.id} href={item.href} className={activePage === item.id ? 'active' : ''}>{item.label}</a>)}</nav>
         <div className="sidebar-note"><b>Public preview</b><span>Verified facts first; source pending material stays labeled and out of public fact cards.</span></div>
       </aside>
