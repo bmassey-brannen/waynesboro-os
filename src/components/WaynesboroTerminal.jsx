@@ -1030,6 +1030,20 @@ const meetingCalendarSeed = [
     tone: 'watch'
   },
   {
+    id: 'exchange-club-fair-2026-10-13',
+    isoDate: '2026-10-13',
+    displayDate: 'Oct. 13–17, 2026',
+    body: 'Community Events',
+    title: 'Waynesboro Exchange Club Fair',
+    status: 'Date supplied',
+    lane: 'Community event watch',
+    source: 'Date supplied for the Waynesboro website calendar; verify official fair details before publishing hours, admissions, or programming.',
+    tone: 'watch',
+    shortLabel: 'Fair',
+    url: 'https://www.waynesboroga.com/',
+    urlLabel: 'Check city event source'
+  },
+  {
     id: 'door-trick-or-treat-2026-route',
     isoDate: '2026-10-01',
     displayDate: 'October watch window · exact date not confirmed',
