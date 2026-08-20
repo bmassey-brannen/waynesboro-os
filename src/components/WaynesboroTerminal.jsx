@@ -1268,7 +1268,7 @@ function PublicHowToGuide() {
     { label: '1 · Start with the calendar', detail: 'Use meetings and packet links to see what is posted, what is only a watch window, and what needs verification.' },
     { label: '2 · Read the baseline cards', detail: 'Treat population, income, housing, and ACS context as planning baselines with source/date labels, not live city telemetry.' },
     { label: '3 · Open official sources', detail: 'Follow Agenda Center, budget, map, and public-record links before quoting or acting on a dashboard item.' },
-    { label: '4 · Separate evidence from questions', detail: 'If a lane says source pending, it is a verification queue—not a public fact, score, vacancy count, or project claim.' }
+    { label: '4 · Separate evidence from questions', detail: 'If a lane says verification queue, it is a verification queue—not a public fact, score, vacancy count, or project claim.' }
   ];
   return (
     <section className="public-howto-panel" aria-label="How to use Waynesboro OS">
@@ -2936,7 +2936,7 @@ function WaterSystemsPanel() {
         <article>
           <span>Primary community system</span>
           <b>{primarySystem?.pwsName || 'Waynesboro system pending'}</b>
-          <small>{primarySystem?.pwsId || 'PWSID pending'} · {primarySystem?.pwsType || 'type pending'} · {primarySystem?.primarySource || 'source pending'}</small>
+          <small>{primarySystem?.pwsId || 'PWSID pending'} · {primarySystem?.pwsType || 'type pending'} · {primarySystem?.primarySource || 'verification queue'}</small>
         </article>
         <article>
           <span>Population served</span>
@@ -3411,7 +3411,7 @@ function OperationsConfidenceStrip() {
     {
       label: 'Health cards',
       status: 'Synthetic scores',
-      detail: 'Infrastructure, housing, and response metrics are source pending until official exports exist.',
+      detail: 'Infrastructure, housing, and response metrics are verification queue until official exports exist.',
       tone: 'watch'
     },
     {
@@ -3498,7 +3498,7 @@ function PublicWorksServiceRoutePanel() {
       <div className="panel-head">
         <div>
           <span className="eyebrow">OFFICIAL OPERATIONS ROUTES</span>
-          <h2>Public service pages now sit above source pending system-health lanes</h2>
+          <h2>Public service pages now sit above verification queue system-health lanes</h2>
         </div>
         <span className="terminal-badge gold">CITY ROUTE INDEX</span>
       </div>
@@ -4417,15 +4417,15 @@ function InfrastructureSafetyHousing() {
       <ParksFacilitiesPanel />
       <div className="three-stack source pending-stack">
         <section className="panel source pending-card">
-          <div className="panel-head"><div><span className="eyebrow">INFRASTRUCTURE</span><h2>Public source path only</h2></div><span className="terminal-badge gold">SOURCE PENDING</span></div>
+          <div className="panel-head"><div><span className="eyebrow">INFRASTRUCTURE</span><h2>Public source path only</h2></div><span className="terminal-badge gold">SOURCE ROUTE</span></div>
           <p className="source-note">No infrastructure health scores are displayed publicly until tied to adopted capital plans, asset inventories, work orders, compliance records, or official reports.</p>
         </section>
         <section className="panel source pending-card">
-          <div className="panel-head"><div><span className="eyebrow">PUBLIC SAFETY</span><h2>Aggregate records required</h2></div><span className="terminal-badge gold">SOURCE PENDING</span></div>
+          <div className="panel-head"><div><span className="eyebrow">PUBLIC SAFETY</span><h2>Aggregate records required</h2></div><span className="terminal-badge gold">SOURCE ROUTE</span></div>
           <p className="source-note">No incident counts, response times, crime trends, or corridor safety claims are displayed until official aggregate data is released or obtained through a lawful records process.</p>
         </section>
         <section className="panel source pending-card">
-          <div className="panel-head"><div><span className="eyebrow">HOUSING & DEVELOPMENT</span><h2>Permit and parcel evidence first</h2></div><span className="terminal-badge gold">SOURCE PENDING</span></div>
+          <div className="panel-head"><div><span className="eyebrow">HOUSING & DEVELOPMENT</span><h2>Permit and parcel evidence first</h2></div><span className="terminal-badge gold">SOURCE ROUTE</span></div>
           <p className="source-note">No development heat scores are displayed publicly until housing, permit, zoning, parcel, and project records are source-labeled and reconciled.</p>
         </section>
       </div>
@@ -4507,7 +4507,7 @@ function Briefing() {
       action: 'Pair with income distribution, housing burden, vehicle access, food access, health access, and source-labeled service locations before any recommendation is shown.'
     },
     {
-      status: 'Source pending',
+      status: 'Verification queue',
       title: 'Permits, parcels, crime, occupancy, and blight scores remain hypotheses',
       note: 'The briefing layer may discuss these as civic questions and follow-up priorities, not as municipal facts.',
       action: 'Prioritize parcel/export permission, permit history, public-safety aggregates, and downtown inventory QA.'
@@ -4534,7 +4534,7 @@ function Briefing() {
       note: `DCA DRI ${regionalDevelopmentSeed.records[0].driId} is a public review seed, not a complete project pipeline.`
     },
     {
-      label: 'Source pending',
+      label: 'Verification queue',
       confidence: 'Needs source',
       title: 'Crime, permits, downtown occupancy, beautification, and parcel-level claims',
       note: 'Public recommendations must stay framed as hypotheses until these lanes have official exports or public aggregates.'
@@ -4605,7 +4605,7 @@ function Briefing() {
             </article>
           ))}
         </div>
-        <p className="source-note">The briefing should read like civic analysis: verified baseline first, official records second, labeled hypotheses last. No source pending metric should be presented as municipal fact.</p>
+        <p className="source-note">The briefing should read like civic analysis: verified baseline first, official records second, labeled hypotheses last. No verification queue metric should be presented as municipal fact.</p>
       </section>
     </section>
   );
@@ -4620,7 +4620,7 @@ function PublicTrustRibbon() {
     <section className="trust-ribbon" aria-label="public preview data status">
       <article>
         <span>Demo posture</span>
-        <b>Verified baseline + labeled source pending lanes</b>
+        <b>Verified baseline + labeled verification queue lanes</b>
         <small>No municipal claim is promoted until it has source, geography, and timestamp.</small>
       </article>
       <article>
@@ -4789,7 +4789,7 @@ const pageMeta = {
   briefing: {
     eyebrow: 'WAYNESBORO, GEORGIA · BRIEFING',
     title: 'Source-gated civic briefing.',
-    description: 'Clear recommendations and open questions separated from evidence, source pending lanes, and source inventory.'
+    description: 'Clear recommendations and open questions separated from evidence, verification queue lanes, and source inventory.'
   }
 };
 
@@ -4862,7 +4862,7 @@ function PageBriefStrip({ page }) {
       { label: 'Home values', value: homeValueDistributionSeed.brackets.find((item) => item.id === '200k-299k')?.displayShare || 'ACS seeded', detail: 'B25075 value distribution; not assessments, sales, or tax records.' }
     ],
     briefing: [
-      { label: 'Briefing mode', value: 'Source-gated', detail: 'The briefing separates evidence from source pending judgment.' },
+      { label: 'Briefing mode', value: 'Source-gated', detail: 'The briefing separates evidence from verification queue judgment.' },
       { label: 'Safe brief', value: 'Caveated', detail: 'No real municipal claim without source label.' },
       { label: 'Next upgrade', value: 'Citation cards', detail: 'Manual document review should feed decisions.' }
     ]
@@ -4892,7 +4892,7 @@ export default function WaynesboroTerminal({ page = 'executive' }) {
       <aside className="sidebar">
         <div className="brand-mark"><span>W</span><div><b>Waynesboro OS</b><small>Civic Intelligence Dashboard</small></div></div>
         <nav>{nav.map((item) => <a key={item.id} href={item.href} className={activePage === item.id ? 'active' : ''}>{item.label}</a>)}</nav>
-        <div className="sidebar-note"><b>Public preview</b><span>Verified facts first; source pending material stays labeled and out of public fact cards.</span></div>
+        <div className="sidebar-note"><b>Public preview</b><span>Verified facts first; verification queue material stays labeled and out of public fact cards.</span></div>
       </aside>
       <section className="workspace paged-workspace">
         <header className="topbar">

@@ -21,6 +21,7 @@
     "audit:public": "python3 scripts/publication-audit.py",
     "qa:weather-fresh": "node scripts/qa-weather-fresh.mjs",
     "qa:mobile-privacy": "node scripts/qa-mobile-privacy.mjs",
+    "qa:routes": "node scripts/qa-public-routes.mjs",
     "test:civic-ranking": "node src/lib/civicSourceRanking.test.mjs"
   },
   "dependencies": {

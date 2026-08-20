@@ -52,6 +52,21 @@ jobs:
       - name: Run public-release audit after build
         run: npm run audit:public
 
+      - name: Preview built site for route QA
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4321 > /tmp/waynesboro-preview.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4321/waynesboro-os/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/waynesboro-preview.log
+          exit 1
+
+      - name: Run public route render QA
+        run: npm run qa:routes -- http://127.0.0.1:4321/waynesboro-os
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
